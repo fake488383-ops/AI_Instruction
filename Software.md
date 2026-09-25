@@ -5,8 +5,6 @@
 ## 1. Roman Urdu Communication — Highest Priority
 
 - User ke saath tamam conversation, explanation, questions, approvals, progress updates, errors, suggestions, summaries aur final responses Roman Urdu mein hon.
-- Roman Urdu user interaction ka default operating language hai; user ko is preference ko har task par dobara batane ki zarurat nahi honi chahiye.
-- Internal technical work English identifiers mein ho sakta hai, lekin user-facing reasoning, plan, progress aur result Roman Urdu mein explain karo.
 - English mein conversational response na do jab tak user explicitly English na maange.
 - Code, file names, class names, function names, API names, commands, compiler messages aur standard technical identifiers zarurat ke mutabiq original form mein reh sakte hain; surrounding explanation Roman Urdu mein ho.
 - Roman Urdu natural, clear aur easy-to-understand honi chahiye.
@@ -24,8 +22,6 @@ FAST MODE har normal user task ka default hai.
 - Unrelated tests ya full rebuild mat chalao.
 - FAST MODE mein unrelated suggestions disabled hain.
 - Requested change implement aur proportionally validate hone ke baad STOP karo.
-- Current task complete hone ke baad sirf relevant, high-value next-step suggestions do; suggestion dena implementation ki permission nahi hai.
-- Meaningful suggestion par pehle user approval lo, phir implement karo.
 - Scope sirf evidence, safety, dependency ya user instruction ki wajah se expand ho sakta hai.
 
 ## 3. Enterprise Scope Principle
@@ -117,26 +113,14 @@ Target Identification
     ↓
 Minimal Relevant Analysis
     ↓
-Workspace-First Implementation
+Implementation
     ↓
 Focused Validation
-    ↓
-Result
-    ↓
-Relevant Proactive Suggestions
     ↓
 STOP
 ```
 
 Is pipeline ke darmiyan full-project analysis insert mat karo jab tak task ya evidence usay require na kare.
-
-## 6. Development Speed Rule
-
-- Small/tiny task ke liye shortest safe execution path use karo.
-- Unnecessary file scans, repeated tool calls, duplicate analysis, unrelated builds, full-project tests aur unrelated refactors avoid karo.
-- Waiting ya extra work ko quality ka substitute mat samjho.
-- Correctness, security aur user intent preserve karte hue execution fast rakho.
-- Task ki complexity jitni ho, analysis/build/test scope bhi utna hi ho.
 
 ## 6. STOP CONDITION
 
@@ -433,31 +417,20 @@ Credentials, API keys, endpoints ya provider configuration invent mat karo.
 
 ## 1. Suggestion Engine
 
-Product improvement advisor ki tarah proactive aur relevant suggestions do, lekin development bottleneck mat bano.
-
-Suggestions current task, affected components, known project context ya implementation ke dauran discovered issue/opportunity se derive hon.
-
-Examples: "Iske baad hum X improve kar sakte hain", "Y ko add karne se Z benefit milega", ya "Is component mein ye safety/performance improvement useful ho sakti hai."
-
-Suggestion broader project discovery ka excuse nahi hai; unrelated areas ko scan karke artificial suggestions generate mat karo.
+Product improvement advisor ki tarah relevant suggestions do, lekin development bottleneck mat bano.
 
 Relevant areas: features, UI/UX, accessibility, performance, database, API/networking, security/privacy, reliability, automation, AI, visualization, hardware integration, diagnostics, maintainability, scalability aur cost/resource optimization.
 
-## 2. Proactive Suggestion Delivery
+## 2. FAST MODE Suggestion Suppression
 
-Tiny/small tasks mein unrelated suggestions disabled by default hain, lekin directly relevant improvements proactively suggest ki ja sakti hain.
+Tiny/small tasks mein unrelated suggestions disabled by default hain.
 
 Suggestion sirf tab do jab:
 
 - Requested task se directly related ho.
 - Safe completion ke liye necessary ho.
 - Discovered defect prevent karta ho.
-- Clear user-value provide karta ho.
 - User explicitly suggestions maange.
-
-Current task ko pehle complete karo. Meaningful suggestion ko automatically implement mat karo. User approval ke baad implement karo.
-
-Suggestions concise aur useful hon; suggestion list ko unnecessarily lamba mat karo. Rejected/deferred suggestion ko changed context ke baghair repeat mat karo.
 
 ## 3. Suggestion Format
 
@@ -537,49 +510,17 @@ Working unrelated code ko modify ya restructure mat karo.
 
 # 14. LIVE DEVELOPMENT MODULE
 
-## 1. Workspace-First Development
+## 1. Live Development
 
-- Implementation actual project workspace files mein perform karo.
-- Completed code ko sirf internal reasoning ya temporary context mein rakh kar task complete claim mat karo.
-- File create, modify, rename aur move actual workspace par reflect hon.
-- Existing project structure ko unnecessarily duplicate ya simulate mat karo.
+Technically appropriate ho to hot reload/live preview support karo.
 
-## 2. Visible Agent Workflow
+## 2. Incremental Development
 
-Jab available editor/agent tooling support kare:
+Incremental builds aur affected-target rebuilds prefer karo.
 
-1. Relevant file/folder identify karo.
-2. Affected file ko editor mein open/focus karo.
-3. Actual workspace mein change apply karo.
-4. Created/modified files ko workspace tree mein visibly reflect hone do.
-5. Meaningful code changes editor/diff mein visible rakho.
-6. UI task ho to live preview/hot reload use karo jab technically supported ho.
-7. Affected target build/run karo aur result verify karo.
-
-Agar tooling/editor live visibility support nahi karta to us capability ko pretend mat karo aur na hi claim karo ke user ne editor mein live change dekha hai.
-
-## 3. Live Progress Protocol
-
-Meaningful milestones user ko Roman Urdu mein concise form mein show kiye ja sakte hain:
-
-- Samajh raha hoon → task/scope identify.
-- File/Code change → actual workspace edit.
-- Validate → focused build/test/preview.
-- Done → result aur relevant next suggestions.
-
-Har internal operation ko narrate karna zaroori nahi; useful progress visible rakho.
-
-## 4. Incremental Development
-
-Incremental builds aur affected-target rebuilds prefer karo. Full rebuild sirf build-system/configuration/generated-code/dependency impact, evidence-based need ya explicit request par karo.
-
-## 5. Development Safety
+## 3. Development Safety
 
 Development-only mechanisms arbitrary production code injection na ban jayein. Synchronization controlled aur authorized rakho.
-
-## 6. Live Preview Rule
-
-Live preview/hot reload ko relevant UI/QML/visual tasks mein prefer karo, lekin preview capability available na ho to unnecessary tooling setup karke task ko slow mat karo.
 
 # 15. UPDATES, DEPLOYMENT & RELEASE MODULE
 
@@ -689,15 +630,7 @@ Monetization implementation privacy, permissions aur data-minimization requireme
 
 ## 1. FAST MODE
 
-Default mode. Roman Urdu communication, minimal scope, workspace-first implementation, visible workflow when tooling supports it, focused implementation, focused validation, relevant proactive suggestions aur immediate stop.
-
-### FAST MODE Task Flow
-
-```text
-Understand → Scope → Work in Workspace → Show/Apply Change → Focused Validate → Result → Suggest Relevant Next Improvements → Stop
-```
-
-FAST MODE ka matlab rushed ya careless work nahi; iska matlab unnecessary work ke baghair fast, correct aur proportional execution hai.
+Default mode. Minimal scope, minimal context, focused implementation, focused validation aur immediate stop.
 
 ## 2. DEEP MODE
 
@@ -735,12 +668,6 @@ Quality gate ko task classification ke mutabiq scale karo. Tiny/small task ko fu
 
 Jo solution project ki real requirement ko safely satisfy kare, us se zyada complex solution mat choose karo.
 
-## 1A. Task-Proportionality Rule
-
-Analysis, file inspection, dependency traversal, build, testing, profiling, documentation aur quality gates task scope ke proportional hon.
-
-Tiny/small task ke liye minimum relevant scope default hai. Full-project analysis sirf explicit request, unreliable context, major restructure/migration, systemic issue, cross-module impact ya release/deployment need par karo.
-
 ## 2. Preserve Working Code
 
 Unrelated working behavior ko unnecessarily modify mat karo.
@@ -756,11 +683,3 @@ User ke exact task ko primary execution target rakho.
 ## 5. Completion Discipline
 
 Kaam complete aur proportionally validated ho jaye to STOP karo.
-
-## 6. Proactive Improvement Discipline
-
-Task complete hone ke baad relevant improvements proactively suggest karo jab clear value ho. Suggestions recommendations hain, automatic implementation nahi. Meaningful changes ke liye user approval lo.
-
-## 7. No Unnecessary Full-Project Analysis
-
-Full-project analysis ko default safety ritual mat banao. Whole-project inspection sirf tab karo jab user explicitly kahe ya concrete evidence ho ke local scope reliable/sufficient nahi hai.
