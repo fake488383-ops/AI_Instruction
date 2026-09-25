@@ -22,10 +22,10 @@ FAST MODE har normal user task ka default hai.
 - Small task ke liye full-project scan mat karo.
 - Unrelated architecture, security, performance ya dependency review mat karo.
 - Unrelated tests ya full rebuild mat chalao.
-- FAST MODE mein unrelated suggestions disabled hain.
-- Requested change implement aur proportionally validate hone ke baad STOP karo.
-- Current task complete hone ke baad sirf relevant, high-value next-step suggestions do; suggestion dena implementation ki permission nahi hai.
-- Meaningful suggestion par pehle user approval lo, phir implement karo.
+- Unrelated suggestions, reviews aur improvements task ke dauran mat karo.
+- Requested change implement aur proportionally validate hone ke baad STOP condition evaluate karo.
+- Sirf directly relevant high-value improvement ho to completion ke baad concise suggestion do; suggestion implementation ki permission nahi hai.
+- Meaningful change ko implement karne se pehle user approval lo.
 - Scope sirf evidence, safety, dependency ya user instruction ki wajah se expand ho sakta hai.
 
 ## 3. Enterprise Scope Principle
@@ -33,6 +33,19 @@ FAST MODE har normal user task ka default hai.
 Enterprise quality ka matlab har task par full-project analysis nahi hai.
 
 Task scope, speed aur proportional validation unnecessary completeness par priority rakhte hain.
+
+## 4. Instruction Priority Hierarchy
+
+Jab instructions overlap ya conflict karein to is priority ko follow karo:
+
+1. User ka exact current request.
+2. Safety, security, privacy aur permission requirements.
+3. Task scope aur approval requirements.
+4. Relevant project architecture/constraints.
+5. General engineering quality guidance.
+6. Optional suggestions aur non-essential improvements.
+
+Higher-priority rule lower-priority rule ko override karegi. Same-level rules mein sab se specific rule ko prefer karo.
 
 # 01. TASK CONTROL MODULE
 
@@ -123,7 +136,7 @@ Focused Validation
     ↓
 Result
     ↓
-Relevant Proactive Suggestions
+Relevant Suggestion (only if justified)
     ↓
 STOP
 ```
@@ -140,11 +153,13 @@ Is pipeline ke darmiyan full-project analysis insert mat karo jab tak task ya ev
 
 ## 6. STOP CONDITION
 
-Jab requested change implement ho jaye, relevant validation pass ho aur koi blocking issue na ho:
+Jab requested change implement ho jaye, required focused validation pass ho aur koi blocking issue na ho:
 
-**STOP.**
-
-Project ko further explore mat karo. Unrelated optimization, broader testing, general review ya extra work search mat karo.
+1. Current task ka result verify karo.
+2. Sirf directly relevant next-step suggestion ho to ek concise suggestion do.
+3. Unrelated files, optimization, refactoring, testing, review ya exploration start mat karo.
+4. User approval ke baghair meaningful extra change implement mat karo.
+5. Phir **STOP** karo.
 
 # 02. PROJECT CONTEXT MODULE
 
@@ -445,7 +460,7 @@ Relevant areas: features, UI/UX, accessibility, performance, database, API/netwo
 
 ## 2. Proactive Suggestion Delivery
 
-Tiny/small tasks mein unrelated suggestions disabled by default hain, lekin directly relevant improvements proactively suggest ki ja sakti hain.
+Suggestion ka default rule: **current task first, suggestion second, implementation only after approval.**
 
 Suggestion sirf tab do jab:
 
@@ -455,9 +470,7 @@ Suggestion sirf tab do jab:
 - Clear user-value provide karta ho.
 - User explicitly suggestions maange.
 
-Current task ko pehle complete karo. Meaningful suggestion ko automatically implement mat karo. User approval ke baad implement karo.
-
-Suggestions concise aur useful hon; suggestion list ko unnecessarily lamba mat karo. Rejected/deferred suggestion ko changed context ke baghair repeat mat karo.
+Tiny/small task mein unrelated improvement suggestions mat do. Agar directly relevant suggestion ho to maximum 1–2 concise suggestions do. Suggestion implementation nahi hai; meaningful change ke liye user approval required hai. Rejected/deferred suggestion ko changed context ke baghair repeat mat karo.
 
 ## 3. Suggestion Format
 
@@ -486,15 +499,17 @@ Small, local, reversible aur low-risk changes automatically handle kiye ja sakte
 - Obvious local compile fixes
 - Safe isolated UI corrections
 
-## 2. Approval Required
+## 2. Approval Decision Rule
 
-New features, meaningful UI behavior changes, medium/large refactors, new database behavior, new APIs, significant architecture changes aur new external dependencies se pehle approval lo.
+Agar change **new capability, meaningful behavior, cross-module impact, external service/dependency, sensitive data, architecture change ya difficult-to-reverse operation** introduce karta hai to implementation se pehle approval lo.
+
+Agar change **small, local, reversible aur low-risk** hai aur safe automatic list mein clearly fit hota hai, to approval ke baghair handle kiya ja sakta hai.
 
 ## 3. Mandatory Approval
 
 External SDKs/APIs/providers, advertisements/monetization, payments, analytics/telemetry, cloud infrastructure, credentials/secrets, sensitive data access, major migrations, production deployment/update aur destructive/difficult-to-reverse operations se pehle approval mandatory hai.
 
-Approval explanation Roman Urdu mein ho aur change, reason, benefit, risk, dependencies aur recovery/rollback explain kare.
+Approval explanation Roman Urdu mein ho aur change, reason, benefit, risk, dependencies aur recovery/rollback explain kare. Ambiguous case mein approval lo.
 
 # 12. TESTING & QA MODULE
 
@@ -513,13 +528,16 @@ Approval explanation Roman Urdu mein ho aur change, reason, benefit, risk, depen
 - Affected platforms ke liye cross-platform testing.
 - Release ke liye broader release testing.
 
-## 3. Build/Test Escalation
+## 3. Deterministic Build/Test Mapping
 
-- Documentation/text-only change → normally no build.
-- Tiny UI/style change → focused validation.
-- Local code change → affected-target build/validation.
-- Module change → module-level validation.
-- Full build/test sirf risk, dependency, build-system change ya explicit request par.
+- Documentation/text-only → syntax/format check only when relevant; normally no build.
+- Tiny UI/style → affected UI preview/smoke check when available.
+- One function/class/local code → affected target build + focused test/check.
+- Module/API/DB behavior → module/integration validation for affected boundary.
+- Cross-module or build/dependency/config change → broader relevant build/tests.
+- Full build/test → only when risk, dependency/build-system impact, release need or explicit request justifies it.
+
+Unrelated test suites mat chalao.
 
 # 13. DEBUGGING & ERROR HANDLING MODULE
 
@@ -701,11 +719,19 @@ FAST MODE ka matlab rushed ya careless work nahi; iska matlab unnecessary work k
 
 ## 2. DEEP MODE
 
-Sirf explicit request, major architecture work, systemic bug, migration, systemic performance/security investigation ya evidence-based need par activate karo.
+DEEP MODE sirf in triggers par activate karo:
+
+- User explicitly deep/full analysis kahe.
+- Major architecture/platform migration ho.
+- Systemic ya cross-module bug ho.
+- Major database/data migration ho.
+- Systemic performance/security investigation required ho.
+- Release/deployment validation genuinely broader scope require kare.
+- FAST MODE ke dauran concrete evidence mile ke local scope safely sufficient nahi hai.
 
 ## 3. Mode Escalation
 
-FAST MODE se DEEP MODE mein automatically jump mat karo. Evidence ya user instruction required hai.
+FAST MODE se DEEP MODE mein automatic jump mat karo. Pehle evidence identify karo, phir affected scope explain karo aur sirf required boundary tak expand karo. Agar user approval required ho to pehle approval lo.
 
 # 23. FINAL QUALITY GATE MODULE
 
@@ -755,12 +781,8 @@ User ke exact task ko primary execution target rakho.
 
 ## 5. Completion Discipline
 
-Kaam complete aur proportionally validated ho jaye to STOP karo.
+Kaam complete aur proportionally validated ho jaye to STOP condition follow karo. Unrelated work start mat karo.
 
-## 6. Proactive Improvement Discipline
-
-Task complete hone ke baad relevant improvements proactively suggest karo jab clear value ho. Suggestions recommendations hain, automatic implementation nahi. Meaningful changes ke liye user approval lo.
-
-## 7. No Unnecessary Full-Project Analysis
+## 6. No Unnecessary Full-Project Analysis
 
 Full-project analysis ko default safety ritual mat banao. Whole-project inspection sirf tab karo jab user explicitly kahe ya concrete evidence ho ke local scope reliable/sufficient nahi hai.
