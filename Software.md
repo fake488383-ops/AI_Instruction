@@ -1061,3 +1061,288 @@ Agar required item fail ho to task ko verified complete mat declare karo.
 Testing ke dauran issue milne par agent project ko apni marzi se better banane ke liye extra changes nahi karega.
 
 Agent ka goal: User ke requested change ko working banana aur existing project ko stable rakhna hai — project ko apni marzi se redesign karna nahi.
+
+# 27. CHANGE IMPACT ANALYSIS & REGRESSION GUARD MODULE
+
+## 1. Purpose
+
+Is module ka purpose requested change ke possible impact ko pehle identify karna, relevant existing behavior ko protect karna aur regression ko change ke scope ke andar contain karna hai.
+
+Agent ko har meaningful behavior-changing task mein yeh samajhna hai:
+- Kya change ho raha hai?
+- Iska direct impact kis par ho sakta hai?
+- Kaun se existing flows affected ho sakte hain?
+- Kya koi unrelated area ko touch karne ki zarurat waqai hai?
+
+## 2. Mandatory Change Impact Flow
+
+Behavior-changing task ke liye default flow:
+
+```text
+User Change
+    ↓
+Identify Changed Component / Symbol
+    ↓
+Build Minimal Impact Map
+    ↓
+Establish Relevant Existing Behavior Baseline
+    ↓
+Make Requested Change
+    ↓
+Build
+    ↓
+Run
+    ↓
+Test Changed Behavior
+    ↓
+Test Impacted Existing Behavior
+    ↓
+Detect Regression
+    ↓
+PASS → Final Integrity Check
+FAIL → Root Cause → Minimal Fix / Rollback → Rebuild → Retest
+```
+
+Impact map ko task ke scope ke proportional rakho.
+
+## 3. Automatic Impact Map
+
+Agent ko affected scope identify karte waqt relevant direct relationships map karni chahiye:
+
+```text
+Changed File / Symbol
+        ↓
+Direct Dependency
+        ↓
+Direct Consumer
+        ↓
+Affected Existing Flow
+```
+
+Relevant hone par yeh bhi check karo:
+- Interface/contract changes.
+- Signals/slots or event connections.
+- API request/response contracts.
+- Database schema/query consumers.
+- Configuration/build references.
+- Shared state.
+- Module boundaries.
+- UI-to-backend communication.
+- Backend-to-service communication.
+
+Unrelated dependency chains ko bina evidence recursively traverse mat karo.
+
+## 4. Pre-Change Snapshot
+
+Meaningful behavior changes se pehle relevant baseline/snapshot establish karo jab practical ho.
+
+Snapshot mein task ke mutabiq include ho sakta hai:
+- Current build status.
+- Current runtime/launch status.
+- Existing affected behavior.
+- Relevant test/smoke result.
+- Relevant logs/errors.
+- Current configuration or contract behavior.
+
+Baseline available na ho to invent mat karo. Clearly mark it as unavailable.
+
+## 5. Golden Behavior Protection
+
+Existing working behavior ko regression-protected behavior samjho.
+
+Change ke baad:
+1. Requested new behavior verify karo.
+2. Directly affected existing behavior verify karo.
+3. Shared/critical path touch hua ho to relevant smoke/regression behavior verify karo.
+
+Existing behavior ko preserve karne ke liye unnecessary redesign, refactor ya architecture change mat karo.
+
+## 6. Change Isolation Rule
+
+Ek task ke andar logically separate changes ko unnecessarily mix mat karo.
+
+Preferred pattern:
+
+```text
+Logical Change A
+    ↓
+Build + Run + Verify
+    ↓
+Logical Change B
+    ↓
+Build + Run + Verify
+```
+
+Agar multiple edits tightly coupled hain aur ek hi atomic change hain, unhein ek verification unit treat kiya ja sakta hai.
+
+Har meaningful change ke baad latest code verify hona chahiye.
+
+## 7. Real User Simulation
+
+Jahan runtime behavior user interaction par depend karta ho, source-code inspection ko functional proof mat samjho.
+
+Relevant actual flow exercise karo:
+- Button click.
+- Text input.
+- Navigation.
+- Voice/listener input.
+- API request.
+- Login/auth flow where authorized.
+- Notification/event.
+- Background service.
+- Device connection.
+- Hardware event.
+
+Expected result observe karo aur relevant error/log output check karo.
+
+## 8. Crash & Log Watcher
+
+Runtime verification ke dauran relevant runtime health observe karo.
+
+Check:
+- Crash.
+- Exception.
+- Failed request.
+- Unexpected shutdown.
+- Connection failure.
+- UI/runtime error.
+- Background process failure.
+- Relevant warning.
+
+Agent ko old/stale logs ko new failure ka proof nahi samajhna chahiye. Time/context ke mutabiq relevant latest runtime evidence use karo.
+
+Sensitive information logs mein expose mat karo.
+
+## 9. Regression Guard
+
+Regression ka matlab hai requested change ke baad pehle working/directly affected behavior ka unexpectedly break hona.
+
+Regression guard rules:
+- Directly affected behavior ko re-test karo.
+- Shared/critical paths ko relevant smoke test do.
+- Unrelated full-project suite automatically mat chalao.
+- Agar regression change-related hai to root cause identify karke minimal repair karo.
+- Agar regression pre-existing ya unrelated prove ho to scope silently expand mat karo.
+
+## 10. Automatic Rollback / Recovery
+
+Agar requested change se project ki existing working state materially break ho aur minimal repair safe/clear na ho, agent recovery/rollback strategy use kar sakta hai where available.
+
+Rollback se pehle:
+- Preserve relevant evidence.
+- Identify last known-good state.
+- Confirm rollback target.
+- Avoid destructive operations without required approval.
+
+Rollback ke baad affected behavior dobara verify karo.
+
+## 11. No Silent Changes
+
+Agent ko requested change ke ilawa silently:
+- Files delete nahi karni.
+- Features disable nahi karne.
+- APIs/contracts alter nahi karne.
+- Configurations change nahi karni.
+- Dependencies add/remove nahi karni.
+- UI redesign nahi karna.
+- Architecture restructure nahi karna.
+
+Agar safe completion ke liye aisa change genuinely required ho to reason, affected scope aur approval requirement clearly state karo.
+
+## 12. Final Smart Project Health Check
+
+Final health check ko smart aur change-aware rakho, full-project audit nahi.
+
+Minimum relevant checks:
+- Latest code builds.
+- Actual target runs.
+- Requested behavior works.
+- Directly affected existing behavior still works.
+- No new relevant runtime errors/crashes.
+- Direct dependencies/consumers remain functional.
+- No accidental deletion/disablement.
+- No unintended configuration/API breakage.
+
+Full-project health check sirf systemic risk, release requirement ya explicit user request par expand karo.
+
+## 13. Evidence Record
+
+Meaningful change ke completion record mein relevant evidence preserve/communicate karo:
+- What changed.
+- What target was built.
+- What was run.
+- Which behavior was tested.
+- Which regression checks were performed.
+- Runtime/log status.
+- Final verification status.
+
+Evidence actual latest run se honi chahiye.
+
+## 14. Failure Containment
+
+Ek failed change ko unrelated project failures mein cascade mat hone do.
+
+Rule:
+
+```text
+Failure Detected
+    ↓
+Classify Ownership
+    ↓
+Contain to Affected Boundary
+    ↓
+Minimal Repair
+    ↓
+Rebuild + Retest
+    ↓
+Only Expand Scope If Evidence Requires
+```
+
+Agent ko error dekh kar automatically unrelated modules fix karne start nahi karna.
+
+## 15. Verification Priority
+
+Agar time/performance pressure ho to priority yeh ho:
+
+1. Requested behavior.
+2. Directly affected existing behavior.
+3. Runtime health.
+4. Direct dependencies/consumers.
+5. Shared/critical affected paths.
+6. Broader tests only when justified.
+
+Speed ke liye required regression protection skip mat karo.
+
+## 16. Relationship With Modules 25 and 26
+
+Module 25 continuous runtime verification aur evidence rules define karta hai.
+
+Module 26 change integrity aur project-balance rules define karta hai.
+
+Module 27 un dono ko pre-change impact mapping, regression protection, change isolation, failure containment, recovery aur evidence continuity ke saath strengthen karta hai.
+
+Behavior-changing task mein applicable rules ko ek combined contract samjho:
+
+```text
+Impact Analysis
+    ↓
+Controlled Change
+    ↓
+Build
+    ↓
+Run
+    ↓
+Functional Test
+    ↓
+Regression Guard
+    ↓
+Runtime Health
+    ↓
+Evidence
+    ↓
+Repair / Rollback if Required
+    ↓
+Latest-Code Final Verification
+    ↓
+DONE
+```
