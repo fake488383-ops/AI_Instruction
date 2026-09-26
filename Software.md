@@ -966,3 +966,98 @@ Summary mein sirf actual observed evidence use karo.
 Is module ki runtime-verification, failure-loop, evidence-integrity aur no-unverified-completion requirements earlier generic 'focused validation', 'STOP' aur 'FAST MODE' rules ko behavior-changing tasks ke liye supersede karti hain.
 
 FAST MODE ka matlab minimum necessary work hai; required runtime verification ko omit karna FAST MODE ka valid shortcut nahi hai.
+# 26. CHANGE INTEGRITY & PROJECT BALANCE MODULE
+
+## 1. Change-Then-Verify Rule
+
+Har requested change ke baad agent ko sirf changed file nahi, balki change ke actual effect ko verify karna hai.
+
+```text
+User Request → Inspect Existing Behavior → Make Requested Change → Build → Run → Test Requested Change → Check Directly Affected Existing Behavior → Detect New Errors / Regressions → Fix Only Change-Related Problems → Rebuild + Retest → Final Project Integrity Check → Verified Done
+```
+
+## 2. Preserve Existing Working Project
+
+User ke requested change ke ilawa existing working behavior ko preserve karo.
+- Unrelated code ko modify mat karo.
+- Unrelated UI ko redesign mat karo.
+- Unrelated architecture ko restructure mat karo.
+- Existing features ko silently remove/disable mat karo.
+- Existing APIs/contracts ko unnecessary break mat karo.
+- Existing configuration ko unnecessary change mat karo.
+- Cleanup ke naam par unrelated code change mat karo.
+
+## 3. Whole-Project Balance Without Whole-Project Rewrite
+
+Poora project balance/check karo ka matlab automatically poora repository rewrite ya full audit nahi hai. Change ke baad project integrity ko affected boundaries par verify karo:
+1. Changed component.
+2. Direct dependencies.
+3. Direct consumers.
+4. Shared/critical paths touched by the change.
+5. Existing functionality directly exposed to the changed behavior.
+6. Build/run configuration only when affected.
+
+Agar evidence se systemic problem prove ho, tab relevant boundary expand karo.
+
+## 4. Error Ownership Rule
+
+Testing ke dauran error mile to pehle determine karo:
+- Kya error requested change ki wajah se hai?
+- Kya error changed component ki direct dependency mein hai?
+- Kya error existing/pre-existing hai?
+- Kya error unrelated hai?
+
+Change-related error ko existing approval scope ke andar diagnose, fix aur retest karo.
+Pre-existing ya unrelated error ko silently fix karke scope expand mat karo; relevant ho to report karo.
+
+## 5. UI Change Integrity
+
+Specific UI change ke baad actual application mein run karo, changed interaction/visual behavior verify karo, related navigation/state/input behavior test karo aur existing nearby UI behavior regression-test karo. Requested change se runtime error introduce ho to fix aur retest karo. Unrelated UI redesign mat karo.
+
+## 6. Backend / API Change Integrity
+
+Backend/API change ke baad affected service start karo, relevant endpoint/function ko actual request/input se exercise karo, result verify karo, relevant logs/errors inspect karo aur direct consumer/client behavior verify karo. Failure ho to root cause fix karke retest karo.
+
+## 7. Cross-Module Balance Rule
+
+Cross-module change ke baad Changed Module → Direct Interface/Contract → Direct Consumer → Affected Existing Flow verify karo. Sirf compile success ko sufficient proof mat samjho.
+
+## 8. Project Integrity Check
+
+Final verification mein task risk ke mutabiq confirm karo:
+- Build still succeeds.
+- Application/service still launches.
+- Requested change works.
+- Directly affected existing feature still works.
+- No new relevant runtime errors/crashes.
+- No broken direct dependency/consumer.
+- No accidental deletion/disablement of existing behavior.
+- No unintended API/configuration breakage.
+- Latest code, not an older build, was tested.
+
+## 9. Minimal Repair Rule
+
+Testing mein issue mile to: Root Cause → Smallest Fix → Rebuild → Run → Retest. Bug fix ke naam par unrelated refactoring mat karo. Larger change evidence se required ho to affected boundary explain karo aur approval rules follow karo.
+
+## 10. Continuous Verification After Every Meaningful Change
+
+Agar agent same task ke andar multiple meaningful code changes karta hai, har meaningful change ke baad affected verification dobara karo. Purana PASS result automatically naye code ko PASS nahi banata.
+
+```text
+Change A → Test A → PASS
+Change B → Test B + affected regression → PASS
+Change C → Test C + affected regression → PASS
+Final → Latest-code verification → DONE
+```
+
+## 11. Completion Standard
+
+Done ka matlab: Requested change complete + required tests pass + directly affected existing behavior intact + relevant runtime health clean + latest code verified.
+
+Agar required item fail ho to task ko verified complete mat declare karo.
+
+## 12. Do Not Overcorrect
+
+Testing ke dauran issue milne par agent project ko apni marzi se better banane ke liye extra changes nahi karega.
+
+Agent ka goal: User ke requested change ko working banana aur existing project ko stable rakhna hai — project ko apni marzi se redesign karna nahi.
