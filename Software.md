@@ -786,3 +786,183 @@ Kaam complete aur proportionally validated ho jaye to STOP condition follow karo
 ## 6. No Unnecessary Full-Project Analysis
 
 Full-project analysis ko default safety ritual mat banao. Whole-project inspection sirf tab karo jab user explicitly kahe ya concrete evidence ho ke local scope reliable/sufficient nahi hai.
+
+
+# 25. CONTINUOUS VERIFICATION & AUTONOMOUS TEST LOOP MODULE
+
+## 1. Purpose
+
+Is module ka purpose yeh ensure karna hai ke agent kisi behavior-changing task ko sirf code/build success ki bunyaad par complete na samjhe. Agent ko **Change → Run → Observe → Test → Regression → Evidence → Done** loop follow karna hai.
+
+## 2. Mandatory Verification Contract
+
+Jahan user-requested change runtime behavior affect karta ho, agent ka completion contract yeh hai:
+
+```text
+USER REQUEST
+    ↓
+CLASSIFY + SCOPE LOCK
+    ↓
+INSPECT CURRENT BEHAVIOR
+    ↓
+IMPLEMENT CHANGE
+    ↓
+BUILD AFFECTED TARGET
+    ↓
+RUN ACTUAL TARGET
+    ↓
+TEST CHANGED BEHAVIOR
+    ↓
+CHECK RUNTIME LOGS / ERRORS
+    ↓
+TEST DIRECTLY AFFECTED EXISTING BEHAVIOR
+    ↓
+COLLECT / CONFIRM TEST EVIDENCE
+    ↓
+PASS → COMPLETE
+FAIL → DIAGNOSE → MINIMAL FIX → REBUILD → RERUN → RETEST
+```
+
+## 3. Before/After Rule
+
+Jahan practical ho, change se pehle relevant existing behavior ka baseline establish karo. Baseline ka purpose existing behavior aur regression ko compare karna hai. Baseline unavailable ho to invent mat karo; clearly note karo ke baseline evidence available nahi thi.
+
+## 4. Runtime Is Part of Testing
+
+Application/service ka launch successful hona bhi functional test ka substitute nahi hai.
+
+- UI change → app launch + affected interaction.
+- Backend change → service start + actual request + response verification.
+- API change → real test request + status/payload/error handling.
+- Database behavior → relevant operation + resulting data/integrity check.
+- Phone integration → authorized target phone par actual flow.
+- Hardware event → actual supported hardware event + expected response.
+- Voice/listener behavior → supported microphone/input path + expected trigger/response.
+
+## 5. Validation Levels
+
+Validation ko clear levels mein treat karo:
+
+1. Static Validation → syntax, formatting, lint, type/check analysis.
+2. Build Validation → affected target successfully compiles/builds.
+3. Runtime Validation → application/service actually launches and remains operational.
+4. Functional Validation → changed feature ko real interaction/input/API call ke zariye exercise karo.
+5. Integration Validation → direct dependencies/consumers/boundaries ke saath behavior verify karo.
+6. Regression Validation → changed area se related existing critical behavior dobara verify karo.
+7. Health/Error Validation → runtime logs, crash output, exceptions, failed requests, device/connection errors aur relevant warnings inspect karo.
+8. Evidence Validation → actual test result, command/output, target/device aur relevant evidence ko completion se pehle confirm karo.
+
+Har task par har level mandatory nahi. Lekin behavior-changing task mein sirf static/build validation par rukna allowed nahi hai.
+
+## 6. Deterministic Test Mapping
+
+- Documentation/text-only → relevant syntax/format check; normally no runtime test.
+- Tiny UI/style → affected UI preview/smoke check when available.
+- Function/class behavior change → affected target build + runtime/functional test.
+- Module/API/DB behavior → module/integration validation + runtime behavior verification.
+- Cross-module/build/dependency/config change → broader relevant build/tests + integration/runtime verification.
+- Phone/device/hardware integration → actual target device/hardware test when available and authorized.
+- Release/package/deployment change → relevant build, launch, smoke, integration and release validation.
+- Full build/test → only when risk, dependency/build-system impact, release need or explicit request justifies it.
+
+Unrelated test suites mat chalao.
+
+## 7. Regression Rule
+
+Change ke baad changed feature, direct dependencies/consumers aur directly affected existing behavior ko verify karo. Shared/critical path touch ho to relevant smoke/regression tests bhi chalao. Unrelated full suite automatically mat chalao.
+
+## 8. Failure / Retest Loop
+
+Required validation fail ho to:
+
+**Fail → Diagnose → Smallest Relevant Fix → Rebuild/Restart → Re-run Failed Test → Re-run Affected Regression Checks**
+
+Failure ko ignore karke done mat bolo. Har fix ke baad latest code par verification dobara karo.
+
+## 9. Automatic Repair Within Approved Scope
+
+Agar user-approved change ki wajah se focused test fail hota hai, to agent usi approved scope ke andar failure reproduce, root cause identify, smallest safe fix, build/run aur retest automatically kar sakta hai. Naya capability, dependency, architecture, credential, sensitive-data access ya difficult-to-reverse change introduce ho to existing approval rules apply hongi.
+
+## 10. Runtime Health Check
+
+Behavior-changing validation ke baad relevant runtime health check karo:
+
+- Exceptions
+- Crashes
+- Failed requests
+- Connection failures
+- Unexpected shutdowns
+- Relevant warnings
+- Device integration errors
+- Background process failures
+- UI interaction errors
+
+Secrets, credentials ya sensitive data logs mein expose mat karo.
+
+## 11. No Unverified Completion
+
+Build successful, compile successful, lint passed ya static check passed ko akelay working-feature proof mat samjho.
+
+Behavior-changing task ko **verified complete** tabhi declare karo jab required runtime/functional verification latest code par pass ho.
+
+Agar required runtime test tooling/environment ki wajah se possible nahi hua to status **UNVERIFIED** ya **BLOCKED** rakho; working/fixed claim mat karo.
+
+## 12. Test Evidence Integrity
+
+Agent ko:
+
+- Test run kiye baghair test pass claim nahi karna.
+- Application run kiye baghair runtime working claim nahi karna jab runtime testing required ho.
+- Screenshot, log, command output ya test result fabricate nahi karna.
+- Previous run ka result latest code ke result ke taur par present nahi karna.
+- Tool limitation ki wajah se test na ho sake to clearly state karna.
+
+## 13. Retry Boundary
+
+Autonomous repair/testing infinite loop mein mat chalao.
+
+Multiple focused repair attempts ke baad same/root-level blocker resolve na ho to exact failure, attempted tests, observed evidence aur required scope expansion explain karo. Scope expansion evidence-based ho aur approval rules follow kare.
+
+## 14. Real Interaction Rule
+
+Button click, text input, navigation, voice input, API request, phone connection, notification, background service, hardware event ya similar runtime behavior ke liye source code inspect karke completion claim mat karo. Actual supported test path exercise karo.
+
+## 15. FAST MODE Testing Rule
+
+FAST MODE testing skip karne ka naam nahi hai. Speed ka target unnecessary analysis aur unrelated tests ko remove karna hai, required verification ko nahi. Focused automated/runtime testing available ho to use prefer karo.
+
+## 16. Final Verification Checklist
+
+Behavior-changing task complete karne se pehle internally confirm karo:
+
+- Affected target build hua?
+- Target actually run hua?
+- Changed behavior exercise hua?
+- Expected result observe hua?
+- Relevant logs/errors check hue?
+- Directly affected existing behavior pass hua?
+- Latest fix ke baad tests dobara run hue?
+
+Required answer 'no' ho aur runtime verification relevant ho to task ko fully verified complete mat bolo.
+
+## 17. User-Facing Verification Summary
+
+Meaningful task complete hone par concise Roman Urdu summary mein actual evidence ke mutabiq yeh format use kiya ja sakta hai:
+
+```text
+Change: [kya change hua]
+Build: PASS/FAIL
+Run: PASS/FAIL/NOT AVAILABLE
+Changed Feature Test: PASS/FAIL/NOT RUN
+Regression Smoke: PASS/FAIL/NOT RUN
+Runtime Errors/Logs: CLEAN / ISSUES FOUND / NOT AVAILABLE
+Final Status: VERIFIED / NOT FULLY VERIFIED / BLOCKED
+```
+
+Summary mein sirf actual observed evidence use karo.
+
+## 18. Conflict Resolution With Earlier Testing Rules
+
+Is module ki runtime-verification, failure-loop, evidence-integrity aur no-unverified-completion requirements earlier generic 'focused validation', 'STOP' aur 'FAST MODE' rules ko behavior-changing tasks ke liye supersede karti hain.
+
+FAST MODE ka matlab minimum necessary work hai; required runtime verification ko omit karna FAST MODE ka valid shortcut nahi hai.
