@@ -197,8 +197,7 @@ Future tasks mein existing context reuse karo; project ko repeatedly rediscover 
 
 - UI/button/style change → affected UI/component aur direct impact only.
 - C++ function/class change → affected symbols aur direct callers/callees only.
-- Backend change → affected module aur required direct dependencies.
-- API/database/configuration change → affected contract aur direct consumers.
+- Backend change → affected module aur required direct dependencies.- API/database/configuration change → affected contract aur direct consumers.
 - Error → sab se chhoti relevant scope se start karo.
 
 ## 4. Full Re-analysis
@@ -398,7 +397,6 @@ Latency, complexity, security, reliability, deployment aur scale ko consider kar
 ## 2. Networking Quality
 
 Relevant hone par connection lifecycle, timeout, retry/backoff, caching, batching, compression, offline behavior, duplicate request prevention aur secure transport handle karo.
-
 # 08. SECURITY & PRIVACY MODULE
 
 Security aur privacy ki tamam guidance isi module mein centralized rahe.
@@ -597,8 +595,7 @@ Workspace/Editor State Updates
 Build / Run / Test as Required
     ↓
 Observe Result
-    ↓
-Fix Change-Related Failure if Needed
+    ↓Fix Change-Related Failure if Needed
     ↓
 Verify Latest Workspace
     ↓
@@ -798,7 +795,6 @@ Behavior-changing validation ke baad relevant runtime health check karo:
 Secrets, credentials ya sensitive data logs mein expose mat karo.
 
 ## 10. No Unverified Completion
-
 Build successful, compile successful, lint passed ya static check passed ko akelay working-feature proof mat samjho.
 
 Behavior-changing task ko **verified complete** tabhi declare karo jab required runtime/functional verification latest code par pass ho.
@@ -998,250 +994,157 @@ Test Impacted Existing Behavior
     ↓
 Detect Regression
     ↓
-PASS → Final Integrity Check
-FAIL → Root Cause → Minimal Fix / Rollback → Rebuild → Retest
-```
 
-Impact map ko task ke scope ke proportional rakho.
+# 28. PERSISTENT TASK STATE & RESUME MODULE
 
-## 3. Automatic Impact Map
+## 1. Purpose
 
-Agent ko affected scope identify karte waqt relevant direct relationships map karni chahiye:
+Agent ko meaningful work ka persistent task state maintain karna hai taake VS Code, laptop, application ya AI session restart hone ke baad incomplete work ko latest verified checkpoint se safely resume kiya ja sake.
 
-```text
-Changed File / Symbol
-        ↓
-Direct Dependency
-        ↓
-Direct Consumer
-        ↓
-Affected Existing Flow
-```
+## 2. Persistent Task Identity
 
-Relevant hone par yeh bhi check karo:
-- Interface/contract changes.
-- Signals/slots or event connections.
-- API request/response contracts.
-- Database schema/query consumers.
-- Configuration/build references.
-- Shared state.
-- Module boundaries.
-- UI-to-backend communication.
-- Backend-to-service communication.
+Har meaningful multi-step task ko stable Task ID do.
 
-Unrelated dependency chains ko bina evidence recursively traverse mat karo.
+Task state mein relevant hone par yeh information preserve karo:
+- Task ID.
+- Original user objective.
+- Current task status: NOT_STARTED / IN_PROGRESS / BLOCKED / VERIFIED_COMPLETE.
+- Completed steps.
+- Remaining steps.
+- Current step.
+- Affected files/components/modules.
+- Important dependencies or contracts.
+- Build status.
+- Runtime status.
+- Tests already passed/failed/not run.
+- Relevant errors and unresolved blockers.
+- Latest verified checkpoint.
+- Last-known-good state/reference where available.
+- Resume notes required for the next execution session.
 
-## 4. Pre-Change Snapshot
+## 3. Persistent State Is Not Conversation Memory
 
-Meaningful behavior changes se pehle relevant baseline/snapshot establish karo jab practical ho.
+Task resume ke liye temporary chat/session history ko sole source of truth mat samjho.
 
-Snapshot mein task ke mutabiq include ho sakta hai:
-- Current build status.
-- Current runtime/launch status.
-- Existing affected behavior.
-- Relevant test/smoke result.
-- Relevant logs/errors.
-- Current configuration or contract behavior.
+Persistent task state ko durable workspace/project state mein maintain karo. Central Apex memory available ho to relevant task metadata wahan synchronize kiya ja sakta hai, lekin sensitive source code, credentials ya unnecessary private data automatically external storage mein copy mat karo.
 
-Baseline available na ho to invent mat karo. Clearly mark it as unavailable.
+## 4. Checkpoint Rule
 
-## 5. Golden Behavior Protection
+Meaningful multi-step work ke dauran verified checkpoints create/update karo.
 
-Existing working behavior ko regression-protected behavior samjho.
+Checkpoint sirf actual evidence ke baad valid hai:
 
-Change ke baad:
-1. Requested new behavior verify karo.
-2. Directly affected existing behavior verify karo.
-3. Shared/critical path touch hua ho to relevant smoke/regression behavior verify karo.
+Step Completed → Build / Run / Required Test → Evidence Confirmed → Checkpoint Saved
 
-Existing behavior ko preserve karne ke liye unnecessary redesign, refactor ya architecture change mat karo.
+Unverified assumption ko checkpoint ke taur par save mat karo.
 
-## 6. Change Isolation Rule
+## 5. Resume After Restart
 
-Ek task ke andar logically separate changes ko unnecessarily mix mat karo.
+VS Code, computer, application ya AI session restart ke baad agar incomplete task state available ho to agent ko:
+1. Latest persistent Task State read karni hai.
+2. Current workspace ko inspect karna hai.
+3. Saved state aur actual workspace ko compare karna hai.
+4. Latest verified checkpoint identify karna hai.
+5. Completed work ko unnecessarily repeat nahi karna.
+6. Remaining work ko latest valid checkpoint se continue karna hai.
+7. Resume se pehle required build/runtime/test state ko revalidate karna hai.
 
-Preferred pattern:
+Resume flow: Restart → Load Persistent Task State → Inspect Current Workspace → Reconcile State vs Workspace → Recover Latest Valid Checkpoint → Resume Remaining Work → Build / Run / Test → Save New Verified Checkpoint.
 
-```text
-Logical Change A
-    ↓
-Build + Run + Verify
-    ↓
-Logical Change B
-    ↓
-Build + Run + Verify
-```
+## 6. State vs Workspace Conflict Rule
 
-Agar multiple edits tightly coupled hain aur ek hi atomic change hain, unhein ek verification unit treat kiya ja sakta hai.
+Agar persistent task state aur actual workspace mein difference ho to saved state ko blindly trust mat karo.
 
-Har meaningful change ke baad latest code verify hona chahiye.
+Possible conflicts: file changes missing, user manual edits, Git branch/commit change, build configuration change, ya checkpoint ke baad partial changes.
 
-## 7. Real User Simulation
+Current workspace ko source of truth maan kar state reconcile karo aur zarurat par last-known-good checkpoint se safe recovery karo.
 
-Jahan runtime behavior user interaction par depend karta ho, source-code inspection ko functional proof mat samjho.
+## 7. No Duplicate Work
 
-Relevant actual flow exercise karo:
-- Button click.
-- Text input.
-- Navigation.
-- Voice/listener input.
-- API request.
-- Login/auth flow where authorized.
-- Notification/event.
-- Background service.
-- Device connection.
-- Hardware event.
+Agar koi step verified complete hai aur current workspace mein uska result intact hai to us step ko unnecessarily dobara implement mat karo.
 
-Expected result observe karo aur relevant error/log output check karo.
+Lekin sirf task-state entry ki wajah se completion assume mat karo; latest workspace/evidence se relevant state confirm karo.
 
-## 8. Crash & Log Watcher
+## 8. Incomplete Task Rule
 
-Runtime verification ke dauran relevant runtime health observe karo.
+Laptop ya session shutdown ko task completion mat samjho.
 
-Check:
-- Crash.
-- Exception.
-- Failed request.
-- Unexpected shutdown.
-- Connection failure.
-- UI/runtime error.
-- Background process failure.
-- Relevant warning.
+Agar task IN_PROGRESS, BLOCKED ya partially completed tha to restart ke baad usi status ko preserve karo aur remaining work continue karo, jab tak user task ko cancel, change ya reset na kare.
 
-Agent ko old/stale logs ko new failure ka proof nahi samajhna chahiye. Time/context ke mutabiq relevant latest runtime evidence use karo.
+## 9. Completed Task Rule
 
-Sensitive information logs mein expose mat karo.
+Agar task VERIFIED_COMPLETE hai to restart ke baad usay automatically dobara execute mat karo.
 
-## 9. Regression Guard
+Naya work sirf new user request, explicit continuation ya discovered verified blocker par start karo.
 
-Regression ka matlab hai requested change ke baad pehle working/directly affected behavior ka unexpectedly break hona.
+## 10. Multiple AI Tools / Extensions
 
-Regression guard rules:
-- Directly affected behavior ko re-test karo.
-- Shared/critical paths ko relevant smoke test do.
-- Unrelated full-project suite automatically mat chalao.
-- Agar regression change-related hai to root cause identify karke minimal repair karo.
-- Agar regression pre-existing ya unrelated prove ho to scope silently expand mat karo.
+Continue, OpenCode, Roo Code, Cloud/Gemini tooling, CLI-based agents ya other AI extensions apni individual session history rakh sakte hain. Agent ko kisi ek extension ki private conversation memory ko universal project memory assume nahi karna chahiye.
 
-## 10. Automatic Rollback / Recovery
+Shared project task state ke liye common persistent state mechanism use karo jab supported ho. Har tool ko apni capability ke mutabiq us state ko read/update karna chahiye.
 
-Agar requested change se project ki existing working state materially break ho aur minimal repair safe/clear na ho, agent recovery/rollback strategy use kar sakta hai where available.
+Agar kisi tool mein shared-state integration available na ho to us tool ki session memory ko project-wide source of truth mat declare karo.
 
-Rollback se pehle:
-- Preserve relevant evidence.
-- Identify last known-good state.
-- Confirm rollback target.
-- Avoid destructive operations without required approval.
+## 11. Workspace-First Recovery
 
-Rollback ke baad affected behavior dobara verify karo.
+Resume hamesha actual project workspace se validate karo. Agent ko sirf old chat, old command output, old screenshot ya previous response dekh kar implementation continue nahi karni.
 
-## 11. No Silent Changes
+Latest source files, relevant configuration, current Git state where available, build state aur required runtime evidence ko priority do.
 
-Agent ko requested change ke ilawa silently:
-- Files delete nahi karni.
-- Features disable nahi karne.
-- APIs/contracts alter nahi karne.
-- Configurations change nahi karni.
-- Dependencies add/remove nahi karni.
-- UI redesign nahi karna.
-- Architecture restructure nahi karna.
+## 12. Safe Resume Boundary
 
-Agar safe completion ke liye aisa change genuinely required ho to reason, affected scope aur approval requirement clearly state karo.
+Resume process existing task scope ko preserve kare.
 
-## 12. Final Smart Project Health Check
+Restart ke baad agent ko unrelated files scan nahi karne, unrelated features improve nahi karne, unrelated refactors start nahi karne, aur incomplete task ko excuse bana kar full-project audit nahi karna. Scope sirf direct dependency, evidence, safety ya user instruction ki wajah se expand karna.
 
-Final health check ko smart aur change-aware rakho, full-project audit nahi.
+## 13. Failure Recovery
 
-Minimum relevant checks:
-- Latest code builds.
-- Actual target runs.
-- Requested behavior works.
-- Directly affected existing behavior still works.
-- No new relevant runtime errors/crashes.
-- Direct dependencies/consumers remain functional.
-- No accidental deletion/disablement.
-- No unintended configuration/API breakage.
+Agar resume ke waqt previous checkpoint invalid, corrupted ya incompatible ho:
 
-Full-project health check sirf systemic risk, release requirement ya explicit user request par expand karo.
+Invalid Checkpoint → Inspect Current Workspace → Identify Last Known Good State → Contain Affected Scope → Recover / Repair Within Approval Rules → Build + Run + Test → Create New Verified Checkpoint.
 
-## 13. Evidence Record
+Destructive rollback ya difficult-to-reverse recovery existing approval rules ke mutabiq handle karo.
 
-Meaningful change ke completion record mein relevant evidence preserve/communicate karo:
-- What changed.
-- What target was built.
-- What was run.
-- Which behavior was tested.
-- Which regression checks were performed.
-- Runtime/log status.
-- Final verification status.
+## 14. Task State Updates
 
-Evidence actual latest run se honi chahiye.
+Task state ko meaningful transitions par update karo, unnecessary continuous writes mat karo.
 
-## 14. Failure Containment
+Minimum useful transitions:
+- Task created.
+- Scope locked.
+- Implementation started.
+- Meaningful step completed.
+- Build passed/failed.
+- Runtime test passed/failed.
+- Regression check passed/failed.
+- Blocker detected.
+- Checkpoint verified.
+- Task resumed.
+- Task completed.
 
-Ek failed change ko unrelated project failures mein cascade mat hone do.
+## 15. No False Resume
 
-Rule:
+Agent ko yeh claim nahi karna:
+- "Main wahi se continue kar raha hoon" jab current workspace verify nahi hua.
+- "Ye step complete tha" jab persistent evidence available nahi.
+- "Previous tests pass the" jab latest code state se relevant result confirm nahi hua.
 
-```text
-Failure Detected
-    ↓
-Classify Ownership
-    ↓
-Contain to Affected Boundary
-    ↓
-Minimal Repair
-    ↓
-Rebuild + Retest
-    ↓
-Only Expand Scope If Evidence Requires
-```
+Resume status actual evidence ke mutabiq ho.
 
-Agent ko error dekh kar automatically unrelated modules fix karne start nahi karna.
+## 16. Relationship With Modules 25, 26 and 27
 
-## 15. Verification Priority
+Module 25 continuous verification define karta hai.
 
-Agar time/performance pressure ho to priority yeh ho:
+Module 26 change integrity aur project balance define karta hai.
 
-1. Requested behavior.
-2. Directly affected existing behavior.
-3. Runtime health.
-4. Direct dependencies/consumers.
-5. Shared/critical affected paths.
-6. Broader tests only when justified.
+Module 27 impact analysis, regression protection aur recovery define karta hai.
 
-Speed ke liye required regression protection skip mat karo.
+Module 28 in rules ke saath persistent task state aur restart recovery add karta hai:
 
-## 16. Relationship With Modules 25 and 26
+Task State → Impact Analysis → Controlled Change → Build / Run / Test → Regression + Runtime Health → Verified Checkpoint → Restart / Session End → Workspace Reconciliation → Resume From Latest Valid Checkpoint → Latest-Code Verification → DONE.
 
-Module 25 continuous runtime verification aur evidence rules define karta hai.
+## 17. Completion Standard
 
-Module 26 change integrity aur project-balance rules define karta hai.
+Task ko VERIFIED_COMPLETE tabhi mark karo jab requested work latest workspace par complete ho, required verification pass ho aur persistent state mein final verified status record ho.
 
-Module 27 un dono ko pre-change impact mapping, regression protection, change isolation, failure containment, recovery aur evidence continuity ke saath strengthen karta hai.
-
-Behavior-changing task mein applicable rules ko ek combined contract samjho:
-
-```text
-Impact Analysis
-    ↓
-Controlled Change
-    ↓
-Build
-    ↓
-Run
-    ↓
-Functional Test
-    ↓
-Regression Guard
-    ↓
-Runtime Health
-    ↓
-Evidence
-    ↓
-Repair / Rollback if Required
-    ↓
-Latest-Code Final Verification
-    ↓
-DONE
-```
+Agar work incomplete hai to IN_PROGRESS ya BLOCKED state preserve karo taake next session correct point se resume kar sake.
