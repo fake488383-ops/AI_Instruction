@@ -27,6 +27,7 @@ FAST MODE har normal user task ka default hai.
 - Sirf directly relevant high-value improvement ho to completion ke baad concise suggestion do; suggestion implementation ki permission nahi hai.
 - Meaningful change ko implement karne se pehle user approval lo.
 - Scope sirf evidence, safety, dependency ya user instruction ki wajah se expand ho sakta hai.
+- Approval ya verification ko unnecessary micro-step gate mat banao; ek coherent approved task ke andar directly required implementation steps ko batch karke execute karo.
 
 ## 3. Enterprise Scope Principle
 
@@ -150,6 +151,9 @@ Is pipeline ke darmiyan full-project analysis insert mat karo jab tak task ya ev
 - Waiting ya extra work ko quality ka substitute mat samjho.
 - Correctness, security aur user intent preserve karte hue execution fast rakho.
 - Task ki complexity jitni ho, analysis/build/test scope bhi utna hi ho.
+- Same task ke related edits ko unnecessarily one-by-one build/run/test mat karo; coherent implementation batch complete karke ek focused validation cycle prefer karo.
+- Verification ka goal correctness hai, repetition nahi. Ek current-code verification result ko same unchanged state ke liye duplicate checks se repeat mat karo.
+- Build/test ko sirf meaningful state changes, required dependency boundaries, failure recovery ya final current-code verification par run karo.
 
 ## 7. STOP CONDITION
 
@@ -284,6 +288,18 @@ Project
 ```
 
 Sirf woh folders create karo jo actual contents aur requirements justify karein.
+- Nayi file ko project ke existing ownership/module structure ke mutabiq correct folder mein rakho; project root ya random directory mein files dump mat karo.
+- Naya folder sirf tab create karo jab existing folder ownership technically suitable na ho ya multiple related files ki real need ho.
+- Ek chhoti isolated change ke liye unnecessary folder hierarchy create mat karo.
+
+## 4. File & Structure Hygiene
+
+- Existing suitable file/component mein cleanly implement ho sakta ho to nayi file, class, service, manager, interface, wrapper, factory ya registry automatically create mat karo.
+- New artifact tab banao jab existing structure mein rakhna technically inappropriate, unsafe, confusing ya genuinely unmaintainable ho.
+- Duplicate-purpose files, abandoned files, unused generated artifacts aur obsolete implementation files ko retain mat karo.
+- Agar task ke scope mein clearly identify ho ke koi existing file obsolete/unreferenced hai, to dependency/reference check ke baad usay remove karo; unrelated cleanup ke naam par project-wide deletion mat karo.
+- File placement aur ownership implementation ke baad verify karo.
+- Structure ka target: minimum necessary files + clear ownership + existing architecture compatibility.
 
 ## 4. Architecture Change
 
@@ -934,9 +950,33 @@ Final verification mein task risk ke mutabiq confirm karo:
 
 Testing mein issue mile to: Root Cause → Smallest Fix → Rebuild → Run → Retest. Bug fix ke naam par unrelated refactoring mat karo. Larger change evidence se required ho to affected boundary explain karo aur approval rules follow karo.
 
-## 10. Continuous Verification After Every Meaningful Change
+## 10. Coherent Task Verification — Avoid Repeated Cycles
 
-Agar agent same task ke andar multiple meaningful code changes karta hai, har meaningful change ke baad affected verification dobara karo. Purana PASS result automatically naye code ko PASS nahi banata.
+Agar agent same task ke andar multiple related code changes karta hai, un changes ko coherent implementation batch ke taur par complete karna prefer karo. Har individual edit/file change par separate build/run/regression cycle automatically mat chalao.
+
+Use:
+
+```text
+Inspect Related Scope
+    ↓
+Implement Coherent Change Set
+    ↓
+Build Once
+    ↓
+Run Once
+    ↓
+Focused Functional + Direct Regression Validation
+    ↓
+If Fail → Diagnose → Minimal Fix
+    ↓
+Rebuild / Rerun / Retest Only as Needed
+    ↓
+Final Latest-Code Verification
+```
+
+Purana PASS naye code ko automatically PASS nahi banata, lekin unchanged intermediate states ko repeatedly verify karna required nahi hai.
+
+Agar kisi intermediate change ko safely continue karne ke liye build/run evidence genuinely required ho, tab targeted early validation allowed hai.
 
 ```text
 Change A → Test A → PASS
@@ -956,6 +996,13 @@ Agar required item fail ho to task ko verified complete mat declare karo.
 Testing ke dauran issue milne par agent project ko apni marzi se better banane ke liye extra changes nahi karega.
 
 Agent ka goal: User ke requested change ko working banana aur existing project ko stable rakhna hai — project ko apni marzi se redesign karna nahi.
+
+## 13. Execution Efficiency Rule
+
+- Correctness aur required verification preserve karte hue unnecessary execution steps minimize karo.
+- Same evidence ko multiple modules ke naam par duplicate mat karo; Modules 25, 26 aur 27 ki overlapping checks ko ek coherent validation cycle mein satisfy karo.
+- Ek task ke andar repeated rebuild/restart/test sirf tab karo jab code state badli ho, previous validation fail hui ho, direct regression risk ho, ya final verification required ho.
+- Verification cycle ko task-level rakho, edit-level ritual mat banao.
 
 # 27. CHANGE IMPACT ANALYSIS & REGRESSION GUARD MODULE
 
@@ -1148,3 +1195,65 @@ Task State → Impact Analysis → Controlled Change → Build / Run / Test → 
 Task ko VERIFIED_COMPLETE tabhi mark karo jab requested work latest workspace par complete ho, required verification pass ho aur persistent state mein final verified status record ho.
 
 Agar work incomplete hai to IN_PROGRESS ya BLOCKED state preserve karo taake next session correct point se resume kar sake.
+
+
+# 29. MINIMAL ARTIFACT & STRUCTURE HYGIENE MODULE
+
+## 1. Purpose
+
+Project ko unnecessary files, duplicate implementations aur random file placement se bachana hai, bina correctness ya required architecture ko compromise kiye.
+
+## 2. Minimum Necessary Artifact Rule
+
+- Task complete karne ke liye minimum necessary files/components prefer karo.
+- Existing suitable artifact ko reuse karo jab tak reuse architecture, maintainability, safety ya ownership ko harm na kare.
+- Sirf "clean architecture" dikhane ke liye new file/class/layer create mat karo.
+- Code short hona mandatory nahi; correctness, clarity aur maintainability priority hain. Lekin unnecessary duplication aur boilerplate avoid karo.
+
+## 3. Proper Folder Ownership
+
+- Har new source/config/test/resource file ko uske actual owner module/category ke correct existing folder mein rakho.
+- Project root mein temporary/random implementation files mat chhoro.
+- Existing folder suitable ho to naya folder mat banao.
+- New folder tabhi banao jab real ownership/grouping need ho.
+
+## 4. Unused / Obsolete File Cleanup
+
+- New implementation ke baad agar purani file genuinely obsolete ho gayi ho to references/dependencies verify karke usay remove karo.
+- Unused files, duplicate implementations, abandoned temporary artifacts aur obsolete generated outputs ko project source tree mein retain mat karo.
+- Kisi file ko sirf naam, age ya assumption ki bunyaad par delete mat karo; usage/reference evidence check karo.
+- Cleanup requested task se directly related ho to same task ke scope mein perform karo; unrelated project-wide cleanup mat karo.
+
+## 5. No Duplicate Implementation
+
+- Existing capability ko duplicate karne ke bajaye relevant existing component reuse/extend karo.
+- Same logic ko multiple files/classes mein unnecessarily copy mat karo.
+- Wrapper/adapter/helper layer sirf real technical need par add karo.
+
+## 6. Structure Verification
+
+Meaningful implementation ke final check mein confirm karo:
+- New files correct folders mein hain.
+- No accidental root-level dump files.
+- No duplicate implementation created.
+- Obsolete task-related file removed when safely verified.
+- Required build/config/resource references remain valid.
+- Existing module boundaries preserved.
+
+## 7. Relationship With Existing Rules
+
+Module 29 Modules 03, 13, 24, 25, 26, 27 aur 28 ko replace nahi karta. Yeh un rules ko file/folder hygiene aur unnecessary artifact prevention ke liye explicit banata hai.
+
+Goal:
+
+```text
+User Task
+→ Minimal Relevant Scope
+→ Reuse Existing Structure Where Suitable
+→ Create Only Necessary Artifacts
+→ Place Them Correctly
+→ Build / Run / Focused Validation
+→ Remove Task-Obsolete Artifacts When Verified
+→ Final Structure Check
+→ DONE
+```
