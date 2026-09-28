@@ -1257,3 +1257,188 @@ User Task
 → Final Structure Check
 → DONE
 ```
+
+# 30. RUNTIME DIAGNOSTICS & ROOT CAUSE ANALYSIS MODULE
+
+## 1. Purpose
+
+Runtime ya intermittent behavior problem mein agent ko source code se guess karne ke bajaye actual runtime evidence se problem identify karni hai. Logs, errors, events, state transitions, timing aur component health ko correlate karke probable root cause isolate karo.
+
+Is module ka khas maqsad un issues ko diagnose karna hai jahan behavior kabhi work karta ho aur kabhi fail hota ho, jaise voice/listener, QML ↔ C++, C++ ↔ Python, backend services, IPC, API, events, notifications ya background workers.
+
+## 2. Runtime-First Diagnostic Rule
+
+Agar user reported problem runtime behavior hai, to agent:
+
+1. User-reported symptom capture kare.
+2. Relevant runtime path identify kare.
+3. Existing logs/errors/diagnostic output inspect kare.
+4. Failure ko supported test path se reproduce karne ki koshish kare.
+5. Successful aur failed executions ko compare kare jab issue intermittent ho.
+6. Exact failing stage identify kare.
+7. Root cause ko available evidence ke against validate kare.
+8. Sirf root-cause-relevant code/configuration change kare.
+9. Original failure scenario dobara exercise karke fix verify kare.
+10. Direct regression aur runtime health check complete kare.
+
+## 3. Symptom Is Not Root Cause
+
+Agent visible symptom ko automatically root cause assume nahi karega.
+
+Example diagnostic chain: User symptom → Microphone Input → Listener Active → Audio Frames → Wake Word → STT → Intent → Router → Backend → Response → UI/Voice Output.
+
+Agent ko actual failure boundary identify karni hai, sirf last visible symptom par fix apply nahi karna.
+
+## 4. Evidence Sources
+
+Relevant task ke mutabiq agent available evidence ko inspect kar sakta hai:
+
+- Application logs.
+- Backend/service logs.
+- C++ runtime errors.
+- Python exceptions/logs.
+- QML/Qt warnings and runtime messages.
+- API/network errors.
+- IPC/event messages.
+- Thread/task state.
+- Process/service health.
+- Timestamps and execution order.
+- Build/test output.
+- User-observed reproduction steps.
+
+Evidence collection focused scope mein ho; unrelated logs ka full dump ya unnecessary historical analysis mat karo.
+
+## 5. Correlated Request / Execution ID
+
+Meaningful runtime interactions ke liye available architecture support kare to unique correlation/request ID use karo.
+
+Example: REQUEST_ID: APEX-<unique-id>
+
+Relevant events ko same ID se correlate karo: Input → Listener → STT → Intent → Router → Backend → Response → UI/Output.
+
+Agar existing logging architecture correlation IDs support nahi karti aur issue diagnose karne ke liye genuinely zaroori ho, to smallest suitable diagnostic implementation add karo. Sirf logging ke liye unnecessary framework/layer create mat karo.
+
+## 6. Failure Classification
+
+Observed failure ko relevant category mein classify karo:
+
+- BUILD_FAILURE
+- RUNTIME_FAILURE
+- TEST_FAILURE
+- REGRESSION
+- DEPENDENCY_FAILURE
+- CONFIGURATION_FAILURE
+- ENVIRONMENT_FAILURE
+- NETWORK_FAILURE
+- PERMISSION_FAILURE
+- TIMEOUT
+- EVENT_OR_SIGNAL_FAILURE
+- CONCURRENCY_OR_RACE_FAILURE
+- UNKNOWN_FAILURE
+
+Classification ka purpose correct diagnostic path choose karna hai. Category evidence ke mutabiq update ki ja sakti hai.
+
+## 7. Intermittent Failure Analysis
+
+Agar issue 'kabhi hota hai, kabhi nahi' type ho:
+
+1. Multiple controlled attempts run karo jab supported aur safe ho.
+2. Har attempt ka success/failure state record karo.
+3. Correlated logs/events collect karo.
+4. Successful aur failed attempts compare karo.
+5. Common difference identify karo.
+6. Timing, timeout, state, concurrency, event ordering aur external dependency conditions check karo.
+7. Evidence-supported root cause establish karo.
+8. Minimal fix apply karo.
+9. Original intermittent scenario ko dobara test karo.
+
+Repeated reproduction ko useful evidence tak limit karo; arbitrary infinite retries mat karo.
+
+## 8. Root Cause Confidence
+
+Agent ko root cause ko evidence ke level ke mutabiq treat karna hai:
+
+- CONFIRMED: failure boundary aur cause direct evidence se verified.
+- STRONG: multiple relevant evidence sources support karte hain, lekin complete proof available nahi.
+- HYPOTHESIS: plausible explanation hai lekin verification required hai.
+
+HYPOTHESIS ko confirmed root cause ya fixed issue ke taur par present mat karo.
+
+## 9. Diagnose Before Modify
+
+Default sequence: Observe → Reproduce → Collect Evidence → Correlate → Isolate Failure Boundary → Identify Root Cause → Make Minimal Fix → Rebuild/Rerun → Reproduce Original Scenario → Verify.
+
+Logs dekh kar random code changes, broad refactoring ya unrelated cleanup mat karo.
+
+## 10. Silent Failure Detection
+
+Agar application expected response nahi deti lekin visible error nahi hai, to agent relevant pipeline ke missing transition ko identify kare.
+
+Examples: Event emitted but consumer received nahi karta; process running hai lekin worker active nahi; exception catch ho kar silently suppress ho rahi hai; timeout ke baad state reset nahi ho rahi; response generate ho raha hai lekin delivery event missing hai; listener state inactive reh gayi hai.
+
+Required ho to focused diagnostic logging add karo, lekin production behavior ko unnecessary verbose logging se burden mat karo.
+
+## 11. Cross-Layer Diagnostic Rule
+
+Integrated applications mein relevant boundary ko end-to-end trace karo: QML/UI → C++ Core → Python Backend → Service/API/Worker → Python/C++ Response → QML/UI.
+
+Har layer ko automatically deeply inspect mat karo. Sirf evidence ke mutabiq next boundary par expand karo.
+
+## 12. Logging Quality Rule
+
+Useful diagnostics mein relevant hone par timestamp, component/module, event/action, request/correlation ID, success/failure state, error category aur relevant duration/timeout information available honi chahiye.
+
+Secrets, credentials, tokens, private user data ya sensitive payloads logs mein expose mat karo.
+
+## 13. Runtime Health Check
+
+Behavior-changing runtime task ke final verification mein relevant health signals check karo:
+
+- Required process/service running.
+- Listener/worker active when expected.
+- No new relevant exceptions.
+- No unexpected crash/restart loop.
+- Required events delivered.
+- Expected response produced.
+- Relevant resources/connections available.
+
+Sirf process running hone ko feature working proof mat samjho.
+
+## 14. Automatic Repair Boundary
+
+Agar root cause clear aur task scope ke andar ho to agent minimal repair automatically perform kar sakta hai according to existing approval rules.
+
+Agar diagnosis architecture change, external dependency, sensitive configuration, destructive operation ya uncertain high-impact change require kare to approval rules follow karo.
+
+## 15. No False Diagnosis / No False Completion
+
+Agent ko logs inspect kiye baghair log-based diagnosis claim nahi karna; reproduce kiye baghair reproducible issue claim nahi karna; hypothesis ko confirmed root cause nahi batana; fix apply kiye baghair fixed claim nahi karna; original failure path ko verify kiye baghair intermittent issue resolved claim nahi karna; missing runtime access ko success ke taur par present nahi karna.
+
+## 16. Diagnostic Loop With Existing Verification Modules
+
+Module 30 Modules 13, 19, 25, 26, 27 aur 28 ke saath integrate hota hai.
+
+Combined flow: User-Reported Runtime Problem → Scope Lock → Inspect Relevant Runtime Evidence → Reproduce/Observe → Correlate Logs + Events + State → Classify Failure → Isolate Root Cause → Minimal Fix → Build → Run → Reproduce Original Scenario → Functional + Direct Regression Validation → Runtime Health Check → Save Verified Checkpoint → DONE.
+
+Overlapping verification ko ek coherent validation cycle mein satisfy karo; Modules 25–27 ke rules ke mutabiq unnecessary duplicate build/test cycles mat chalao.
+
+## 17. Diagnostic Data Persistence
+
+Agar issue task restart ke baad continue hona expected ho to relevant diagnostic state ko Module 28 ke persistent task state mein concise form mein preserve karo:
+
+- Failure symptom.
+- Reproduction status.
+- Failure category.
+- Last confirmed failing boundary.
+- Relevant evidence reference.
+- Root-cause confidence.
+- Attempted fix.
+- Latest verification result.
+
+Raw logs ko persistent task state mein unnecessarily duplicate mat karo; references/summaries prefer karo.
+
+## 18. Goal
+
+Runtime debugging ka target: Symptom → Evidence → Reproduction → Correlation → Root Cause → Minimal Fix → Original Scenario Verification → Regression Check → Verified Result.
+
+Agent ko guessing-based debugging ke bajaye evidence-based diagnosis karni hai.
