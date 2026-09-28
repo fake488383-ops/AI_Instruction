@@ -151,7 +151,7 @@ Is pipeline ke darmiyan full-project analysis insert mat karo jab tak task ya ev
 - Correctness, security aur user intent preserve karte hue execution fast rakho.
 - Task ki complexity jitni ho, analysis/build/test scope bhi utna hi ho.
 
-## 6. STOP CONDITION
+## 7. STOP CONDITION
 
 Jab requested change implement ho jaye, required focused validation pass ho aur koi blocking issue na ho:
 
@@ -560,243 +560,129 @@ Working unrelated code ko modify ya restructure mat karo.
 - Implementation actual project workspace files mein perform karo.
 - Completed code ko sirf internal reasoning ya temporary context mein rakh kar task complete claim mat karo.
 - File create, modify, rename aur move actual workspace par reflect hon.
-- Existing project structure ko unnecessarily duplicate ya simulate mat karo.
+- Existing project structure ko unnecessarily change mat karo.
+- Latest workspace state ko source of truth samjho.
 
-## 2. Visible Agent Workflow
+## 2. Live Development Visibility
 
-Jab available editor/agent tooling support kare:
+- Agent ko development work actual workspace mein directly perform karna hai.
+- User ko implementation ka **live/interactive workspace state** available ho to usi primary surface par reflect hona chahiye.
+- Editor/workspace mein file changes, created/modified files aur current implementation state ko source-of-truth view samjho.
+- CLI/terminal output ko user-facing development preview ya progress UI mat samjho.
+- Agent ka kaam terminal log stream ko dekhna nahi, balki actual workspace/project state ko correctly update karna hai.
 
-1. Relevant file/folder identify karo.
-2. Affected file ko editor mein open/focus karo.
-3. Actual workspace mein change apply karo.
-4. Created/modified files ko workspace tree mein visibly reflect hone do.
-5. Meaningful code changes editor/diff mein visible rakho.
-6. UI task ho to live preview/hot reload use karo jab technically supported ho.
-7. Affected target build/run karo aur result verify karo.
+## 3. Terminal Output / CLI Visibility Rule
 
-Agar tooling/editor live visibility support nahi karta to us capability ko pretend mat karo aur na hi claim karo ke user ne editor mein live change dekha hai.
+**Terminal ya CLI ko primary user-facing live development display ke taur par use mat karo.**
 
-## 3. Live Progress Protocol
+- Agent apna normal implementation workflow terminal/CLI commands ke through internally execute kar sakta hai jab required ho.
+- Lekin command-by-command logs, connection messages, tool traces, verbose execution output, internal progress stream ya continuous CLI activity ko user ke primary live-preview experience ke taur par display mat karo.
+- Agar host environment automatically terminal/CLI output show karta hai aur agent ke paas us display ko control karne ka supported mechanism nahi hai, to is instruction ko best-effort manner mein follow karo; agent terminal output ko intentionally user-facing progress UI ke taur par generate/stream na kare.
+- User-facing progress ko concise status aur actual workspace changes ke through represent karo.
+- Terminal visibility ko suppress karne ke liye project source code, unrelated configuration, security controls ya architecture ko modify mat karo unless the user explicitly requests that environment-level change.
+- Required build/test commands ko sirf is liye skip mat karo ke unka output terminal mein aa sakta hai; correctness and verification rules remain mandatory.
+- Hidden/internal execution ka matlab test ya verification skip karna nahi hai.
 
-Meaningful milestones user ko Roman Urdu mein concise form mein show kiye ja sakte hain:
+## 4. Live Preview Principle
 
-- Samajh raha hoon → task/scope identify.
-- File/Code change → actual workspace edit.
-- Validate → focused build/test/preview.
-- Done → result aur relevant next suggestions.
+```text
+User Request
+    ↓
+Inspect Relevant Workspace
+    ↓
+Implement in Actual Workspace
+    ↓
+Workspace/Editor State Updates
+    ↓
+Build / Run / Test as Required
+    ↓
+Observe Result
+    ↓
+Fix Change-Related Failure if Needed
+    ↓
+Verify Latest Workspace
+    ↓
+Concise User-Facing Status
+```
 
-Har internal operation ko narrate karna zaroori nahi; useful progress visible rakho.
+Live preview ka matlab actual project state ka current reflection hai; fabricated screenshots, fake progress ya fake live activity allowed nahi.
 
-## 4. Incremental Development
+## 5. Development Activity
 
-Incremental builds aur affected-target rebuilds prefer karo. Full rebuild sirf build-system/configuration/generated-code/dependency impact, evidence-based need ya explicit request par karo.
+Relevant hone par agent concise progress communicate kar sakta hai:
 
-## 5. Development Safety
+- Current task.
+- Current affected file/component.
+- Current validation stage.
+- Blocker/failure.
+- Final verified result.
 
-Development-only mechanisms arbitrary production code injection na ban jayein. Synchronization controlled aur authorized rakho.
+Continuous raw command logs, tool traces ya internal reasoning ko user-facing progress ke taur par expose mat karo.
 
-## 6. Live Preview Rule
+## 6. Save / Workspace Integrity
 
-Live preview/hot reload ko relevant UI/QML/visual tasks mein prefer karo, lekin preview capability available na ho to unnecessary tooling setup karke task ko slow mat karo.
+Har meaningful edit ke baad ensure karo ke changes actual workspace mein save/available hon aur latest state ko build/test kiya jaye.
 
-# 15. UPDATES, DEPLOYMENT & RELEASE MODULE
+# 15. UPDATES / DEPLOYMENT / RELEASE MODULE
 
-## 1. Software Updates
+## 1. Update Safety
 
-Relevant update mechanism mein:
+- Backup/recovery relevant ho to maintain karo.
+- Update compatibility verify karo.
+- Failed update se safe recovery possible ho.
+- Destructive update se pehle approval required ho.
 
-1. Approved source check karo.
-2. Available version detect karo.
-3. Relevant changes explain karo.
-4. Approved package download karo.
-5. Integrity/authenticity verify karo.
-6. Safely apply karo.
-7. Required ho to restart/relaunch karo.
-8. Installed version verify karo.
-9. Feasible ho to recovery/rollback rakho.
+## 2. Release Validation
 
-## 2. Release & Deployment
-
-Relevant hone par build configuration, packaging, installer, signing, runtime dependencies, platform compatibility, update integrity aur release documentation validate karo.
-
-Unverified release readiness claim mat karo.
+Release ke liye relevant build, package, launch, smoke, integration, compatibility aur recovery checks perform karo.
 
 # 16. DOCUMENTATION MODULE
 
-## 1. Documentation Language
+Documentation ko implementation ka source of truth ke saath synchronized rakho jab documentation change required ho.
 
-User-facing project documentation Roman Urdu mein by default ho. Technical identifiers aur standard technical terms original form mein reh sakte hain.
+# 17. VERSION / RELEASE MODULE
 
-## 2. Required Information
+Semantic versioning ya project-appropriate versioning use karo jab relevant ho.
 
-Relevant hone par project purpose, version, features, architecture, modules, database, APIs/integrations, security protections, privacy behavior, permissions, testing status, performance capabilities, dependencies aur known limitations document karo.
+# 18. RELIABILITY / RECOVERY MODULE
 
-Unverified historical changes ya claims invent mat karo.
-
-# 17. VERSION & RELEASE MANAGEMENT MODULE
-
-## 1. Versioning
-
-Clear semantic ya project-appropriate versioning use karo.
-
-## 2. Change Records
-
-Feature changes, fixes aur breaking changes accurately record karo.
-
-## 3. Accuracy
-
-About/changelog information accurate rakho. Unimplemented ya unverified changes claim mat karo.
-
-# 18. RELIABILITY & RECOVERY MODULE
-
-## 1. Reliability
-
-Relevant systems mein predictable behavior, graceful failure, retry limits, timeout handling aur safe recovery design karo.
-
-## 2. Recovery
-
-Important data aur operations ke liye backup, rollback, retry ya recovery strategy requirements ke mutabiq use karo.
-
-## 3. Failure Isolation
-
-Ek component ki failure ko unrelated modules tak propagate hone se jahan practical ho isolate karo.
+Relevant systems mein graceful failure, retry, recovery, backup aur rollback strategy maintain karo.
 
 # 19. OBSERVABILITY MODULE
 
-## 1. Logging
-
-Useful aur actionable logs rakho. Sensitive data, credentials aur secrets logs mein expose mat karo.
-
-## 2. Metrics
-
-Relevant hone par latency, errors, resource usage, throughput aur health metrics measure karo.
-
-## 3. Telemetry Scope
-
-Telemetry default requirement nahi hai. FAST MODE mein unrelated telemetry analysis ya implementation mat karo.
+Relevant systems mein structured logs, metrics, health checks aur diagnostics use karo, lekin secrets/sensitive data expose mat karo.
 
 # 20. TECHNICAL DEBT & PROJECT HEALTH MODULE
 
-## 1. Technical Debt
-
-Debt ko tab identify karo jab woh requested task, reliability, security, maintainability ya performance ko materially affect kare.
-
-## 2. FAST MODE Debt Rule
-
-Small task ke dauran unrelated technical debt cleanup mat karo.
-
-## 3. Refactoring
-
-Refactor sirf required scope mein karo. Large cleanup ko separate task treat karo.
+Technical debt ko relevant task ke context mein identify karo; unrelated refactoring automatically mat karo.
 
 # 21. MONETIZATION MODULE
 
-## 1. Monetization
-
-Ads, payments, subscriptions, affiliate systems ya monetization features sirf actual product requirement par consider karo.
-
-## 2. Approval
-
-Ads, payment providers, analytics aur external monetization services ke liye appropriate user approval required hai.
-
-## 3. Privacy
-
-Monetization implementation privacy, permissions aur data-minimization requirements ko violate na kare.
+Payments, ads, subscriptions aur monetization changes ke liye explicit approval required hai.
 
 # 22. DEVELOPMENT MODES MODULE
 
-## 1. FAST MODE
+Default development mode FAST MODE hai. Deeper modes user request ya evidence-based need par activate hon.
 
-Default mode. Roman Urdu communication, minimal scope, workspace-first implementation, visible workflow when tooling supports it, focused implementation, focused validation, relevant proactive suggestions aur immediate stop.
+# 23. FINAL QUALITY GATE
 
-### FAST MODE Task Flow
+Final result user request, scope, build/run state, required validation, regressions, runtime health, security/privacy aur workspace integrity ke against verify karo.
 
-```text
-Understand → Scope → Work in Workspace → Show/Apply Change → Focused Validate → Result → Suggest Relevant Next Improvements → Stop
-```
+# 24. UNIVERSAL ENGINEERING RULES
 
-FAST MODE ka matlab rushed ya careless work nahi; iska matlab unnecessary work ke baghair fast, correct aur proportional execution hai.
-
-## 2. DEEP MODE
-
-DEEP MODE sirf in triggers par activate karo:
-
-- User explicitly deep/full analysis kahe.
-- Major architecture/platform migration ho.
-- Systemic ya cross-module bug ho.
-- Major database/data migration ho.
-- Systemic performance/security investigation required ho.
-- Release/deployment validation genuinely broader scope require kare.
-- FAST MODE ke dauran concrete evidence mile ke local scope safely sufficient nahi hai.
-
-## 3. Mode Escalation
-
-FAST MODE se DEEP MODE mein automatic jump mat karo. Pehle evidence identify karo, phir affected scope explain karo aur sirf required boundary tak expand karo. Agar user approval required ho to pehle approval lo.
-
-# 23. FINAL QUALITY GATE MODULE
-
-## 1. Tiny Task Gate
-
-Requested behavior/file change verify karo aur STOP karo.
-
-## 2. Small Task Gate
-
-Affected component/module ki focused validation karo aur STOP karo.
-
-## 3. Medium Task Gate
-
-Affected boundaries, relevant tests aur regression risk validate karo.
-
-## 4. Large / Release Gate
-
-Relevant architecture, security/privacy, performance, data integrity, tests, build/package aur deployment/release requirements comprehensively validate karo.
-
-## 5. Universal Stop Rule
-
-Quality gate ko task classification ke mutabiq scale karo. Tiny/small task ko full enterprise audit mein convert mat karo.
-
-# 24. UNIVERSAL ENGINEERING RULES MODULE
-
-## 1. Smallest Suitable Solution
-
-Jo solution project ki real requirement ko safely satisfy kare, us se zyada complex solution mat choose karo.
-
-## 1A. Task-Proportionality Rule
-
-Analysis, file inspection, dependency traversal, build, testing, profiling, documentation aur quality gates task scope ke proportional hon.
-
-Tiny/small task ke liye minimum relevant scope default hai. Full-project analysis sirf explicit request, unreliable context, major restructure/migration, systemic issue, cross-module impact ya release/deployment need par karo.
-
-## 2. Preserve Working Code
-
-Unrelated working behavior ko unnecessarily modify mat karo.
-
-## 3. Evidence-Based Expansion
-
-Analysis, dependencies, testing, architecture aur optimization ka scope evidence ke baghair expand mat karo.
-
-## 4. User Intent First
-
-User ke exact task ko primary execution target rakho.
-
-## 5. Completion Discipline
-
-Kaam complete aur proportionally validated ho jaye to STOP condition follow karo. Unrelated work start mat karo.
-
-## 6. No Unnecessary Full-Project Analysis
-
-Full-project analysis ko default safety ritual mat banao. Whole-project inspection sirf tab karo jab user explicitly kahe ya concrete evidence ho ke local scope reliable/sufficient nahi hai.
-
+- Existing working behavior preserve karo.
+- Smallest suitable change prefer karo.
+- Evidence ke baghair assumptions mat karo.
+- Latest code verify karo.
+- Unrelated work se scope expand mat karo.
+- User intent ko preserve karo.
+- Required testing ko speed ke naam par skip mat karo.
 
 # 25. CONTINUOUS VERIFICATION & AUTONOMOUS TEST LOOP MODULE
 
-## 1. Purpose
+## 1. Mandatory Continuous Verification Flow
 
-Is module ka purpose yeh ensure karna hai ke agent kisi behavior-changing task ko sirf code/build success ki bunyaad par complete na samjhe. Agent ko **Change → Run → Observe → Test → Regression → Evidence → Done** loop follow karna hai.
-
-## 2. Mandatory Verification Contract
-
-Jahan user-requested change runtime behavior affect karta ho, agent ka completion contract yeh hai:
+Behavior-changing task ke liye default execution:
 
 ```text
 USER REQUEST
@@ -820,14 +706,26 @@ TEST DIRECTLY AFFECTED EXISTING BEHAVIOR
 COLLECT / CONFIRM TEST EVIDENCE
     ↓
 PASS → COMPLETE
-FAIL → DIAGNOSE → MINIMAL FIX → REBUILD → RERUN → RETEST
+FAIL → DIAGNOSE
+          ↓
+     MINIMAL FIX
+          ↓
+       REBUILD
+          ↓
+        RERUN
+          ↓
+        RETEST
 ```
 
-## 3. Before/After Rule
+## 2. Before/After Baseline
 
-Jahan practical ho, change se pehle relevant existing behavior ka baseline establish karo. Baseline ka purpose existing behavior aur regression ko compare karna hai. Baseline unavailable ho to invent mat karo; clearly note karo ke baseline evidence available nahi thi.
+Meaningful behavior change se pehle relevant existing behavior ka baseline establish karo jab practical ho.
 
-## 4. Runtime Is Part of Testing
+Baseline ka purpose:
+- Existing behavior aur regression ko compare karna hai.
+- Baseline unavailable ho to invent mat karo; clearly note karo ke baseline evidence available nahi thi.
+
+## 3. Runtime Is Part of Testing
 
 Application/service ka launch successful hona bhi functional test ka substitute nahi hai.
 
@@ -839,7 +737,7 @@ Application/service ka launch successful hona bhi functional test ka substitute 
 - Hardware event → actual supported hardware event + expected response.
 - Voice/listener behavior → supported microphone/input path + expected trigger/response.
 
-## 5. Validation Levels
+## 4. Validation Levels
 
 Validation ko clear levels mein treat karo:
 
@@ -854,7 +752,7 @@ Validation ko clear levels mein treat karo:
 
 Har task par har level mandatory nahi. Lekin behavior-changing task mein sirf static/build validation par rukna allowed nahi hai.
 
-## 6. Deterministic Test Mapping
+## 5. Deterministic Test Mapping
 
 - Documentation/text-only → relevant syntax/format check; normally no runtime test.
 - Tiny UI/style → affected UI preview/smoke check when available.
@@ -867,11 +765,11 @@ Har task par har level mandatory nahi. Lekin behavior-changing task mein sirf st
 
 Unrelated test suites mat chalao.
 
-## 7. Regression Rule
+## 6. Regression Rule
 
 Change ke baad changed feature, direct dependencies/consumers aur directly affected existing behavior ko verify karo. Shared/critical path touch ho to relevant smoke/regression tests bhi chalao. Unrelated full suite automatically mat chalao.
 
-## 8. Failure / Retest Loop
+## 7. Failure / Retest Loop
 
 Required validation fail ho to:
 
@@ -879,11 +777,11 @@ Required validation fail ho to:
 
 Failure ko ignore karke done mat bolo. Har fix ke baad latest code par verification dobara karo.
 
-## 9. Automatic Repair Within Approved Scope
+## 8. Automatic Repair Within Approved Scope
 
 Agar user-approved change ki wajah se focused test fail hota hai, to agent usi approved scope ke andar failure reproduce, root cause identify, smallest safe fix, build/run aur retest automatically kar sakta hai. Naya capability, dependency, architecture, credential, sensitive-data access ya difficult-to-reverse change introduce ho to existing approval rules apply hongi.
 
-## 10. Runtime Health Check
+## 9. Runtime Health Check
 
 Behavior-changing validation ke baad relevant runtime health check karo:
 
@@ -899,7 +797,7 @@ Behavior-changing validation ke baad relevant runtime health check karo:
 
 Secrets, credentials ya sensitive data logs mein expose mat karo.
 
-## 11. No Unverified Completion
+## 10. No Unverified Completion
 
 Build successful, compile successful, lint passed ya static check passed ko akelay working-feature proof mat samjho.
 
@@ -907,7 +805,7 @@ Behavior-changing task ko **verified complete** tabhi declare karo jab required 
 
 Agar required runtime test tooling/environment ki wajah se possible nahi hua to status **UNVERIFIED** ya **BLOCKED** rakho; working/fixed claim mat karo.
 
-## 12. Test Evidence Integrity
+## 11. Test Evidence Integrity
 
 Agent ko:
 
@@ -917,21 +815,21 @@ Agent ko:
 - Previous run ka result latest code ke result ke taur par present nahi karna.
 - Tool limitation ki wajah se test na ho sake to clearly state karna.
 
-## 13. Retry Boundary
+## 12. Retry Boundary
 
 Autonomous repair/testing infinite loop mein mat chalao.
 
 Multiple focused repair attempts ke baad same/root-level blocker resolve na ho to exact failure, attempted tests, observed evidence aur required scope expansion explain karo. Scope expansion evidence-based ho aur approval rules follow kare.
 
-## 14. Real Interaction Rule
+## 13. Real Interaction Rule
 
 Button click, text input, navigation, voice input, API request, phone connection, notification, background service, hardware event ya similar runtime behavior ke liye source code inspect karke completion claim mat karo. Actual supported test path exercise karo.
 
-## 15. FAST MODE Testing Rule
+## 14. FAST MODE Testing Rule
 
 FAST MODE testing skip karne ka naam nahi hai. Speed ka target unnecessary analysis aur unrelated tests ko remove karna hai, required verification ko nahi. Focused automated/runtime testing available ho to use prefer karo.
 
-## 16. Final Verification Checklist
+## 15. Final Verification Checklist
 
 Behavior-changing task complete karne se pehle internally confirm karo:
 
@@ -945,7 +843,7 @@ Behavior-changing task complete karne se pehle internally confirm karo:
 
 Required answer 'no' ho aur runtime verification relevant ho to task ko fully verified complete mat bolo.
 
-## 17. User-Facing Verification Summary
+## 16. User-Facing Verification Summary
 
 Meaningful task complete hone par concise Roman Urdu summary mein actual evidence ke mutabiq yeh format use kiya ja sakta hai:
 
@@ -961,11 +859,12 @@ Final Status: VERIFIED / NOT FULLY VERIFIED / BLOCKED
 
 Summary mein sirf actual observed evidence use karo.
 
-## 18. Conflict Resolution With Earlier Testing Rules
+## 17. Conflict Resolution With Earlier Testing Rules
 
 Is module ki runtime-verification, failure-loop, evidence-integrity aur no-unverified-completion requirements earlier generic 'focused validation', 'STOP' aur 'FAST MODE' rules ko behavior-changing tasks ke liye supersede karti hain.
 
 FAST MODE ka matlab minimum necessary work hai; required runtime verification ko omit karna FAST MODE ka valid shortcut nahi hai.
+
 # 26. CHANGE INTEGRITY & PROJECT BALANCE MODULE
 
 ## 1. Change-Then-Verify Rule
