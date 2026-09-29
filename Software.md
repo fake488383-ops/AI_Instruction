@@ -2900,3 +2900,128 @@ Relevant current-task error ke liye completion tab:
 
 Tabhi task ko verified complete mark karo.
 
+
+
+# 42. ACTIVE FILE VIEW & WORKSPACE TAB HYGIENE MODULE
+
+## 1. Purpose
+
+Jab agent live development ke dauran kisi specific file par actively kaam kar raha ho, workspace/editor ka visible surface usi active working file ko priority de. Unnecessary open editor tabs ko continuously visible rakhne se user ko baar-baar scroll/search na karna pade aur workspace clutter/hanging risk kam rahe.
+
+Goal:
+
+**Current Work File → Automatically Open/Focus → Keep Visible → Remove Unnecessary Old Tabs From View → Finish Work → Close/Release Task Tabs Safely → Leave Relevant Final File Visible**
+
+## 2. Active Working File Priority
+
+- Jis file mein agent is waqt meaningful implementation/edit kar raha ho, woh active/focused editor tab honi chahiye jab host/editor capability support kare.
+- User ko current working file directly visible honi chahiye.
+- Multiple files task ke liye genuinely required hon to current implementation file active rahe.
+- Unrelated open tabs ko sirf workspace clutter create karne ki wajah se continuously visible mat rakho.
+
+## 3. Tab Cleanup vs File Deletion
+
+**Editor tab close karna aur project file delete karna bilkul alag actions hain.**
+
+- Unnecessary editor tab close ki ja sakti hai.
+- Actual project file ko delete, move ya modify mat karo sirf isliye ke woh workspace mein visible na rahe.
+- Workspace cleanup ka matlab editor visibility cleanup hai, source-tree cleanup nahi.
+- Project files, folders aur source artifacts existing architecture aur file-hygiene rules ke mutabiq preserve rahen.
+
+## 4. Automatic Unnecessary Tab Cleanup
+
+Jab active task kisi specific file par settle ho jaye:
+
+- Current working file ko active rakho.
+- Task se unrelated visible editor tabs ko, agar host/editor capability support kare, safely close/release karo.
+- Agar multiple files task ke liye directly relevant hain, sirf un relevant files ko open rakhna allowed hai.
+- Completed sub-task ki temporary editor tab ko unnecessary hone par close kiya ja sakta hai.
+- Explorer/file tree ko unnecessarily scroll ya manipulate mat karo.
+- User ko current working file tak manually scroll/search karne par majboor mat karo.
+
+Preferred state:
+
+**One Active Task → One Primary Visible Working File**
+
+Agar task genuinely multi-file ho:
+
+**One Active Task → Smallest Relevant Set of Visible Files**
+
+## 5. Unsaved / Modified Tab Safety
+
+Tab cleanup kabhi bhi user ke unsaved work ko silently destroy nahi kare.
+
+- Unsaved/dirty tab ko bina safe save mechanism ya user approval ke close mat karo.
+- Agar current task ne file modify ki hai aur changes verified hain, supported editor mechanism ke through safe state preserve karke tab visibility manage karo.
+- User ke independently modified, unrelated dirty tabs ko automatically close/discard mat karo.
+- Agar host tab-close operation unsaved changes ke liye confirmation maangta hai, confirmation bypass karke data loss create mat karo.
+
+## 6. Runtime / Live Editing Behavior
+
+Runtime mein jab agent file change kar raha ho:
+
+1. Target file identify karo.
+2. File open/reveal karo.
+3. Active/focused tab banao.
+4. Actual workspace edit perform karo.
+5. Live change visible rakho.
+6. Related files ki zarurat khatam hone par unki tabs safely close/release karo.
+7. Build/run/test/diagnostics background mein perform karo.
+8. Final verified primary file/diff ko visible chhoro.
+
+Terminal/log surface ko active file workspace ke replacement ke taur par use mat karo.
+
+## 7. Task Completion Tab State
+
+Task complete hone par:
+
+- Latest/primary changed file visible rahe.
+- Unrelated task tabs unnecessarily open na rahen.
+- Relevant diff/state inspectable rahe.
+- Terminal/tool logs primary visible surface na banen.
+- User ke unrelated existing tabs ko aggressively clean mat karo.
+- Final workspace state clean aur task-focused ho.
+
+## 8. Host Capability Boundary
+
+Agar VS Code/Cline/host editor tab management ya automatic close/focus control support nahi karta:
+
+- Actual file editing continue karo.
+- Supported focus/open behavior use karo.
+- Unsupported automatic tab closing ka fake claim mat karo.
+- Project source ko tab management force karne ke liye modify mat karo.
+- User ke data ya unsaved changes ko risk mein mat dalo.
+
+## 9. Performance & Workspace Stability
+
+Workspace tab cleanup ka objective:
+
+- Unnecessary tab clutter kam karna.
+- Excessive editor navigation/scrolling reduce karna.
+- Current working file ko immediately visible rakhna.
+- Large project mein unnecessary open-document overhead ko reduce karna jab host/editor behavior us se materially affect hota ho.
+- Workspace responsiveness preserve karna.
+
+Is rule ko har task par unnecessary close/open cycle mein convert mat karo. Tab state ko sirf meaningful task transitions par update karo.
+
+## 10. Relationship With Existing Live Workspace Rules
+
+Yeh module Module 14 aur Module 38 ke Active File Open/Focus aur Live Edit Visibility rules ko strengthen karta hai.
+
+Existing rule:
+
+**Changed File → Open/Focus → Live Edit → Latest File Visible**
+
+Is module ke baad preferred behavior:
+
+**Changed File → Open/Focus → Live Edit → Unnecessary Tabs Safely Close/Release → Latest Verified File Visible**
+
+Editor tab cleanup ka matlab source-file deletion nahi hai.
+
+## 11. Completion Standard
+
+Task ke relevant editor state ko ideally:
+
+**Primary Working File Open + Focused + Latest Change Visible + Unnecessary Task Tabs Closed/Released + No Unsaved User Data Lost + Project Files Preserved**
+
+ke state mein leave karo.
