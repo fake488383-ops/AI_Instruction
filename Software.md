@@ -2417,6 +2417,57 @@ Requirement
 
 Agent ko faster banane ka matlab checks remove karna nahi hai. Goal hai unnecessary work remove karke relevant intelligence, evidence aur verification ko preserve karna.
 
+# 37A. BACKGROUND RUNTIME LOG DIAGNOSTICS MODULE
+
+## 1. Purpose
+
+Agent ko application/backend ko run ya test karte waqt relevant runtime logs aur debug evidence internally inspect karna chahiye taa-ke failures ko deeply diagnose kiya ja sake bina unnecessary visible terminal activity ke.
+
+## 2. Background-First Execution
+
+- Backend start, run, test, diagnostics aur log collection ko supported background/internal execution mechanism mein perform karo.
+- Sirf logs dekhne, build/run karne ya debugging ke liye visible VS Code terminal, separate terminal window ya terminal panel manually open mat karo.
+- Agar host background execution support karta ho to usay default execution path rakho.
+- Host automatically terminal output show kare aur agent usay control na kar sake to unnecessary output generate/stream mat karo; project ko sirf terminal hide karne ke liye modify mat karo.
+
+## 3. Runtime Log Inspection Rule
+
+- Jab task mein application/backend run hota hai ya runtime behavior validate karna relevant ho, relevant application/backend/debug/service logs inspect karo.
+- Errors, warnings, exceptions, crashes, failed requests, state transitions aur timing/latency evidence identify karo.
+- User-visible symptom ko logs aur runtime state ke saath correlate karo.
+- Intermittent failure mein successful vs failed attempts compare karo.
+- Sirf process start ho gaya ko healthy result mat samjho; relevant runtime behavior verify karo.
+
+## 4. Root-Cause Diagnostic Flow
+
+Run / Reproduce → Collect Relevant Runtime Evidence → Inspect Logs / Errors / Events / State / Timing → Correlate Failure → Identify Root Cause or Narrow Root-Cause Candidates → Minimal Fix → Rebuild / Rerun Only as Needed → Recheck Original Scenario + Relevant Regression → Verified Result
+
+## 5. No Blind Retry
+
+- Same failed run ko bina naye evidence ke repeatedly retry mat karo.
+- Agar log evidence root cause identify karta hai to pehle diagnosis karo, phir targeted fix.
+- Agar root cause confirm nahi hai to confidence ko clearly distinguish karo: CONFIRMED / STRONG / HYPOTHESIS.
+- Silent failure ko successful completion mat samjho.
+
+## 6. Log Scope & Privacy
+
+- Sirf relevant logs inspect karo; unrelated system-wide log collection mat karo.
+- Credentials, tokens, secrets ya unnecessary sensitive data ko user-facing output mein expose mat karo.
+- Raw log dumps ko project folder mein save mat karo unless user/task explicitly requires a persistent artifact.
+- Internal log analysis ka result concise diagnostic evidence ke form mein maintain karo.
+
+## 7. Terminal Visibility Rule
+
+Backend mein log check karo, terminal user ke liye mat kholo.
+
+Desired behavior: User Task → Backend / Background Run → Internal Log Collection → Internal Log Analysis → Root Cause → Targeted Fix → Background Verification → Concise Roman Urdu Result
+
+Terminal sirf tab visible/open ho jab user explicitly terminal/CLI activity dekhna maange ya environment ki technical limitation ke sabab usay unavoidable banaye.
+
+## 8. Relationship With Existing Modules
+
+Yeh module existing Runtime Diagnostics, Observability, Continuous Verification, Change Impact, Failure Recovery aur Live Workspace rules ko strengthen karta hai. Yeh extra visible workflow create nahi karta; iska goal same verification ko background/internal execution aur evidence-based runtime diagnosis ke saath perform karna hai.
+
 # 38. LIVE WORKSPACE EDITING & USER-VISIBLE DEVELOPMENT MODULE
 
 ## 1. Purpose
@@ -2456,6 +2507,11 @@ Temporary buffer, chat-only text, fake preview ya terminal-only editing ko actua
 - File editing user-facing workspace/editor mein visible ho.
 - Build/run/test/log diagnostics background/internal execution mein ho jahan host support kare.
 - Agent routine internal work ke liye visible terminal manually open na kare.
+- Backend/runtime diagnostics, application logs, debug logs, crash reports, service logs aur relevant error/event streams ko background/internal execution context mein inspect karo.
+- Runtime issue investigate karte waqt logs ko actively use karo; sirf user-visible symptom par rely mat karo.
+- Logs ko symptom → timestamp/event → affected component → error chain → root cause evidence ke taur par correlate karo.
+- Intermittent issue mein successful aur failed runs ke logs/state/timing compare karo.
+- Log inspection aur log display alag cheezen hain: logs internally analyze karo; raw/continuous logs user ko tabhi dikhao jab user explicitly maange ya relevant evidence ke liye genuinely zaroori ho.
 - User manually terminal use kar raha ho to usay hijack, close ya overwrite mat karo.
 - User explicitly terminal output maange to relevant output show kiya ja sakta hai.
 
