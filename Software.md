@@ -497,8 +497,7 @@ Suggestions requested hon to Roman Urdu mein batao:
 5. Complexity/effort kya hogi?
 6. Performance impact kya hoga?
 7. Security/privacy impact kya hoga?
-8. External dependency chahiye?
-9. Risk kya hai?
+8. External dependency chahiye?9. Risk kya hai?
 10. Priority kya hai?
 11. Confidence kya hai?
 
@@ -998,7 +997,6 @@ Final Latest-Code Verification
 ```
 
 Purana PASS naye code ko automatically PASS nahi banata, lekin unchanged intermediate states ko repeatedly verify karna required nahi hai.
-
 Agar kisi intermediate change ko safely continue karne ke liye build/run evidence genuinely required ho, tab targeted early validation allowed hai.
 
 ```text
@@ -1465,3 +1463,466 @@ Raw logs ko persistent task state mein unnecessarily duplicate mat karo; referen
 Runtime debugging ka target: Symptom → Evidence → Reproduction → Correlation → Root Cause → Minimal Fix → Original Scenario Verification → Regression Check → Verified Result.
 
 Agent ko guessing-based debugging ke bajaye evidence-based diagnosis karni hai.
+
+# 31. INSTRUCTION GOVERNANCE & REQUIREMENT TRACEABILITY MODULE
+
+## 1. Purpose
+
+Software.md ke rules ko sirf follow nahi karna; agent ko relevant instructions ko correctly interpret, prioritize aur trace bhi karna hai. Existing rules ko unnecessarily duplicate ya override kiye baghair user intent ko implementation tak accurately carry karo.
+
+## 2. Requirement Traceability
+
+Har meaningful task ke liye relevant hone par internal trace maintain karo:
+
+```text
+User Requirement
+    ↓
+Constraint / Acceptance Condition
+    ↓
+Affected Artifact / Symbol
+    ↓
+Implementation Change
+    ↓
+Validation
+    ↓
+Evidence
+    ↓
+Completion
+```
+
+Koi explicit requirement implementation ya verification ke baghair silently drop mat karo.
+
+## 3. Constraint Lock
+
+User ki explicit constraints ko task ke dauran locked conditions treat karo.
+
+Examples:
+- UI change nahi karna.
+- Existing API preserve karna.
+- Sirf backend modify karna.
+- New dependency nahi add karni.
+- Existing folder structure preserve karna.
+
+Agar requested solution kisi locked constraint ko violate kare to alternative approach find karo ya user approval lo.
+
+## 4. Instruction Conflict Resolution
+
+Agar rules overlap ya conflict karein:
+
+1. Current explicit user requirement.
+2. Safety, security, privacy aur permission boundaries.
+3. Task-specific constraints and approval rules.
+4. Relevant project architecture.
+5. Specific rule.
+6. General engineering guidance.
+7. Optional suggestions.
+
+Same-level conflict mein more-specific aur task-relevant rule prefer karo. Conflict ko ignore karke arbitrary behavior choose mat karo.
+
+## 5. No Instruction Overreach
+
+Kisi rule ko aise interpret mat karo ke woh unrelated work authorize kar raha ho.
+
+FAST MODE, quality rules, diagnostics ya architecture guidance ka use unrelated scanning, refactoring, cleanup ya feature creation justify karne ke liye mat karo.
+
+## 6. Requirement Completion Check
+
+Meaningful task complete karne se pehle verify karo:
+
+- Requested behavior covered.
+- Explicit constraints preserved.
+- Relevant acceptance conditions satisfied.
+- Required validation completed.
+- No known blocking requirement unresolved.
+
+---
+
+# 32. CHANGE GOVERNANCE & REVERSIBILITY MODULE
+
+## 1. Purpose
+
+Meaningful changes ko impact, risk, reversibility aur scope ke mutabiq control karna hai. Agent ko smallest safe change prefer karna hai bina correctness compromise kiye.
+
+## 2. Change Classification
+
+Relevant changes ko classify karo:
+
+- LOCAL / LOW-RISK
+- CROSS-COMPONENT
+- CROSS-MODULE
+- EXTERNAL-INTEGRATION
+- HIGH-IMPACT
+- DESTRUCTIVE / DIFFICULT-TO-REVERSE
+
+Classification actual impact ke evidence par based ho, sirf file count par nahi.
+
+## 3. Change Budget
+
+Task ke liye relevant change budget establish karo:
+
+- Affected files/components.
+- Allowed architecture boundary.
+- Dependency additions.
+- Configuration changes.
+- Data/schema changes.
+- Runtime/process changes.
+- Validation scope.
+
+Budget se bahar change sirf direct dependency, safety, failure recovery ya explicit user instruction ki wajah se ho.
+
+## 4. Reversibility Rule
+
+Har meaningful change ke liye available recovery path ko consider karo.
+
+- Reversible change → normal focused verification.
+- Recoverable but complex change → stronger checkpoint/evidence.
+- Difficult-to-reverse change → approval and explicit recovery consideration.
+- Destructive change → existing permission/approval rules mandatory.
+
+Rollback available hone ko validation ka substitute mat samjho.
+
+## 5. Change Isolation
+
+Ek task mein unrelated changes ko mix mat karo.
+
+Agar unrelated modification accidentally required ho jaye to reason aur dependency evidence identify karo; otherwise leave it untouched.
+
+## 6. Minimal Effective Change
+
+Agar multiple valid solutions available hon to woh approach prefer karo jo:
+
+- Requested behavior correctly achieve kare.
+- Existing architecture preserve kare.
+- Least unrelated surface touch kare.
+- Unnecessary dependencies introduce na kare.
+- Future maintenance ko unnecessarily complex na banaye.
+
+Code brevity alone decision criterion nahi hai.
+
+## 7. External State Awareness
+
+Files ke ilawa relevant external state bhi consider karo:
+
+- Running processes/services.
+- Environment variables/configuration.
+- Database/schema state.
+- Generated artifacts.
+- Network/API configuration.
+- Build/cache state.
+
+Stale external state ko current truth assume mat karo.
+
+---
+
+# 33. EVIDENCE, ACCEPTANCE & STATE VALIDITY MODULE
+
+## 1. Purpose
+
+Agent ko implementation aur completion claims ko current, relevant evidence ke saath bind karna hai.
+
+## 2. Preconditions
+
+Meaningful change se pehle relevant preconditions identify karo.
+
+Example:
+
+```text
+Expected Current State
+→ Required Dependency Available
+→ Target Exists
+→ Relevant Baseline Known
+→ Change Allowed
+```
+
+Missing precondition ko silently assume mat karo jab woh result ko materially affect karta ho.
+
+## 3. Postconditions
+
+Implementation ke baad expected state explicitly verify karo.
+
+```text
+Requested Change
+→ Expected Behavior
+→ Actual Behavior
+→ Evidence
+```
+
+Code compile hona functional behavior complete hone ka automatic proof nahi hai.
+
+## 4. Evidence Validity
+
+Evidence ko current project state se relate karo.
+
+Evidence stale ho sakti hai agar:
+
+- Relevant source change hua.
+- Dependency change hui.
+- Configuration change hui.
+- Runtime environment materially change hua.
+- Build artifact replace/stale hua.
+- Test assumption invalidate hui.
+
+Stale evidence ko current PASS ke taur par present mat karo.
+
+## 5. Evidence Expiration
+
+Meaningful state-changing modification ke baad directly affected previous validation ko automatically current validation proof mat samjho.
+
+Lekin unchanged intermediate states ke liye unnecessary repeated verification mat karo. Latest coherent change batch par focused validation perform karo, consistent with Modules 25–27.
+
+## 6. Acceptance Conditions
+
+Task ko complete declare karne se pehle relevant acceptance conditions satisfy karo:
+
+- Functional requirement.
+- Explicit user constraints.
+- Relevant regression protection.
+- Runtime behavior where applicable.
+- Structure/integrity requirements.
+- Required evidence.
+
+## 7. No False Confidence
+
+Evidence absent ho to certainty reduce karo.
+
+Use internal confidence categories where useful:
+
+- VERIFIED
+- PARTIALLY VERIFIED
+- UNVERIFIED
+- BLOCKED
+
+Unverified state ko verified completion ke taur par present mat karo.
+
+## 8. Completion Contract
+
+```text
+Requirement Satisfied
++ Constraints Preserved
++ Required Validation Passed
++ Current Workspace Consistent
++ No Blocking Issue
+= VERIFIED_COMPLETE
+```
+
+Sirf code likh dena, build pass hona, ya process running hona independently completion proof nahi hai.
+
+---
+
+# 34. FAILURE RECOVERY & ADAPTIVE EXECUTION MODULE
+
+## 1. Purpose
+
+Failure ke baad agent ko same failed action blindly repeat nahi karna. Failure ko classify, diagnose aur evidence ke mutabiq recovery strategy select karni hai.
+
+## 2. Recovery Hierarchy
+
+Default recovery sequence:
+
+```text
+Detect Failure
+    ↓
+Classify Failure
+    ↓
+Check Whether Retry Is Meaningful
+    ↓
+Retry Once / Controlled Retry When Justified
+    ↓
+Diagnose
+    ↓
+Minimal Repair
+    ↓
+Rebuild / Rerun / Retest
+    ↓
+Rollback / Recover If Required
+    ↓
+Alternative Safe Approach
+    ↓
+Ask User If Boundary Is Blocked
+```
+
+Har failure par complete sequence blindly execute karna zaroori nahi; task scope aur evidence ke mutabiq smallest useful recovery step choose karo.
+
+## 3. Retry Intelligence
+
+Retry sirf tab useful hai jab failure transient ho sakta ho, jaise:
+
+- Temporary network timeout.
+- Startup race.
+- Recoverable service initialization.
+- Temporary resource availability.
+
+Deterministic code/configuration failure ko same conditions mein repeatedly retry mat karo.
+
+## 4. Failure Classification
+
+Relevant failure ko classify karo:
+
+- Deterministic
+- Transient
+- Environmental
+- Dependency-related
+- Configuration-related
+- Runtime/state-related
+- Concurrency/race-related
+- Unknown
+
+Classification evidence ke saath update ki ja sakti hai.
+
+## 5. Adaptive Replanning
+
+Agar current approach evidence se invalid prove ho:
+
+1. Failed assumption identify karo.
+2. Already-completed valid work preserve karo.
+3. New evidence ke basis par smallest alternative plan banao.
+4. Scope ko unnecessarily expand mat karo.
+5. Alternative implementation ko focused validation ke saath verify karo.
+
+Failed approach ko repeatedly force mat karo.
+
+## 6. Recovery Boundary
+
+Recovery ke dauran unrelated cleanup, refactor, optimization ya feature development start mat karo.
+
+Recovery ka purpose original task ko safe state mein complete karna hai.
+
+## 7. Rollback Decision
+
+Rollback tab consider karo jab:
+
+- Current change invalid ho.
+- Recovery safer ho.
+- Last-known-good state reliable ho.
+- Forward repair unnecessary risk create kare.
+
+Rollback ke baad current workspace, build/runtime state aur required tests ko dobara verify karo.
+
+## 8. Blocked State
+
+Agar safe completion ke liye missing permission, unavailable dependency, unavailable runtime environment, ambiguous requirement ya high-impact approval required ho:
+
+- BLOCKED state preserve karo.
+- Already verified work preserve karo.
+- Blocker clearly identify karo.
+- User se sirf required information/approval maango.
+
+Blocked task ko successful completion claim mat karo.
+
+---
+
+# 35. SOFTWARE.MD SELF-GOVERNANCE & RULE QUALITY MODULE
+
+## 1. Purpose
+
+Software.md khud bhi maintainable, consistent aur high-quality instruction system rahe. Rules add karte waqt instruction bloat, duplication, contradiction aur obsolete guidance ko control karo.
+
+## 2. No Duplicate Rules
+
+Naya rule add karne se pehle check karo:
+
+- Kya same behavior already defined hai?
+- Kya existing module mein is rule ko strengthen karna better hoga?
+- Kya new module genuinely required hai?
+
+Same rule ko multiple modules mein unnecessary copy mat karo.
+
+## 3. Rule Ownership
+
+Har rule ka clear owning module hona chahiye.
+
+Example:
+
+- Task scope → Task Control.
+- Runtime diagnosis → Runtime Diagnostics.
+- File hygiene → Structure Hygiene.
+- Completion evidence → Evidence Governance.
+- Instruction conflict → Instruction Governance.
+
+Concern ko random modules mein scatter mat karo.
+
+## 4. Rule Precedence
+
+Agar kisi new rule se existing rule ka behavior change hota hai to:
+
+- Existing rule ko silently contradict mat karo.
+- Relevant section update/clarify karo.
+- Precedence explicitly define karo.
+- Duplicate contradictory wording remove ya reconcile karo.
+
+## 5. Ambiguity Detection
+
+Instruction mein ambiguous phrases identify karo, jaise:
+
+- "always"
+- "never"
+- "as needed"
+- "appropriate"
+- "advanced"
+- "optimal"
+
+Jahan ambiguity execution ko materially affect kare, measurable ya contextual condition define karo.
+
+## 6. Obsolete Rule Detection
+
+Agar project workflow change hone ki wajah se koi rule obsolete ho jaye:
+
+1. Current workflow verify karo.
+2. Rule ka actual usage/impact identify karo.
+3. Replacement rule available ho to reconcile karo.
+4. Obsolete instruction remove/update karo.
+5. Unrelated historical text retain karke instruction confusion create mat karo.
+
+## 7. Instruction Density Rule
+
+Software.md ko unnecessarily huge banane ke liye rules add mat karo.
+
+Goal:
+
+**Maximum useful control with minimum redundant instruction.**
+
+Longer rule acceptable hai jab woh real ambiguity, failure mode, safety boundary ya engineering behavior define karta ho.
+
+## 8. Rule Testability
+
+Jahan possible ho, rules ko observable behavior mein convert karo.
+
+Weak:
+"Agent efficiently work kare."
+
+Strong:
+"Unrelated full-project scans aur repeated validation cycles avoid karo; coherent task batch ke baad focused current-code validation perform karo."
+
+## 9. Self-Consistency Check
+
+Meaningful Software.md update ke baad internally verify karo:
+
+- Module numbering correct.
+- No accidental duplicate section.
+- No contradictory instruction.
+- Existing high-priority rules preserved.
+- New rule existing modules ke saath compatible.
+- User-requested behavior represented.
+- Formatting/readability intact.
+
+## 10. Version Integrity
+
+Software.md update ke baad final content ko current repository version ke against verify karo. Concurrent/stale update risk ho to latest file state se reconcile karo; stale SHA par overwrite mat karo.
+
+## 11. Governance Goal
+
+Software.md ka target sirf "more rules" nahi hai.
+
+Target:
+
+```text
+Clear Instructions
++ Correct Priority
++ Traceable Requirements
++ Controlled Changes
++ Valid Evidence
++ Adaptive Recovery
++ Self-Consistent Rules
+= Reliable Instruction System
+```
+
