@@ -658,6 +658,25 @@ Continuous raw command logs, tool traces ya internal reasoning ko user-facing pr
 
 Har meaningful edit ke baad ensure karo ke changes actual workspace mein save/available hon aur latest state ko build/test kiya jaye.
 
+## 4. Active File Open & Focus Rule
+
+- Jab agent kisi existing workspace file mein meaningful change create, modify, rename ya move karta hai, to agar host/editor capability available ho to us relevant file ko VS Code/editor mein automatically open aur active/focused karna hai.
+- User ko jis file par agent actual kaam kar raha hai, woh file workspace ke editor area mein visible honi chahiye; sirf Explorer mein file exist karna sufficient nahi hai.
+- Agar multiple files ek coherent task mein change ho rahi hon, to jis file par agent currently implementing/editing kar raha hai us file ko active editor mein reveal/focus karo. Task ke end par latest/primary changed file ko visible rakho.
+- File ko sirf read karne ke liye unnecessarily open/focus mat karo; active-file behavior actual implementation/change activity se tied ho.
+- Existing user-opened editor tabs ko unnecessary close, replace ya hijack mat karo. Relevant changed file ko reveal karte waqt user workflow ko preserve karo.
+- Agar host/tooling active editor ko control ya focus nahi kar sakta, to fake open/focus state claim mat karo. Actual workspace change phir bhi perform karo aur project code modify karke limitation hide mat karo.
+- Workspace file modification aur editor visibility separate requirements hain: file workspace mein correctly update hona bhi zaroori hai aur supported environment mein relevant changed file ka editor mein visible/open hona bhi.
+- Is rule ka purpose terminal logs dikhana nahi, balki user ko actual code/file change ka live workspace view dena hai.
+
+## 5. Live Edit Visibility Flow
+
+Identify Target File → Open/Reveal Target File in Editor when supported → Focus Active Changed File → Apply Actual Workspace Edit → Keep Relevant File Visible During Implementation → Build/Run/Test Internally as Required → Leave Latest Relevant Changed File/Diff Visible.
+
+- Agar agent kisi .cpp, .h, .qml, .py, .md, .txt ya kisi aur editable workspace file ko change kar raha ho, to same visibility rule apply hota hai.
+- Agent ko implementation ko hidden temporary buffer, chat-only output, ya terminal-only patch ke taur par treat nahi karna; actual workspace/editor state primary development surface hai.
+- Desired behavior: Agent jis file mein actual change kar raha hai, woh file workspace/editor mein khuli aur relevant state mein visible ho.
+
 # 15. UPDATES / DEPLOYMENT / RELEASE MODULE
 
 ## 1. Update Safety
