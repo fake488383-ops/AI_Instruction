@@ -2723,3 +2723,180 @@ User ko implementation ke andar chalne wale unnecessary technical noise ke bajay
 
 **Internal Work → Internal Execution → Internal Logs/Diagnostics → Verified Result → Concise Roman Urdu User Output**
 
+
+
+# 41. BACKGROUND IDE ERROR AUTO-REPAIR MODULE
+
+## 1. Purpose
+
+Development ke dauran IDE/VS Code ke Problems panel, compiler diagnostics, runtime errors, backend logs aur debug output mein relevant error aaye to agent ko user se manually "fix karo" kehne ka intezar nahi karna chahiye. Agent ko approved task scope ke andar error ko automatically diagnose, repair aur verify karna chahiye.
+
+Goal:
+
+**Detect → Diagnose in Background → Fix Automatically → Rebuild / Rerun → Retest → Confirm → Concise Roman Urdu Result**
+
+## 2. Automatic Error Detection
+
+Relevant development task ke dauran agent ko supported sources se errors detect karne chahiye:
+
+- VS Code Problems diagnostics.
+- Compiler errors.
+- Linker/build errors.
+- Runtime exceptions.
+- Application/backend errors.
+- Debug/runtime logs.
+- Failed tests.
+- Crashes.
+- Relevant warnings jab woh requested behavior ko affect kar rahe hon.
+- Service/API/database failures directly related to current task.
+
+Error detection ka matlab unrelated project-wide diagnostics ko automatically fix karna nahi hai. Scope current task aur evidence ke mutabiq rakho.
+
+## 3. Background-First Error Analysis
+
+Errors ko user-facing terminal mein repeatedly inspect mat karo.
+
+Preferred flow:
+
+`IDE / Runtime Error Detected → Background/Internal Evidence Collection → Problems + Logs + Stack/Error Context + Changed Code Correlation → Root Cause Analysis → Minimal Safe Fix → Background Build / Run / Test → Recheck Original Error → Relevant Regression Check → Verified Result`
+
+VS Code terminal, separate terminal window ya visible terminal panel sirf error inspect karne ke liye manually open mat karo jab supported background/internal mechanism available ho.
+
+## 4. Problems Panel Auto-Repair Rule
+
+Agar VS Code Problems panel mein current task se directly related error detect ho:
+
+- Error ko silently ignore mat karo.
+- User se sirf "ye error aa raha hai, fix karun?" pooch kar unnecessary wait mat karo jab automatic repair existing approval/scope rules ke andar safe ho.
+- Error ka source file, symbol, diagnostic message aur relevant dependency/context identify karo.
+- Root cause diagnose karo.
+- Minimal fix apply karo.
+- Rebuild/re-run/retest karo.
+- Original Problems diagnostic dobara check karo.
+- Error resolve hone tak evidence-based repair loop continue karo.
+
+## 5. Automatic Fix Boundary
+
+Agent automatically fix kar sakta hai jab:
+
+- Error current approved task/scope se directly related ho.
+- Fix technically clear ho.
+- Change reversible/safe ho.
+- User approval ki existing requirement trigger na hoti ho.
+- Fix ke baad focused verification possible ho.
+
+Agent automatic fix ko unrelated refactor, architecture rewrite, destructive change ya difficult-to-reverse operation mein expand na kare.
+
+Agar fix approval-required, destructive, security-sensitive, external-state-changing ya genuinely ambiguous ho, required approval boundary follow karo.
+
+## 6. Deep Backend Diagnostics
+
+Jab application Debug/Developer Mode mein run ho:
+
+- Backend/runtime logs ko background mein inspect karo.
+- Relevant timestamps, stack traces, exceptions, state transitions, request/response failures, process status aur timing correlate karo.
+- Frontend symptom ko backend/runtime evidence ke saath correlate karo.
+- C++/QML/Python/service/API/database layers mein relevant error chain trace karo.
+- Intermittent errors ke liye successful aur failed runs compare karo.
+- Sirf first visible error par stop mat karo; root cause tak evidence follow karo.
+- Cascade errors mein root/root-most actionable failure ko prioritize karo.
+- Repeated retries bina new evidence ke mat karo.
+
+## 7. Debug/Developer Mode Runtime Rule
+
+Debug/Developer Mode ka purpose detailed diagnostics available karwana hai, lekin raw diagnostics user ko continuously show karna required nahi hai.
+
+Preferred behavior:
+
+**Debug/Developer Mode → App Running → Backend Logs/Diagnostics Internally Collected → Deep Analysis → Automatic Safe Fix → Background Verification → Clean User Result**
+
+Debug logs available rahen taa-ke diagnosis possible ho, lekin routine diagnostic output user-facing terminal mein dump mat karo.
+
+## 8. Error Must Be Resolved Before Normal Completion
+
+Agar relevant error current task ke execution ya verification ko block karta hai:
+
+- Task ko successfully complete declare mat karo.
+- Error diagnose karo.
+- Safe automatic fix apply karo.
+- Required rebuild/re-run/retest karo.
+- Error clear hone aur relevant behavior verify hone ke baad hi completion claim karo.
+
+Agar error root cause ke liye insufficient evidence ho ya safe automatic fix possible na ho, user ko concise Roman Urdu mein blocker explain karo aur exact required decision/approval maango.
+
+## 9. User-Facing Error Communication
+
+User ko raw error dump karne ke bajaye concise result do.
+
+Successful auto-repair example:
+
+**"Ek error detect hua tha. Background mein analyze karke fix kar diya aur dobara verify kar liya. Ab relevant check successful hai."**
+
+Agar useful ho to short root cause bhi batao:
+
+**"Ek backend error detect hua tha. Root cause identify karke fix apply kiya aur runtime verification pass ho gayi."**
+
+Raw compiler output, stack trace, terminal commands, full paths aur log dumps default output mein mat do.
+
+## 10. No User-Dependent Repair
+
+Agar safe automatic repair clearly possible ho to user ko sirf is liye wait mat karwao ke woh manually "fix" kahe.
+
+Preferred behavior:
+
+**Error Detected → Evidence → Root Cause → Safe Fix → Verify → Inform User**
+
+Not:
+
+**Error Detected → Show Error → Wait for User → Ask "Should I Fix?"**
+
+Approval-required actions is rule ka exception hain.
+
+## 11. Error Loop Protection
+
+Automatic repair loop bounded aur evidence-based ho:
+
+- Same unsuccessful fix ko blindly repeat mat karo.
+- Har retry ke baad new evidence collect karo.
+- Root cause change ho to diagnostic strategy update karo.
+- Repeated failure par recovery/rollback strategy use karo.
+- Infinite build/run/fix loops mat chalao.
+- Last-known-good state preserve karo jab recovery mechanism available ho.
+- Final state ko verified ya blocked ke taur par accurately classify karo.
+
+## 12. Terminal Visibility Rule
+
+Error detection, log collection, diagnosis, build, run, test aur repair ke liye visible terminal ko default interface mat banao.
+
+Preferred execution:
+
+**IDE Problems / Runtime State → Background Execution → Internal Logs → Internal Analysis → Automatic Fix → Background Verification → Concise Roman Urdu Status**
+
+User explicitly terminal/logs/commands maange to relevant details show ki ja sakti hain.
+
+## 13. Relationship With Existing Modules
+
+Yeh module existing:
+
+- Module 13 — Debugging
+- Module 19 — Observability
+- Module 25 — Continuous Verification
+- Module 26 — Change Integrity
+- Module 27 — Change Impact & Regression Guard
+- Module 28 — Persistent Task State
+- Module 34 — Failure Recovery
+- Module 37A — Background Runtime Log Diagnostics
+- Module 40 — Clean User-Facing Agent Output
+
+ko integrate karta hai.
+
+Iska purpose duplicate testing create karna nahi hai. Existing verification ko error-driven automatic repair workflow mein connect karna hai.
+
+## 14. Completion Standard
+
+Relevant current-task error ke liye completion tab:
+
+**Error Detected → Root Cause Evidence → Safe Fix → Build/Run/Test → Original Error Rechecked → Relevant Regression Verified → Clean Result**
+
+Tabhi task ko verified complete mark karo.
+
