@@ -301,6 +301,19 @@ Sirf woh folders create karo jo actual contents aur requirements justify karein.
 - File placement aur ownership implementation ke baad verify karo.
 - Structure ka target: minimum necessary files + clear ownership + existing architecture compatibility.
 
+## 5. Unnecessary Artifact Creation Prevention
+
+- Agent ko routine development, debugging, testing, cleanup, backup, recovery ya internal workflow ke liye unnecessary new files create nahi karni hain.
+- Existing suitable files/artifacts ko prefer karo; nayi file tabhi create karo jab current task ki actual technical requirement usay justify kare.
+- PDF, DOCX, report, export, snapshot, backup copy, temporary copy, patch/diff file, debug dump, log file, test artifact ya kisi bhi similar generated artifact ko sirf internal convenience ke liye create mat karo.
+- Backup/rollback ke liye project ke andar manual duplicate files (for example .bak, .backup, .old, timestamp copies ya duplicate source files) create mat karo. Existing Git/version-control ya supported recovery mechanism ko prefer karo jab available ho.
+- Remove karne ke liye pehle backup file bana do default behavior nahi hai. Safe removal ke liye dependency/reference verification karo; unnecessary backup copy create mat karo.
+- Build/test/diagnostic output ko source tree mein dump mat karo jab tak task explicitly us artifact ko require na kare.
+- Agent ki reasoning, progress, diagnosis, verification ya internal state ko save karne ke liye automatically PDF/report/document/file create mat karo. User-facing result chat/workspace status mein do unless a persistent artifact is explicitly required.
+- Temporary artifact genuinely required ho to uska scope aur lifecycle clear rakho aur task complete hone ke baad safely remove karo, agar removal safe aur within scope ho.
+- Same-purpose duplicate artifact already exist karta ho to naya duplicate create mat karo.
+- New file/folder creation ko minimum-necessary rule ke against check karo: Need → Existing Alternative → Technical Justification → Create only if necessary.
+
 ## 4. Architecture Change
 
 - Small change → existing architecture preserve karo.
