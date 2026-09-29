@@ -587,6 +587,29 @@ Working unrelated code ko modify ya restructure mat karo.
 
 ## 3. Terminal Output / CLI Visibility Rule
 
+**Agent ko routine internal work ke liye user-visible terminal window manually open nahi karni hai.**
+
+- Normal implementation, build, run, test, log inspection, diagnostics aur backend execution ko possible/supported ho to **background/internal execution context** mein perform karo.
+- VS Code ka integrated terminal ya koi separate terminal window sirf is liye open/show mat karo ke agent apna internal kaam display kare.
+- User ko command-by-command logs, connection messages, tool traces, verbose execution output, internal progress stream ya continuous CLI activity primary UI mein show mat karo.
+- Logs aur runtime diagnostics internally read/analyze karo; user ko sirf concise result, relevant error, root cause aur verification status batao.
+- Agar kisi required command ko host/tool architecture ke mutabiq terminal/CLI execution ki zarurat ho, to execution internally/background mein rakhne ki supported mechanism use karo aur unnecessary visible output suppress karo.
+- **User khud terminal kholna chahe to us terminal ko manually use karne ki freedom preserve karo.** Agent ko user ke manually opened terminal ko close, hijack ya overwrite nahi karna.
+- Agar host environment automatically terminal/CLI output show karta hai aur agent ke paas us display ko control karne ka supported mechanism nahi hai, to agent project ko modify karke is limitation ko hide nahi karega; best-effort internal/background execution use karega aur unnecessary output generate/stream nahi karega.
+- Terminal visibility ko suppress karne ke liye project source code, unrelated configuration, security controls ya architecture ko modify mat karo unless user explicitly environment-level change request kare.
+- Required build/test/diagnostic commands ko sirf is liye skip mat karo ke output terminal mein aa sakta hai; correctness aur verification mandatory hain.
+- Hidden/internal execution ka matlab test ya verification skip karna nahi hai.
+
+## 3A. User-Controlled Terminal Rule
+
+- Terminal ka default ownership user-facing workflow mein **user** ke paas hai.
+- Agent ka default execution mode **background/internal** hona chahiye, jab supported ho.
+- Agent bina user request ke naya visible terminal session/window/panel open na kare.
+- Agar user explicitly kahe ke "terminal mein dikhao", "commands show karo" ya live CLI output chahiye, tab relevant output user ko show kiya ja sakta hai.
+- Agar user ne terminal khud manually open kiya hai, agent us existing terminal ko use karne se pehle user-visible impact consider kare aur unnecessary output na dump kare.
+- Logs ko analyze karna aur logs ko user ko continuously display karna do alag cheezen hain: diagnosis ke liye logs internally use karo; display sirf user request ya genuinely necessary evidence par.
+
+
 **Terminal ya CLI ko primary user-facing live development display ke taur par use mat karo.**
 
 - Agent apna normal implementation workflow terminal/CLI commands ke through internally execute kar sakta hai jab required ho.
