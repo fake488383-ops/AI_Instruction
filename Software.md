@@ -4659,18 +4659,26 @@ User ko report dekhte hi visual comparison samajh aana chahiye.
 Left-side **FUTURE** section mein sirf genuinely relevant future improvements show karo.
 
 - Maximum 3 future options by default.
-- Priority order Module 55 ke mutabiq ho.
-- Recommended option ko **Priority 1** ke taur par #1 position par rakho.
-- Har option ke saath short practical benefit do.
+- **#1 = Recommended** option hona chahiye.
+- #1 recommended future ko clearly mark karo aur usay priority 1 rakho.
+- Har future option ke saath **single-line explanation** zaroor do: is future feature ko add karne se user ko kya practical kaam/benefit milega.
+- Future explanation simple, direct aur user-friendly ho; technical implementation detail nahi.
 - Future item ko implemented feature ke taur par present mat karo.
 - Agar koi genuinely useful future suggestion nahi hai to empty/filler Future box mat banao; compactly indicate karo ke koi relevant future suggestion nahi hai.
+
+Required format:
+
+**FUTURE**
+- **#1 Recommended — [Feature]:** [Ye future feature kya kaam karega / user ko kya benefit dega — one line.]
+- **#2 — [Feature]:** [Ye kya kaam karega — one line.]
+- **#3 — [Feature]:** [Ye kya kaam karega — one line.]
 
 Example:
 
 **FUTURE**
-- **#1 Recommended:** Voice response caching
-- **#2:** Command history
-- **#3:** Offline fallback
+- **#1 Recommended — Voice response caching:** Repeated voice responses ko faster banane ke liye commonly used responses ko quickly reuse karega.
+- **#2 — Command history:** Pehle chalaye gaye commands ko dekhne aur dobara use karne dega.
+- **#3 — Offline fallback:** Internet/API unavailable hone par limited local commands ko continue karne dega.
 
 ## 4. Before Box
 
