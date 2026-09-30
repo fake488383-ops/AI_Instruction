@@ -3316,3 +3316,343 @@ Yeh module Module 03, Module 29 aur Module 45 ke structure-hygiene aur clean-wor
 ## 10. Completion Standard
 
 Task complete hone par koi naya file/artifact random project-root location mein nahi rehna chahiye agar uske liye suitable owned folder available hai.
+
+
+# 47. INTELLIGENT DEBUGGER & AUTOMATIC ROOT-CAUSE MODULE
+
+## 1. Purpose
+
+Debugger ko sirf error dikhane wala tool nahi, balki fast Diagnose → Fix → Verify system ki tarah use karo.
+
+## 2. Fast Debugging
+
+- Sirf current task aur changed code se relevant debugging scope use karo.
+- Full-project debugging, repeated full builds aur unrelated diagnostics avoid karo.
+- Relevant target ko identify karke minimum required build/run/debug cycle use karo.
+- Related edits ko coherent batch mein debug karo.
+
+## 3. Root-Cause Analysis
+
+Error milne par symptom ko root cause assume mat karo. Relevant Problems, compiler/linker diagnostics, runtime logs, stack traces, state transitions, timestamps aur changed-code correlation inspect karke actual cause identify karo.
+
+Preferred flow:
+
+**Error → Evidence → Reproduce → Correlate → Root Cause → Minimal Fix → Rebuild → Rerun → Verify**
+
+## 4. Automatic Safe Repair
+
+Agar root cause clear, change directly relevant, safe/reversible aur approval rules ke andar ho to agent user ke dobara "fix karo" kehne ka wait na kare; minimal fix apply karke background verification kare.
+
+## 5. Debug Evidence
+
+Relevant debugging mein call stack, exception location, variables, changed symbols, direct dependencies, runtime state aur relevant logs ko correlate karo; unnecessary project-wide evidence collect mat karo.
+
+## 6. C++ / QML / Python / Service Trace
+
+Agar application multi-layer ho to relevant execution chain trace karo, for example:
+
+**QML/UI → C++ → Python/Backend → Service/API → Response → UI/Voice**
+
+Sirf us layer par stop mat karo jahan symptom visible hua ho.
+
+## 7. Intermittent Error Analysis
+
+Intermittent issue mein successful aur failed runs ke relevant logs, timing, state aur configuration compare karo; bina new evidence ke same retry repeat mat karo.
+
+## 8. Debugger Completion
+
+Relevant error ko **detected → root cause evidenced → safely fixed → rebuilt/run → original scenario retested → relevant regression verified** ke baad hi resolved mark karo.
+
+# 48. BACKGROUND EXECUTION & TERMINAL-OFF DEVELOPMENT MODULE
+
+## 1. Purpose
+
+Normal development workflow mein terminal ko primary user-facing surface nahi banana. Build, EXE launch, test, debug aur log collection supported background mechanism se perform karo.
+
+## 2. EXE / Build Rule
+
+Jab agent project ki EXE build ya run kare, default behavior visible terminal window/panel kholna nahi hona chahiye. Application ko required non-interactive/background execution mechanism se launch karo jab host/tooling support kare.
+
+## 3. Backend Log Processing
+
+Build/run/debug ke logs backend/internal diagnostics pipeline mein collect aur analyze hon. Raw continuous logs terminal mein user ko stream mat karo.
+
+## 4. Terminal Fallback
+
+Agar host/tooling background execution support nahi karta aur terminal automatically render hota hai, agent unnecessary terminal output generate na kare, project code ko sirf terminal hide karne ke liye modify na kare, aur false claim na kare ke terminal completely hidden hai.
+
+## 5. Unified Development Flow
+
+Development ko isolated silos mein divide mat karo. Workspace edits, build state, runtime state, backend diagnostics, test evidence aur task memory ko ek connected task flow ke taur par correlate karo.
+
+Preferred:
+
+**Workspace Edit → Background Build/Run → Backend Diagnostics → AI Analysis → Safe Fix → Background Verification → Workspace Result**
+
+# 49. LIVE WORKSPACE PREVIEW & MAXIMUM THREE OPEN FILES MODULE
+
+## 1. Purpose
+
+User ko live development ka actual workspace/editor result visible ho, terminal execution stream nahi.
+
+## 2. Active File Visibility
+
+Jis file par agent meaningful kaam kar raha ho us file ko VS Code editor mein open, reveal aur active/focused rakho jab host capability support kare.
+
+## 3. Open File Limit
+
+Agent ek task ke dauran maximum **3 editor files/tabs** visible/open rakhe.
+
+- Preferred minimum relevant working set: **2 files** jab task genuinely multi-file ho.
+- Maximum: **3 files**.
+- Single-file task mein unnecessary second/third file mat kholo.
+- Fourth relevant file ki zarurat ho to least-recently-needed task tab ko safely close/release karke new file open karo.
+
+## 4. Rolling File Window
+
+Example:
+
+**File 1 → File 2 → File 3 → File 4 needed → File 1 safely close/release → File 4 open/focus**
+
+Is rule ka matlab source file delete karna nahi hai; sirf editor tab visibility manage karni hai.
+
+## 5. Explorer Active Selection
+
+Jis file par current implementation ho rahi ho, VS Code Explorer/file tree mein us file ko reveal/select/focus karo jab host support kare, taake user ko immediately pata chale ke agent kis file par kaam kar raha hai.
+
+## 6. Background Files
+
+Jo files diagnosis, search, dependency inspection ya background processing ke liye required hon lekin actively edit nahi ho rahi hon, unko unnecessarily editor tabs mein open mat rakho; supported background/read mechanisms prefer karo.
+
+## 7. Workspace Stability
+
+Large project mein step-by-step dozens of files open karke workspace clutter ya editor performance degradation create mat karo. Open-file state ko meaningful task transitions par update karo.
+
+## 8. Unsaved User Work
+
+User ki unrelated dirty/unsaved files ko silently close, discard ya overwrite mat karo. Maximum-three rule user data safety ko override nahi karta.
+
+# 50. SOFTWARE.MD STARTUP VALIDATION & NORMAL VS CODE LAUNCH MODULE
+
+## 1. Purpose
+
+Software.md ko reusable AI-agent instruction ke taur par maintain karo, taake Cline, OpenCode ya compatible coding agent isay consistently samajh sake.
+
+## 2. Startup Instruction Validation
+
+Agent session/workspace start par, jab Software.md available/load ki ja rahi ho, Software.md ko ek concise instruction-validation pass do aur current rules, conflicts, duplicates, obsolete rules aur major behavioral requirements identify karo.
+
+## 3. Project Scan Restriction
+
+Software.md startup validation ka matlab poora project automatically scan karna nahi hai. Startup par default mein project-wide code analysis mat karo.
+
+## 4. Software.md-Only Startup Check
+
+Normal startup validation mein primary inspection Software.md ki ho:
+
+**Load Software.md → Validate Rules → Detect Conflict/Duplicate/Obsolete Instruction → Establish Active Rules → Continue User Task**
+
+## 5. No Automatic OpenCode Launch
+
+Software.md agent ko VS Code ke normal launch behavior ko replace karne ka instruction nahi deta. VS Code open hone par OpenCode/Cline/CLI ko automatically launch/open force mat karo.
+
+## 6. Normal VS Code Settings
+
+User ke existing/default VS Code startup behavior, workspace restore settings aur installed extension behavior ko preserve karo. Software.md source code ya VS Code configuration ko sirf agent auto-launch enforce karne ke liye modify na kare.
+
+## 7. Agent Compatibility
+
+Rules tool/host-specific UI capability assume na karein. Cline, OpenCode ya kisi compatible AI agent ko unsupported editor-control capability ka fake claim nahi karna chahiye.
+
+# 51. PERSISTENT TASK MEMORY & CONTINUE-RESUME MODULE
+
+## 1. Purpose
+
+Agent ko incomplete development task ko laptop/VS Code/session restart ke baad safely continue karne ke liye durable task state maintain karni hai.
+
+## 2. Persistent Task Identity
+
+Har meaningful task ka stable Task ID aur concise state maintain karo:
+
+**Task → Current Goal → Current State → Changed Files → Verification → Blocker/Next Step**
+
+## 3. Checkpoint Rule
+
+Sirf verified meaningful state ko checkpoint mark karo. Unverified assumption ko completed state ke taur par save mat karo.
+
+## 4. Continue Command
+
+Agar user restart ke baad **"continue"** kahe, agent latest incomplete task state retrieve kare, current workspace se compare kare aur wahi se safely resume kare.
+
+## 5. Workspace-State Conflict
+
+Saved task state aur current workspace disagree karein to pehle current workspace/Git state inspect karo; stale checkpoint ke basis par existing work overwrite mat karo.
+
+## 6. No Duplicate Work
+
+Already verified completed steps ko dobara unnecessarily repeat mat karo. Sirf missing, changed ya unverified portion continue karo.
+
+## 7. Resume Summary
+
+Resume ke waqt user ko concise result do:
+
+**Last State → Ab Kahan Se Continue → Kya Remaining Hai**
+
+Internal reasoning ya raw logs persist mat karo.
+
+## 8. Persistent Memory Location
+
+Task/memory state ko source-code files ke random project root mein dump mat karo. Supported persistent storage/repository/project-state mechanism use karo, aur raw logs ko long-term task memory ka substitute mat banao.
+
+# 52. SMART TEMPORARY ARTIFACT & DEBUG CLEANUP MODULE
+
+## 1. Purpose
+
+Debugging/testing ke dauran temporary files allowed hain, lekin verified completion ke baad unnecessary artifacts automatically cleanup hone chahiye.
+
+## 2. Temporary Lifecycle
+
+Temporary artifact:
+
+**Create only if needed → Use → Verify usefulness → Retain if required → Remove when obsolete**
+
+## 3. Debug Logs
+
+Relevant debug logs ko diagnosis complete hone tak dedicated existing debug/log location mein rakha ja sakta hai. Fix verify hone ke baad obsolete temporary logs remove karo agar retention requirement nahi hai.
+
+## 4. Test Files
+
+Temporary test source/output ko existing test/temp output structure mein rakho. Useful permanent tests retain karo; one-off debugging artifacts ko successful verification ke baad safely remove karo.
+
+## 5. Old Text / Dump Files
+
+Purani unused TXT, dump, snapshot, duplicate source, temporary report ya debug files ko sirf isliye retain mat karo ke woh kabhi banayi gayi thin. Reference/dependency/usefulness verify karke obsolete artifacts remove karo.
+
+## 6. Final EXE Preparation
+
+Final EXE/package preparation ke waqt source, build output aur runtime package boundaries verify karo; obsolete temporary/debug artifacts ko final package mein include mat karo.
+
+## 7. Safe Cleanup Boundary
+
+Cleanup destructive ho sakta ho to ownership, references, active processes, build dependencies aur retention requirements verify karo. User ke unrelated files delete mat karo.
+
+# 53. SMART BUILD / TEST / DEBUG COALESCING MODULE
+
+## 1. Purpose
+
+Development speed improve karne ke liye multiple related edits ko ek coherent execution cycle mein combine karo.
+
+## 2. Build Coalescing
+
+Related changes ke darmiyan unnecessary repeated builds mat chalao. Coherent edit batch complete hone ke baad relevant target build karo.
+
+## 3. Test Coalescing
+
+Har small edit par complete test suite mat chalao. Changed behavior aur direct regression scope ke relevant tests ko focused cycle mein run karo.
+
+## 4. Debug Coalescing
+
+Build → run → diagnose → fix → rebuild → rerun ko evidence-based loop mein rakho; successful unchanged state par duplicate cycles avoid karo.
+
+## 5. Parallel Safe Work
+
+Independent diagnostics/checks ko safely parallel execute kiya ja sakta hai, lekin dependent operations ko incorrectly parallelize karke race, duplicate work ya conflicting edits create mat karo.
+
+## 6. Slow Operation Detection
+
+Agar build, test, startup ya runtime operation repeatedly slow ho, relevant timing evidence collect karke bottleneck identify karo aur user ko concise improvement suggestion do.
+
+# 54. PROJECT CHANGE SAFETY & USER WORK PROTECTION MODULE
+
+## 1. Purpose
+
+Agent fast kaam kare lekin user ke existing development work ko accidentally overwrite ya isolate na kare.
+
+## 2. User vs Agent Changes
+
+Current workspace/Git diff ko relevant task evidence ke taur par inspect karo aur user ke unrelated changes ko preserve karo.
+
+## 3. External Change Detection
+
+Agar task ke dauran file externally change ho jaye to stale content par blind overwrite mat karo; latest state reconcile karo.
+
+## 4. File Move/Rename
+
+File move/rename ke waqt references, build configuration, tests aur direct consumers verify karo; broken references leave mat karo.
+
+## 5. Git-Aware Recovery
+
+Rollback/recovery ke liye duplicate backup files banane ke bajaye available version-control/recovery mechanism prefer karo.
+
+# 55. BEFORE / AFTER DEVELOPMENT RESULT REPORT MODULE
+
+## 1. Purpose
+
+Meaningful task complete hone par user ko ek single, easy-to-understand before/after result dena hai.
+
+## 2. Report Format
+
+Default final report concise ho:
+
+**Before → Kya problem/state thi.**  
+**After → Ab kya change/fix hua.**  
+**Improvement → Is se kya practical faida hua.**  
+**Verification → Kya verify hua.**
+
+## 3. Visual Comparison
+
+Jahan measurable data available ho, before/after comparison ko simple table/chart-style format mein present karo, for example:
+
+| Measure | Before | After |
+|---|---|---|
+| Open editor tabs | X | Y |
+| Build/verification cycles | X | Y |
+| Relevant errors | X | Y |
+| Temporary artifacts | X | Y |
+| Response/startup time | X | Y |
+
+Numbers invent mat karo; unavailable measurement ko **Not measured** likho.
+
+## 4. One-Place Summary
+
+Final report mein result ko scattered messages mein divide mat karo. Important before/after information ek consolidated short section mein do.
+
+## 5. User-Friendly Language
+
+Report Roman Urdu mein simple single-line statements use kare aur unnecessary internal logs, commands, stack traces, tool calls ya reasoning show na kare.
+
+## 6. Evidence Rule
+
+Before/after claim sirf actual workspace, build, runtime, test ya measurable evidence par based ho. Assumption ko measured improvement ke taur par present mat karo.
+
+## 7. Completion Standard
+
+Meaningful development task ka final state:
+
+**Actual Workspace Change → Verification Evidence → Before/After Comparison → Practical Improvement → Concise Final Report**
+
+# 56. PROACTIVE WORKFLOW IMPROVEMENT MEMORY MODULE
+
+## 1. Purpose
+
+Agent ko user ke repeatedly observed development preferences aur accepted workflow improvements ko reusable project instruction/context ke taur par preserve karna hai, bina raw conversation ya hidden reasoning store kiye.
+
+## 2. Accepted Improvement Memory
+
+Agar user kisi proposed workflow feature ko explicitly accept/apply kare, uski concise implementation state ko duplicate suggestion se bachne ke liye track karo.
+
+## 3. Rejected / Deferred Suggestions
+
+Rejected ya deferred suggestion ko repeatedly propose mat karo jab tak relevant project state ya user requirement materially change na ho.
+
+## 4. Instruction Duplication Prevention
+
+Agar Software.md mein kisi rule ka equivalent pehle se present ho to duplicate rule create mat karo; existing rule ko strengthen/update karo.
+
+## 5. Reuse Across AI Agents
+
+Rules ko generic, explicit aur host-independent wording mein rakho taake Software.md ko Cline, OpenCode ya compatible AI coding agent ke saath reuse kiya ja sake.
+
+## 6. No Hidden Reasoning Storage
+
+Persistent memory mein task facts, decisions, checkpoints, changed files aur verification evidence ka concise state rakho; private chain-of-thought ya unnecessary raw execution logs store mat karo.
