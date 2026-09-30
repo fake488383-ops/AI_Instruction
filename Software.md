@@ -3616,48 +3616,170 @@ Rollback/recovery ke liye duplicate backup files banane ke bajaye available vers
 
 ## 1. Purpose
 
-Meaningful task complete hone par user ko ek single, easy-to-understand before/after result dena hai.
+Har meaningful completed task ke end par AI agent ek **short, chat-style development result report** generate kare jo user ko foran samjha de:
 
-## 2. Report Format
+**Pehle kya tha → Ab kya hai → Kya change/fix hua → Iska faida kya hai → Future mein kya add kiya ja sakta hai**
 
-Default final report concise ho:
+Report ka maqsad long technical report banana nahi, balki completed work ko ek clear visual/structured summary mein dikhana hai.
 
-**Before → Kya problem/state thi.**  
-**After → Ab kya change/fix hua.**  
-**Improvement → Is se kya practical faida hua.**  
-**Verification → Kya verify hua.**
+## 2. Mandatory Report Structure
 
-## 3. Visual Comparison
+Default report order hamesha:
 
-Jahan measurable data available ho, before/after comparison ko simple table/chart-style format mein present karo, for example:
+**BEFORE → AFTER → CHANGES / FEATURES → MINI EXPLANATION → FUTURE SUGGESTION**
 
-| Measure | Before | After |
-|---|---|---|
-| Open editor tabs | X | Y |
-| Build/verification cycles | X | Y |
-| Relevant errors | X | Y |
-| Temporary artifacts | X | Y |
-| Response/startup time | X | Y |
+Before ko After se pehle show karo. Future ko implementation result se separate rakho.
 
-Numbers invent mat karo; unavailable measurement ko **Not measured** likho.
+Preferred chat-style structure:
 
-## 4. One-Place Summary
+```text
+┌─────────────────────────────────────┐
+│ BEFORE                              │
+│ Pehle: latency = 500 ms             │
+│ Problem: response slow tha          │
+├─────────────────────────────────────┤
+│ AFTER                               │
+│ Ab: latency = 300 ms                │
+│ Result: response faster hua         │
+├─────────────────────────────────────┤
+│ CHANGES / FEATURES                  │
+│ ✓ Latency optimization              │
+│ ✓ Request handling update            │
+│ ✓ Unnecessary processing reduced    │
+│                                     │
+│ Mini: Ye feature response ko        │
+│ faster aur unnecessary delay ko     │
+│ kam karta hai.                      │
+├─────────────────────────────────────┤
+│ FUTURE SUGGESTION                   │
+│ → Voice pipeline caching add karein │
+│   Is se future response latency     │
+│   aur reduce ho sakti hai.          │
+└─────────────────────────────────────┘
+```
 
-Final report mein result ko scattered messages mein divide mat karo. Important before/after information ek consolidated short section mein do.
+Actual chat/UI host capability support kare to is information ko compact horizontal **Before | After** comparison aur uske neeche feature/change section ki form mein render kiya ja sakta hai. Agar rich UI support na ho to same structure plain text/Markdown mein preserve karo.
 
-## 5. User-Friendly Language
+## 3. Before / After Evidence
 
-Report Roman Urdu mein simple single-line statements use kare aur unnecessary internal logs, commands, stack traces, tool calls ya reasoning show na kare.
+- **Before** mein actual previous state/problem describe karo.
+- **After** mein actual new state/fix describe karo.
+- Measurable value available ho to exact comparison do, for example:
+  - Latency: **500 ms → 300 ms**
+  - Errors: **5 → 0**
+  - Build cycles: **4 → 1**
+  - Open editor tabs: **5 → 1**
+- Numbers sirf actual measurement/evidence se lo.
+- Measurement available na ho to value invent mat karo; **Not measured** likho.
+- Before/After ka comparison same metric, same relevant context aur comparable conditions par based ho jab measurement claim ki ja rahi ho.
+- Agar task sirf code/UI change tha aur runtime metric measure nahi hua, false performance improvement claim mat karo.
 
-## 6. Evidence Rule
+## 4. Changes / Features Section
 
-Before/after claim sirf actual workspace, build, runtime, test ya measurable evidence par based ho. Assumption ko measured improvement ke taur par present mat karo.
+Report mein clearly show karo ke **kya feature/fix/update actually implement hua**.
 
-## 7. Completion Standard
+Preferred format:
 
-Meaningful development task ka final state:
+- ✓ Feature / Fix Name — kya update hua.
+- ✓ Feature / Fix Name — kya behavior improve/change hua.
+- ✓ Feature / Fix Name — relevant result.
 
-**Actual Workspace Change → Verification Evidence → Before/After Comparison → Practical Improvement → Concise Final Report**
+Har implemented feature ke neeche ya saath **one-line Mini Explanation** do:
+
+**Mini:** Ye feature [simple practical kaam/benefit].
+
+Long technical implementation details, internal commands, stack traces ya raw logs report mein default se mat dikhayo.
+
+## 5. Future Suggestion Section
+
+Completed implementation ke baad relevant future improvements ko separate section mein show karo.
+
+Format:
+
+**Future Suggestion**
+- → [Future Feature] — Is se [future practical benefit].
+- → [Future Feature] — Is se [future practical benefit].
+
+Rules:
+
+- Future suggestion ko implemented feature ke taur par present mat karo.
+- Future suggestion sirf relevant, evidence-based aur concise ho.
+- Unrelated feature lists mat generate karo.
+- Suggestion implementation ki automatic permission nahi hai; user approval required hai.
+- Agar koi future improvement current task se directly related nahi hai to usay omit karo.
+- Accepted/rejected/deferred suggestions ko Module 36/56 ke suggestion-memory rules ke mutabiq handle karo.
+
+## 6. Fast Report Generation
+
+Report khud task completion ka bottleneck nahi banegi.
+
+- Small/tiny task ke baad report compact rakho.
+- Report banane ke liye separate project scan, extra EXE run, extra build, extra test ya extra performance measurement automatically mat karo.
+- Jo evidence task ke normal focused workflow mein already available hai usi ko report mein reuse karo.
+- Report ke liye new artifact/file create mat karo jab tak user explicitly persistent report file na maange.
+- Final report generate karna verification cycle ko duplicate nahi karega.
+
+## 7. Performance / Latency Reporting
+
+Latency ya speed improvement relevant ho to report mein actual measured Before → After value show karo.
+
+Example:
+
+**Before:** 500 ms  
+**After:** 300 ms  
+**Improvement:** 200 ms reduction / 40% lower measured latency.
+
+Percentage sirf actual measured values se calculate karo. Measurement na ho to performance improvement ko qualitative wording mein rakho, jaise **"processing path simplify kiya gaya"**, na ke invented timing.
+
+## 8. One-Message Chat Report
+
+Default user-facing final result ek hi concise chat-style report mein consolidated ho:
+
+```text
+BEFORE
+→ [old state / problem]
+
+AFTER
+→ [new state / result]
+
+CHANGES
+✓ [implemented feature/fix]
+  Mini: [one-line explanation]
+
+✓ [implemented feature/fix]
+  Mini: [one-line explanation]
+
+FUTURE
+→ [relevant future suggestion]
+  Faida: [one-line future benefit]
+
+VERIFICATION
+→ [what was actually verified]
+```
+
+Scattered progress messages ko final report ka substitute mat banao.
+
+## 9. Evidence & Truthfulness
+
+Before/After, feature, improvement aur verification claims actual workspace/build/runtime/test evidence par based hon.
+
+- Assumption ko verified result mat likho.
+- Planned feature ko implemented feature mat likho.
+- Suggested future feature ko completed feature mat likho.
+- Unmeasured latency/FPS/startup improvement ka numeric claim mat karo.
+- Agar verification intentionally skipped hui ho because task was tiny/static-only, report mein relevant concise status do instead of pretending runtime verification happened.
+
+## 10. Relationship With FAST MODE
+
+Before/After report Module 01, 25, 40, 43, 44 aur 53 ke fast execution rules ko slow nahi karegi.
+
+**Fast Work → Minimal Required Validation → Reuse Existing Evidence → Short Before/After Report → Relevant Future Suggestion → STOP**
+
+## 11. Completion Standard
+
+Meaningful task ka final user-facing state:
+
+**Actual Workspace Change → Required Focused Verification → Before → After → Implemented Features + Mini Explanations → Relevant Future Suggestion → Concise Chat Report → STOP**
 
 # 56. PROACTIVE WORKFLOW IMPROVEMENT MEMORY MODULE
 
