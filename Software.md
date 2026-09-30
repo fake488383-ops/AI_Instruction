@@ -534,6 +534,84 @@ Sirf woh folders create karo jo actual contents aur requirements justify karein.
 - File move karte waqt imports/includes, build configuration, tests, references aur direct consumers verify karo taake structure cleanup se functionality break na ho.
 - Folder organization ka goal: **clear ownership + easy navigation + low clutter + maintainable structure**, na ke unnecessary deep hierarchy.
 
+# 03A. INTELLIGENT FOLDER ORGANIZATION & FILE CLUTTER CONTROL MODULE
+
+## 1. Purpose
+
+Project Explorer ko file-count ki wajah se cluttered mat hone do. Agar kisi folder ke andar bohat si related files accumulate ho rahi hon, to un files ko unke actual purpose, component, responsibility aur workflow ke mutabiq logical subfolders mein automatically organize karo.
+
+Primary goal:
+
+**More Logical Folders → Fewer Files Per Visible Folder → Easier Explorer Navigation → Clear Ownership**
+
+Folder count thora barhna acceptable hai agar is se individual folders mein unnecessary file overload aur scrolling materially kam hoti hai.
+
+## 2. Ownership-First Organization
+
+- Files ko sirf extension (.py, .cpp, .md) ke basis par ek hi folder mein collect mat karo.
+- File ka function/ownership primary placement signal hai.
+- Example: python/tests/ → test files; python/tools/ → utility tools; python/engine/ → engine/runtime logic; python/services/ → service-layer code.
+- Agar project mein existing suitable folder already hai to usay reuse karo.
+
+## 3. Automatic Subfolder Creation
+
+- Jab ek folder mein related files ka clear group develop ho jaye, agent suitable subfolder create kar sakta hai aur files ko us group mein organize kar sakta hai.
+- Subfolder naming actual responsibility ko represent kare: tests, tools, engine, services, models, api, ui, utils, resources, docs — sirf jab project context justify kare.
+- Generic dumping folders jaise misc, other, stuff, random ya extension-only buckets bina clear ownership ke create mat karo.
+- Folder hierarchy ko unnecessarily deep mat banao; har level ka clear organizational purpose hona chahiye.
+
+## 4. File Clutter Threshold — Not a Hard Numeric Rule
+
+- Organization sirf fixed number of files cross hone par trigger nahi hoti.
+- Strong signals: same-purpose files ka repeated group, navigation/scrolling difficult hona, multiple functional categories mix hona, test/tool/generated/debug/production files ka mix hona.
+- Agar 50–100 files ek hi category folder mein hain lekin unke andar multiple clear responsibilities hain, to category ke andar meaningful subfolders banao.
+- Agar kam files hain lekin ownership already clearly separate hai, to unnecessary hierarchy create mat karo.
+
+## 5. Testing / Temporary Artifact Organization
+
+- Testing ke dauran 50–100 test-related files ban jayein to unhein parent tests/ folder mein dump mat karo.
+- Related tests ko further logical groups mein organize karo, example: tests/unit/, tests/integration/, tests/runtime/, tests/fixtures/.
+- Temporary/generated/debug artifacts ko permanent source/test folders mein unnecessarily retain mat karo; lifecycle rules ke mutabiq cleanup karo.
+
+## 6. Language / Extension Folder Rule
+
+- python/, cpp/, qml/ jese language/type folders sirf tab use karo jab project architecture already unhein ownership boundary ke taur par use karti ho.
+- Agar python/ ke andar bohat si files hain, to tamam .py files ko ek flat directory mein rakhna required nahi hai.
+- .py file ko uske function ke mutabiq tests/, tools/, engine/, services/, api/ ya kisi existing suitable subfolder mein place karo.
+- Same principle .cpp, .h, .qml, .js, .ts, .md aur other file types par apply hota hai.
+
+## 7. Explorer Usability
+
+- Explorer mein ek folder expand karne par unnecessarily dozens/hundreds of sibling files visible hone wali structure avoid karo.
+- User ko repeated long scrolling se bachane ke liye logical subfolder boundaries prefer karo.
+- Folder collapse/expand hierarchy meaningful ho aur file ownership immediately understandable ho.
+- Explorer cleanliness ke liye actual source files ko delete mat karo; structure ko safely reorganize karo.
+
+## 8. Safe File Move / Reorganization
+
+File move/reorganization se pehle relevant imports, includes, relative paths, build configuration, tests, scripts, references, package/module paths aur direct consumers check karo. Move ke baad affected references ko update aur focused validation karo.
+
+- Unnecessary duplicate copies ya backup files create mat karo.
+- Reorganization ke naam par working architecture rewrite mat karo.
+
+## 9. Existing Architecture Protection
+
+- Existing folder ownership aur naming conventions preserve karo jab tak evidence-based improvement required na ho.
+- New subfolder sirf tab create karo jab clear ownership/grouping benefit ho.
+- Folder hierarchy ko deep, confusing tree mein convert mat karo.
+- File placement ka decision purpose + ownership + navigation + maintainability ke combined basis par karo.
+
+## 10. Automatic Cleanup / Rebalancing
+
+- Jab agent notice kare ke kisi folder ka structure phir se cluttered ho raha hai, relevant files ko existing suitable subfolders mein rebalance karo.
+- Production code, tests, tools, docs, generated output aur temporary/debug artifacts ko unnecessarily mix mat hone do.
+- Obsolete task-related files ko existing cleanup rules ke mutabiq remove karo after reference/dependency verification.
+- Reorganization ka goal fewer visible files per folder hai, not maximum folder count.
+
+## 11. Completion Standard
+
+**Clear Ownership + Logical Subfolders + Low Per-Folder File Clutter + Valid References/Build + No Unnecessary Duplicate Files + Easy Explorer Navigation**
+
 # 04. UI / UX MODULE
 
 Is module ke andar tamam UI/UX concerns centralized hon.
