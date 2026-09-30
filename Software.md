@@ -48,6 +48,204 @@ Jab instructions overlap ya conflict karein to is priority ko follow karo:
 
 Higher-priority rule lower-priority rule ko override karegi. Same-level rules mein sab se specific rule ko prefer karo.
 
+# 00A. ENTERPRISE ENGINEERING GOVERNANCE EXTENSION
+
+> Is module ka maqsad existing Software.md rules ko replace karna nahi hai. Existing communication, FAST MODE, scope, architecture, testing, workspace aur workflow rules preserve rahenge. Ye enterprise-level requirements ko development guidance ke taur par add karta hai. Actual implementation Apex/software ke code, configuration, infrastructure aur operational systems mein hogi.
+
+## 1. Enterprise Governance
+
+- Development decisions, ownership, approvals, risk, security aur operational responsibilities ko clear aur traceable rakho.
+- Enterprise quality ko unnecessary full-project work ka reason mat banao; relevant task aur risk ke mutabiq controls apply karo.
+- Rules ko consistent, auditable aur maintainable rakho.
+
+## 2. Risk-Based Engineering
+
+- Har meaningful change ke liye relevant risk ko task scope, affected data, permissions, exposure, reversibility aur potential impact ke mutabiq consider karo.
+- Risk low ho to FAST MODE aur proportional validation use karo.
+- Medium/high-risk changes par stronger validation, evidence aur approval requirements apply karo.
+- Critical security, authorization, secrets, production-data, deployment ya infrastructure changes par appropriate mandatory gates skip mat karo.
+- Risk assessment implementation ke liye decision support hai; arbitrary scoring ya unnecessary ceremony mat banao.
+- Residual risk ko relevant hone par identify karo aur unresolved high-risk state ko silently complete mark mat karo.
+
+## 3. Threat Modeling & Attack Surface
+
+- Security-sensitive features ke liye relevant assets, trust boundaries, entry points, sensitive operations, abuse cases aur realistic threats identify karo.
+- Authentication, authorization, tool access, external APIs, local OS actions, network boundaries aur sensitive data flows ko relevant hone par threat model karo.
+- Controls ko identified risk se map karo aur residual risk verify karo.
+- Har small task par full threat model mat chalao; sirf affected security boundary par focused analysis karo.
+
+## 4. Identity & Access Management (IAM)
+
+- Authentication aur authorization ko separate concerns samjho.
+- Least privilege, role/permission boundaries, service identities, token/session lifecycle aur privileged operations ko relevant hone par enforce karo.
+- Sensitive tools/actions ko default unrestricted access mat do.
+- Access decisions ko auditable aur revocable rakho.
+- Secrets, credentials aur privileged permissions ko source code mein hard-code mat karo.
+- Actual IAM implementation software ke authentication/authorization components mein hogi; ye section implementation requirement hai, IAM system khud nahi.
+
+## 5. Secrets Management
+
+- API keys, tokens, passwords, certificates aur other secrets ko source code, logs, screenshots ya generated artifacts mein expose mat karo.
+- Secrets ko appropriate secure storage/injection mechanism se manage karo.
+- Relevant environments mein secret rotation, expiration, revocation aur access boundaries support karo.
+- Secret exposure detect ho to safe remediation aur verification follow karo.
+
+## 6. AI Agent Governance
+
+- AI model/provider selection, model version, capability/limitations, latency, cost, privacy, fallback aur reliability ko relevant decisions mein consider karo.
+- AI output ko blindly trusted system action mein convert mat karo jab validation required ho.
+- Prompt injection, tool injection, data exfiltration, sensitive-data leakage, unsafe output aur hallucination-related risks ko relevant agent workflows mein consider karo.
+- AI decisions aur automated actions ke liye appropriate boundaries, validation aur auditability maintain karo.
+- Model/provider change ko dependency/configuration change ki tarah govern karo.
+
+## 7. Tool Permission Governance
+
+- Har agent tool ko defined purpose, permission scope, input validation, timeout/resource boundary aur audit requirements ke saath expose karo.
+- High-impact tools/actions ke liye stronger authorization or user approval requirements apply karo.
+- Tool ko sirf isliye broad access mat do ke implementation easy ho.
+- Failed, denied aur exceptional tool actions ko safe state mein handle karo.
+- Actual tool permission enforcement software ke runtime/tool layer mein implement hogi.
+
+## 8. Data Governance
+
+- Data ko sensitivity aur purpose ke mutabiq classify karo.
+- Minimum necessary collection/access/use prefer karo.
+- Sensitive data ke liye appropriate encryption, access control, retention, deletion, backup aur recovery rules apply karo.
+- External provider ko data bhejne se pehle authorization, purpose, privacy aur data-handling requirements verify karo.
+- Memory/knowledge systems mein stale, unauthorized ya cross-user data mixing prevent karo.
+
+## 9. Supply Chain Security
+
+- Dependencies, packages, plugins, SDKs, build tools aur third-party components ko trust boundary ka part samjho.
+- Relevant projects mein dependency version/pin, vulnerability review, license review aur source/provenance verification consider karo.
+- Production releases ke liye appropriate artifact integrity, provenance/signing aur trusted build controls use karo.
+- Compromised ya untrusted component ko silently adopt mat karo.
+- SBOM/provenance controls relevant production or enterprise release scope mein support karo.
+
+## 10. CI/CD & Secure Delivery
+
+- Appropriate repositories mein automated build, focused tests aur relevant security/quality checks ko delivery pipeline ka part banao.
+- Relevant checks mein static analysis, secret scanning, dependency/security checks, tests, artifact validation aur release gates shamil ho sakte hain.
+- Branch/release protection aur deployment approval ko risk ke mutabiq apply karo.
+- CI/CD requirements ko local development ke har tiny task par unnecessary pipeline execution ka reason mat banao.
+
+## 11. Testing & Quality Gates
+
+- Risk aur change impact ke mutabiq static, build, runtime, functional, integration, regression aur security validation select karo.
+- Relevant enterprise testing mein contract, load, stress, soak, fuzz, recovery, security, dependency aur deployment verification shamil ho sakti hai.
+- Testing ko Modules 12, 25, 26, 27 aur 53 ke proportional/FAST MODE rules ke saath coordinate karo.
+- Required evidence ke baghair completion claim mat karo.
+
+## 12. Production Deployment & Release Safety
+
+- Development, test/staging aur production environments ko relevant hone par logically separate rakho.
+- Release ke liye versioning, artifact integrity, configuration validation, deployment gates aur rollback capability maintain karo.
+- High-impact releases mein staged, canary, rolling, blue-green ya equivalent controlled rollout strategy relevant hone par use karo.
+- Emergency changes ko bhi traceable aur reversible rakho.
+
+## 13. Observability & Operational Health
+
+- Relevant production/runtime systems mein logs, metrics, traces, events, correlation identifiers aur health signals use karo.
+- Errors ko symptom se root cause tak correlate karo.
+- Appropriate SLI/SLO/alerting concepts ko production scale par consider karo.
+- Observability data mein secrets ya unnecessary sensitive data expose mat karo.
+- Existing Modules 19, 30, 37A aur 47 ke runtime-diagnostics rules preserve rahenge.
+
+## 14. Incident Response
+
+- Security, reliability ya operational incident ke liye structured flow maintain karo:
+  **Detect → Classify → Contain → Investigate → Remediate → Recover → Verify → Learn**.
+- Severity, escalation, evidence preservation aur post-incident actions relevant hone par record karo.
+- Incident ke dauran unrelated cleanup ya broad refactor mat karo.
+
+## 15. Disaster Recovery & Business Continuity
+
+- Important persistent systems ke liye backup, restore, failover aur recovery requirements ko risk ke mutabiq define karo.
+- Relevant services ke liye RTO/RPO targets establish karo jab business/operational requirements justify karein.
+- Backup ko successful restore verification ke baghair reliable recovery evidence mat samjho.
+- Recovery procedures ko periodically test karna relevant production systems mein required ho sakta hai.
+
+## 16. Audit & Evidence
+
+- Important security, permission, configuration, deployment, AI/tool action aur administrative events ko relevant hone par auditable record do.
+- Audit evidence mein appropriate actor, time, action, authorization/context, result aur relevant reference preserve karo.
+- Logs aur evidence ko tamper resistance/access control requirements ke mutabiq protect karo.
+- Raw logs ko unnecessarily permanent task memory mein store mat karo.
+- Modules 33, 35, 37A aur 55 ke evidence/truthfulness rules preserve rahenge.
+
+## 17. Compliance & Control Mapping
+
+- Applicable standards/regulations/customer requirements ko relevant project scope ke controls se map karo.
+- Compliance ko blind checklist nahi, evidence-backed control mapping samjho.
+- Relevant frameworks/examples mein NIST SSDF, NIST CSF, OWASP guidance, ISO 27001 aur SOC 2 type control families ho sakti hain; actual applicability project requirements par depend karegi.
+- Compliance claim tabhi karo jab required evidence available ho.
+
+## 18. Formal Change Management
+
+- Changes ko relevant hone par normal, standard, emergency, deferred ya rejected state mein track karo.
+- High-impact/security-sensitive changes ke liye approval, impact analysis, rollback aur verification requirements stronger rakho.
+- Existing Modules 26, 27, 32 aur 54 ke change-safety rules ke saath integrate karo.
+
+## 19. Architecture Decision Records (ADR)
+
+- Significant architecture, provider, database, security boundary, deployment ya technology decisions ke liye concise ADR maintain karo.
+- ADR mein **Decision → Context → Alternatives → Trade-offs → Consequences → Date/Status** capture karo.
+- Tiny changes ke liye unnecessary ADR create mat karo.
+
+## 20. Provider / Vendor Governance
+
+- External model/API/provider select ya change karte waqt capability, reliability, latency, cost, privacy/data retention, region, security, rate limits, SLA, compatibility, lock-in aur exit/fallback strategy ko relevant hone par evaluate karo.
+- Credentials/endpoints invent mat karo.
+- Provider choice ko user approval requirements aur Module 55 recommendation rules ke saath align karo.
+
+## 21. Cost Governance
+
+- AI/API/cloud usage ke liye relevant projects mein usage, quota, budget, per-task cost aur abnormal-spend signals monitor/control karo.
+- Cost optimization se correctness, security ya reliability silently compromise mat karo.
+- Cost-aware routing/fallback relevant scale par use ki ja sakti hai.
+
+## 22. Configuration Governance
+
+- Environment-specific configuration ko source code, secrets aur runtime state se appropriately separate rakho.
+- Configuration schema/validation, safe defaults, versioning, drift detection aur rollback ko relevant systems mein apply karo.
+- Production configuration ko accidental development changes se protect karo.
+
+## 23. Multi-User / Multi-Tenant Isolation
+
+- Agar software multiple users, projects ya tenants support karta hai to identity, data, memory, tools, permissions, quotas aur audit boundaries appropriately isolate karo.
+- Cross-user/cross-tenant data leakage ko prevent aur verify karo.
+- Single-user software mein unnecessary multi-tenant architecture force mat karo.
+
+## 24. Support Lifecycle & Deprecation
+
+- Important APIs, modules, providers aur dependencies ke supported versions, deprecation, migration aur end-of-life state ko track karo.
+- Breaking change se pehle compatibility/migration impact evaluate karo.
+- Obsolete components ko evidence ke baghair suddenly remove mat karo.
+
+## 25. Enterprise Policy Validation
+
+- Software.md ke rules ko duplicate, conflicting, obsolete ya ambiguous hone se protect karo.
+- Significant policy changes ke baad policy consistency/precedence verify karo.
+- Agar project mein machine-readable policy engine ho to policy IDs, scope, priority, trigger, required/forbidden action, exception, approval, evidence, owner, version aur status jaise fields use kiye ja sakte hain.
+- Policy text guidance hai; actual enforcement software/runtime mein implement hogi.
+
+## 26. Policy Cache & Startup Context
+
+- AI coding agent/host agar persistent policy context ya cache support karta ho to Software.md ko startup/initial session par load karke validated policy context reuse kar sakta hai.
+- Har chhoti command par unchanged Software.md ko full-read/reprocess karna default nahi hona chahiye.
+- Cached policy ko Software.md version/hash ya equivalent change signal ke saath validate karo.
+- Software.md change, agent/session restart, invalid cache ya policy inconsistency par relevant reload/revalidation karo.
+- Policy cache ko actual Software.md ka permanent replacement mat samjho; source of truth Software.md hi rahegi.
+- Host capability na ho to agent unsupported persistent-memory behavior ka claim mat kare.
+- Ye rule user ke existing FAST MODE, Project Context, Persistent Task Memory aur Normal VS Code startup rules ko preserve karta hai.
+
+## 27. Enterprise Integration Principle
+
+- Ye enterprise extension existing Software.md rules ko replace, downgrade ya delete nahi karti.
+- Existing rule aur enterprise rule overlap karein to duplicate text create karne ke bajaye existing ownership/precedence ko preserve karke requirement ko strengthen/clarify karo.
+- Actual security, IAM, AI governance, audit, CI/CD, supply-chain aur compliance controls ko software ke appropriate code/configuration/infrastructure layers mein implement karo.
+- Har task par tamam enterprise controls activate mat karo; **Task Scope + Risk + Impact + Environment** ke mutabiq relevant controls apply karo.
+
 # 01. TASK CONTROL MODULE
 
 ## 1. Task Classification
