@@ -890,7 +890,7 @@ Har meaningful edit ke baad ensure karo ke changes actual workspace mein save/av
 - User ko jis file par agent actual kaam kar raha hai, woh file workspace ke editor area mein visible honi chahiye; sirf Explorer mein file exist karna sufficient nahi hai.
 - Agar multiple files ek coherent task mein change ho rahi hon, to jis file par agent currently implementing/editing kar raha hai us file ko active editor mein reveal/focus karo. Task ke end par latest/primary changed file ko visible rakho.
 - File ko sirf read karne ke liye unnecessarily open/focus mat karo; active-file behavior actual implementation/change activity se tied ho.
-- Existing user-opened editor tabs ko unnecessary close, replace ya hijack mat karo. Relevant changed file ko reveal karte waqt user workflow ko preserve karo.
+- User ke independently open/owned dirty ya unsaved editor tabs ko data-loss ke risk ke baghair preserve karo. Agent ke apne working/inspection tabs is protection ke under accumulated nahi kiye jayenge.
 - Agar host/tooling active editor ko control ya focus nahi kar sakta, to fake open/focus state claim mat karo. Actual workspace change phir bhi perform karo aur project code modify karke limitation hide mat karo.
 - Workspace file modification aur editor visibility separate requirements hain: file workspace mein correctly update hona bhi zaroori hai aur supported environment mein relevant changed file ka editor mein visible/open hona bhi.
 - Is rule ka purpose terminal logs dikhana nahi, balki user ko actual code/file change ka live workspace view dena hai.
@@ -3655,7 +3655,9 @@ Large project mein step-by-step dozens of files open karke workspace clutter ya 
 
 ## 8. Unsaved User Work
 
-User ki unrelated dirty/unsaved files ko silently close, discard ya overwrite mat karo. Maximum-three rule user data safety ko override nahi karta.
+User ki unrelated dirty/unsaved files ko silently close, discard ya overwrite mat karo.
+**Strict Single Current File Rule agent-managed editor tabs par apply hota hai; user-owned dirty/unsaved tabs data-safety exception hain.**
+Agent ke apne accumulated tabs ko preserve karne ke liye is exception ka use mat karo.
 
 # 50. SOFTWARE.MD STARTUP VALIDATION & NORMAL VS CODE LAUNCH MODULE
 
