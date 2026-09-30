@@ -4213,3 +4213,83 @@ Rules ko generic, explicit aur host-independent wording mein rakho taake Softwar
 ## 6. No Hidden Reasoning Storage
 
 Persistent memory mein task facts, decisions, checkpoints, changed files aur verification evidence ka concise state rakho; private chain-of-thought ya unnecessary raw execution logs store mat karo.
+
+# 57. FINAL COMPLETION RUN & USER HANDOFF MODULE
+
+## 1. Purpose
+
+Meaningful development task complete hone ke baad, agar changed software/target ko safely run kiya ja sakta ho, agent final runnable state user ke liye automatically launch kare taake user foran manually buttons/actions click karke actual behavior verify kar sake.
+
+## 2. Final Run Rule
+
+- **Meaningful task complete → required verification pass → final runnable target launch → user handoff.**
+- Task mein jis application, EXE, service ya runnable target mein actual behavior change hua ho, completion ke baad usi relevant target ko ek final run/launch do jab runtime execution meaningful verification ya user handoff ke liye available ho.
+- Final run ka maqsad user ko latest completed workspace state directly test karne ka mauqa dena hai; user ko sirf isliye manually launch karne par majboor mat karo jab agent ke paas supported run capability available ho.
+- Final run latest verified code/build se hona chahiye; stale build ya purana executable launch mat karo.
+
+## 3. User Manual Interaction Handoff
+
+Final launch ke baad agent user ko concise taur par bataye ke software run ho gaya hai aur ab user khud buttons, voice commands, controls ya requested workflow test kar sakta hai.
+
+- User ke manual interaction ko agent ki automated verification ka substitute mat samjho.
+- Agent ne jo runtime verification khud ki hai usay separately report karo.
+- User ke liye final launched application ko unnecessarily close mat karo jab tak cleanup, crash recovery, safety requirement ya user instruction close karne ko require na kare.
+
+## 4. When Final Run Is Required
+
+Final run normally required hai jab:
+
+- application behavior change hua ho;
+- UI interaction/feature behavior change hua ho;
+- backend/runtime behavior change hua ho;
+- voice, API, service, integration ya workflow behavior change hua ho;
+- user-facing executable/application ko latest changes ke saath test karna useful ho.
+
+## 5. When Final Run Is Not Required
+
+Unnecessary execution avoid karo jab:
+
+- task sirf documentation/text/instruction change ho;
+- static-only change ho aur runtime execution se koi meaningful benefit na ho;
+- affected target runnable na ho;
+- required runtime environment unavailable ho;
+- security, permission, deployment ya safety boundary final launch ko prohibit karti ho.
+
+Aise case mein final run skip karne ka reason concise report mein mention karo; fake run/verification claim mat karo.
+
+## 6. Build Before Final Run
+
+Agar latest source changes ke liye build/package step required hai to final run se pehle relevant target ko build karo. Existing Module 25, 26, 27, 53 aur FAST MODE rules ke mutabiq unnecessary repeated builds avoid karo.
+
+**Latest Change → Required Build → Focused Verification → Final Launch**
+
+## 7. Failure During Final Run
+
+Agar final launch fail ho:
+
+**Launch Failure → Background Logs/Evidence → Root Cause → Minimal Safe Fix → Rebuild → Rerun → Original Scenario Verification**
+
+- Clearly related, safe aur approved scope ke andar fix automatically continue ki ja sakti hai.
+- Unrelated issues ko task scope mein silently include mat karo.
+- Infinite launch/retry loop mat chalao.
+- Final launch failure ko successful completion mat report karo.
+
+## 8. Terminal / UI Visibility
+
+Final application launch background/normal host mechanism se karo; raw terminal logs ko user-facing output ka replacement mat banao. Existing Modules 14, 37A, 40, 42 aur 49 ke workspace/editor hygiene rules preserve rahenge.
+
+## 9. Completion Flow
+
+Default meaningful-task completion flow:
+
+**User Request → Implement → Required Validation → Verify Latest State → Final Run/Launch → User Manual Handoff → Concise Final Report**
+
+Final run task completion ka user-facing handoff step hai; unnecessary duplicate testing cycle nahi.
+
+## 10. Relationship With Existing Rules
+
+- Module 25 ki required verification preserve rahegi.
+- Module 53 ke build/test coalescing rules preserve rahenge.
+- Tiny/static-only tasks par unnecessary EXE launch force nahi hoga.
+- Module 55 ke final report mein final run ka actual status include kiya ja sakta hai.
+- Agar host/editor/runtime capability supported nahi hai to agent unsupported capability ka claim nahi karega.
