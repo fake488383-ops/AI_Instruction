@@ -4496,3 +4496,124 @@ Small runtime problem ke liye ideal completion:
 **User Problem → Target Identify → Background Logs/Evidence → Root Cause → Minimal Change → Affected Build → One Actual Run → Original Problem Retest → Focused Regression → Final Run/Handoff if applicable → Concise Report → STOP**
 
 Agent ka goal **maximum checks karna nahi**, balki **minimum necessary checks ke saath correct result achieve karna** hai.
+
+# 59. STRICT SINGLE-FILE WORKSPACE & EXPLORER FOCUS MODULE
+
+## 1. Purpose
+
+Workspace mein agent ke kaam ke dauran **sirf current working file** visible/open/focused honi chahiye. Agent inspection ke liye background/read mechanisms use kare aur files ko editor tabs mein collect na kare.
+
+Core rule:
+
+**One Active Task → One Current File → One Visible Agent Tab → One Explorer Selection**
+
+## 2. Strict Single-File Rule
+
+- Agent-managed workspace/editor state mein ek waqt par **sirf ek file open** rakho.
+- Jis file par actual implementation/editing ho rahi hai wahi current file hai.
+- Kisi doosri file ko future work, inspection, search, diagnostics ya context ke liye editor mein open mat rakho.
+- Current file change hote hi previous agent-managed file ka editor tab **close/release** karo, phir next file open/focus/reveal karo.
+- Multiple files wale task mein bhi files sequentially handle karo:
+
+**File A → Work → Close/Release A → File B → Work → Close/Release B → File C**
+
+- Multiple agent-managed tabs accumulate karna forbidden hai.
+
+## 3. Background Inspection Rule
+
+Read-only inspection, search, symbol lookup, diagnostics, log analysis, dependency checking aur code reading ke liye:
+
+- Background/read/search mechanism prefer karo.
+- Inspection ke liye editor tab open mat karo.
+- Agar host ko temporary editor access technically required ho to inspection complete hote hi tab close/release karo.
+- Background inspection ka matlab hidden/secondary editor tabs mein files jama karna nahi hai.
+
+## 4. Explorer Selection / Reveal / Click Rule
+
+Jab current working file change ho:
+
+1. Previous agent-managed editor tab close/release karo.
+2. New target file ko workspace mein locate karo.
+3. Explorer/file tree mein **usi current working file ko select/highlight/reveal** karo.
+4. Us file ko editor mein open karo.
+5. Editor focus bhi usi file par rakho.
+
+Is se user ko simultaneously clear hona chahiye:
+
+**Explorer mein selected file = Editor mein active working file = Current task file**
+
+Agar target `.cpp`, `.h`, `.qml`, `.py`, `.json`, ya kisi aur supported file type ka ho to same rule apply hoga. Example sirf concept samjhane ke liye hai; actual current working file hi select/focus honi chahiye.
+
+## 5. Automatic Focus on File Change
+
+Agent jab kisi doosri file par actual kaam start kare:
+
+**Old Current File → Close/Release → Explorer Reveal/Select New File → Open → Focus → Work**
+
+Agent ko user ke manually old tab par rehne ki wajah se new working file background mein edit nahi karni chahiye.
+
+## 6. No Background Editor Tabs
+
+- Background mein agent-managed source tabs nahi.
+- Hidden editor tabs nahi.
+- Preview tabs ko repeatedly accumulate nahi karo.
+- Pinned/preview/editor tab mechanisms ko use karke multiple agent-managed files ko open state mein mat rakho.
+- Search results ko editor tabs mein convert karke tab history mat banao.
+- Logs/diagnostics ko editor tabs mein kholne ke bajaye background mechanisms use karo.
+
+## 7. User-Owned Tabs and Data Safety
+
+Strict single-file rule ka scope **agent-managed workspace state** hai.
+
+- User ki unsaved/dirty file ko silently discard, overwrite ya destroy mat karo.
+- Agar host kisi user-owned dirty tab ko safely close nahi kar sakta, data-loss se bachna priority hai.
+- Is exception ko naye agent-managed tabs accumulate karne ka reason mat banao.
+- Agent ko apne khud ke opened tabs ko user-owned tabs ke naam par preserve nahi karna hai.
+
+## 8. Editor vs Explorer State
+
+Editor aur Explorer dono ka state current work ke saath synchronize rakho:
+
+**Current Working File**
+→ Explorer selected/revealed
+→ Editor active/focused
+→ Previous agent tab closed/released
+→ No other agent-managed editor tab open
+
+Explorer mein folder expanded rehna allowed hai agar navigation ke liye useful ho, lekin unrelated files ko editor tabs mein open rakhna allowed nahi.
+
+## 9. Runtime / Build / Diagnostics
+
+Build, run, test, compiler diagnostics aur log analysis ko background mein perform karo jab host capability available ho.
+
+- Build/test ke liye source files ko editor mein khol kar visible tab mat banao.
+- EXE/application launch ke liye source file tab open karna required nahi hai.
+- Runtime logs ko inspect karne ke liye separate editor tabs accumulate mat karo.
+- Required diagnostics complete hone ke baad current implementation file ko hi visible/focused state mein restore karo.
+
+## 10. Completion State
+
+Task complete hone par:
+
+- Last/current relevant implementation file Explorer mein selected/revealed ho.
+- Wahi file editor mein active/focused ho.
+- Agent-managed old tabs closed/released hon.
+- User ko current result locate karne ke liye tab bar mein search/scroll na karna pade.
+- Final application launch Module 57 ke mutabiq applicable ho to application user handoff ke liye run ho sakti hai; is runtime launch ko extra source/editor tab open karne ka reason mat banao.
+
+## 11. Enforcement Priority
+
+Jab existing editor/workspace rules ke saath overlap ho:
+
+- **Strict single agent-managed file** default hai.
+- Existing user-owned dirty-work protection preserve rahegi.
+- Background inspection is preferred over editor-tab inspection.
+- File delete/move/rename is rule ka part nahi hai; workspace clutter ka solution **tab close/release + Explorer focus** hai, source file deletion nahi.
+
+## 12. Completion Standard
+
+**One Current File Open + One Current File Focused + Same File Selected in Explorer + Previous Agent Tabs Closed/Released + Background Inspection + No Tab Accumulation**
+
+Agent ka workspace behavior user ko continuously ye clear signal de:
+
+**"Abhi isi file par kaam ho raha hai."**
