@@ -3127,10 +3127,12 @@ Goal:
 
 ## 2. Active Working File Priority
 
-- Jis file mein agent is waqt meaningful implementation/edit kar raha ho, woh active/focused editor tab honi chahiye jab host/editor capability support kare.
-- User ko current working file directly visible honi chahiye.
-- Multiple files task ke liye genuinely required hon to current implementation file active rahe.
-- Unrelated open tabs ko sirf workspace clutter create karne ki wajah se continuously visible mat rakho.
+- Jis file mein agent is waqt meaningful implementation/editing kar raha ho, **sirf wohi current working file editor mein open, active aur focused honi chahiye** jab host/editor capability support kare.
+- User ko current working file directly visible honi chahiye; Explorer mein file exist karna sufficient nahi hai.
+- Agent ko read-only inspection/search ke liye files ko editor tabs mein sequentially open karke scroll/tab clutter create nahi karna chahiye; supported background/read mechanisms prefer karo.
+- Agar current working file change hoti hai, previous **agent-opened working tab** ko safely close/release karke nayi current working file ko open/reveal/focus karo.
+- Multiple files task mein bhi editor ka default state **ek waqt mein sirf current implementation file** ho; doosri files background inspection se handle karo aur sirf jab woh current working file banen tab editor mein lao.
+- User ki explicitly open/owned dirty/unsaved files ko data-loss ke risk ke baghair preserve karo; is exception ko agent ke apne accumulated tabs ke liye excuse mat banao.
 
 ## 3. Tab Cleanup vs File Deletion
 
@@ -3141,46 +3143,51 @@ Goal:
 - Workspace cleanup ka matlab editor visibility cleanup hai, source-tree cleanup nahi.
 - Project files, folders aur source artifacts existing architecture aur file-hygiene rules ke mutabiq preserve rahen.
 
-## 4. Automatic Unnecessary Tab Cleanup
+## 4. Strict Agent Tab Cleanup
 
-Jab active task kisi specific file par settle ho jaye:
+Jab active task kisi file par kaam kar raha ho:
 
-- Current working file ko active rakho.
-- Task se unrelated visible editor tabs ko, agar host/editor capability support kare, safely close/release karo.
-- Agar multiple files task ke liye directly relevant hain, sirf un relevant files ko open rakhna allowed hai.
-- Completed sub-task ki temporary editor tab ko unnecessary hone par close kiya ja sakta hai.
-- Explorer/file tree ko unnecessarily scroll ya manipulate mat karo.
-- User ko current working file tak manually scroll/search karne par majboor mat karo.
+- Current working file **ek hi editor tab** mein open/active/focused rahe.
+- Previous agent-opened working/inspection tabs ko immediately safely **close/release (cross)** karo jab woh current working file nahi rahin.
+- Agent sequentially file-by-file kaam kare to editor state bhi sequential ho: **Current File Open → Work → Previous Agent Tab Close → Next File Open/Focus**.
+- Read/search/diagnostic files ko editor tabs mein unnecessarily open mat karo.
+- Task se related multiple files ko sirf is wajah se tabs mein jama mat karo ke woh future mein required ho sakti hain.
+- Explorer/file tree ko unnecessary scrolling/navigation ka primary workspace workflow mat banao.
+- User ko current working file tak manually tab-scroll/search karne par majboor mat karo.
 
 Preferred state:
 
-**One Active Task → One Primary Visible Working File**
+**One Agent Task → One Current Working File → One Agent-Managed Editor Tab**
 
-Agar task genuinely multi-file ho:
+Multi-file task mein bhi:
 
-**One Active Task → Smallest Relevant Set of Visible Files**
+**File A → close/release → File B → close/release → File C**
+
+na ke multiple accumulated editor tabs.
 
 ## 5. Unsaved / Modified Tab Safety
 
-Tab cleanup kabhi bhi user ke unsaved work ko silently destroy nahi kare.
+Strict single-file rule editor-tab cleanliness enforce karta hai, lekin **user ke unsaved/dirty work ko destroy nahi karta**.
 
-- Unsaved/dirty tab ko bina safe save mechanism ya user approval ke close mat karo.
-- Agar current task ne file modify ki hai aur changes verified hain, supported editor mechanism ke through safe state preserve karke tab visibility manage karo.
-- User ke independently modified, unrelated dirty tabs ko automatically close/discard mat karo.
-- Agar host tab-close operation unsaved changes ke liye confirmation maangta hai, confirmation bypass karke data loss create mat karo.
+- Agent ke apne saved/verified task tabs ko safely close/release karo.
+- User ke independently modified/dirty/unsaved tabs ko silently close, discard ya overwrite mat karo.
+- Agar current working file mein user ka unsaved work bhi ho, data-safe mechanism/approval ke baghair usay close ya discard mat karo.
+- Agar host tab-close operation confirmation maangta hai, data loss create karne ke bajaye supported safe behavior use karo.
+- Exception ka matlab ye nahi ke agent new files/tabs ko accumulate kar sakta hai; safe user-owned dirty tabs aur agent-managed working tabs alag treat karo.
 
 ## 6. Runtime / Live Editing Behavior
 
-Runtime mein jab agent file change kar raha ho:
+Runtime/live development mein exact editor flow:
 
-1. Target file identify karo.
-2. File open/reveal karo.
-3. Active/focused tab banao.
-4. Actual workspace edit perform karo.
-5. Live change visible rakho.
-6. Related files ki zarurat khatam hone par unki tabs safely close/release karo.
-7. Build/run/test/diagnostics background mein perform karo.
-8. Final verified primary file/diff ko visible chhoro.
+1. Target working file identify karo.
+2. Agar target editor mein nahi hai to usay open/reveal karo.
+3. Target ko active/focused karo.
+4. Previous agent-managed editor tab ko safely close/release karo.
+5. Actual workspace edit perform karo.
+6. Sirf current working file visible rakho.
+7. Build/run/test/diagnostics background mein perform karo; inspection files ko editor mein open mat karo.
+8. Jab next file par meaningful work start ho, current tab close/release karo aur next file ko open/focus karo.
+9. Final verified primary changed file ko visible chhoro.
 
 Terminal/log surface ko active file workspace ke replacement ke taur par use mat karo.
 
@@ -3192,7 +3199,8 @@ Task complete hone par:
 - Unrelated task tabs unnecessarily open na rahen.
 - Relevant diff/state inspectable rahe.
 - Terminal/tool logs primary visible surface na banen.
-- User ke unrelated existing tabs ko aggressively clean mat karo.
+- User ke independently open dirty/unsaved tabs ko data-loss ke risk ke baghair preserve karo.
+- Agent ke apne old/accumulated tabs ko final workspace mein mat chhoro.
 - Final workspace state clean aur task-focused ho.
 
 ## 8. Host Capability Boundary
@@ -3219,7 +3227,7 @@ Is rule ko har task par unnecessary close/open cycle mein convert mat karo. Tab 
 
 ## 10. Relationship With Existing Live Workspace Rules
 
-Yeh module Module 14 aur Module 38 ke Active File Open/Focus aur Live Edit Visibility rules ko strengthen karta hai.
+Yeh module Module 14 aur Module 38 ke Active File Open/Focus aur Live Edit Visibility rules ko strengthen karta hai. Jahan purane rules generic tab preservation ki baat karte hain, is module ka **specific current-file rule agent-managed editor tabs ke liye precedence rakhta hai**.
 
 Existing rule:
 
@@ -3612,17 +3620,18 @@ User ko live development ka actual workspace/editor result visible ho, terminal 
 
 Jis file par agent meaningful kaam kar raha ho us file ko VS Code editor mein open, reveal aur active/focused rakho jab host capability support kare.
 
-## 3. Single Active Editor File Rule
+## 3. STRICT SINGLE CURRENT FILE RULE
 
-Agent ek task ke dauran default mein **sirf current working file ko editor mein open/active rakhe**.
+Agent ke development workflow mein **editor ke andar ek waqt mein sirf wahi file open/active/focused honi chahiye jis file par agent abhi actual read/write/edit/rewrite ka kaam kar raha hai**.
 
-- Jis file par agent abhi meaningful edit/rewrite kar raha ho, **sirf wahi file** VS Code editor mein open, reveal aur active/focused honi chahiye jab host capability support kare.
-- Jaise hi agent kisi doosri file par meaningful editing start kare, pehli working file ka editor tab safely **close/release (cross)** karo aur nayi current file ko open/focus karo.
-- Purani file ko editor tab mein background mein open chhor kar accumulated tabs ya top-tab scrolling create mat karo.
-- Background inspection/diagnostic files ko editor tabs mein unnecessarily open mat rakho; supported background/read mechanisms prefer karo.
-- Single-file task mein sirf ek relevant editor tab rakho.
-- Is rule ka matlab source file delete karna nahi hai; sirf editor tab close/release karna hai.
-- User ki unrelated dirty/unsaved file ko silently close, discard ya overwrite mat karo. Agar current file mein unsaved user work ho to data-safe handling preserve karo.
+- Current working file = **only active editor tab**.
+- Jaise hi agent doosri file par meaningful work start kare, previous **agent-managed** editor tab ko safely **close/release (cross)** karo aur nayi current file ko open/reveal/focus karo.
+- Read-only inspection, search, dependency lookup, diagnostics aur background analysis ke liye files ko editor mein sequentially open karke scroll/tab history mat banao; supported background/read mechanisms use karo.
+- New file create hone par agar agent usi file mein kaam kar raha hai to **sirf nayi file** editor mein open/focused ho; purani agent tabs close/release ho jayein.
+- Current file change ke saath editor view bhi change ho: **File A → close → File B → close → File C**.
+- Is rule ka matlab source file delete/move karna nahi; sirf editor tab visibility manage karna hai.
+- User ki independently open dirty/unsaved files data-loss ke risk ke baghair preserve karo; lekin agent ke apne accumulated tabs ko preserve karna is rule ko violate karta hai.
+- Agent ko editor tabs ki scrolling ko normal development workflow nahi banana chahiye.
 
 ## 4. Single-File Transition Rule
 
