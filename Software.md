@@ -4617,3 +4617,189 @@ Jab existing editor/workspace rules ke saath overlap ho:
 Agent ka workspace behavior user ko continuously ye clear signal de:
 
 **"Abhi isi file par kaam ho raha hai."**
+
+# 60. VISUAL CHAT DEVELOPMENT REPORT LAYOUT MODULE
+
+## 1. Purpose
+
+Final development report ko aise structured chat layout mein present karo jo user ek nazar mein samajh sake ke **Future kya hai, Before kya tha, aur After kya hua**.
+
+Core visual relationship:
+
+**FUTURE | BEFORE | AFTER**
+
+Ye layout Module 55 ke factual Before/After, implemented changes, future suggestions aur verification information ko replace nahi karta; sirf unhein zyada easy-to-understand visual chat presentation mein organize karta hai.
+
+## 2. Preferred Chat Layout
+
+Agar chat/UI host rich layout support karta ho to final report ko teen clearly separated visual boxes/panels/sections mein render karo:
+
+**LEFT → FUTURE**  
+**CENTER → BEFORE**  
+**RIGHT → AFTER**
+
+Conceptual layout:
+
+```
+┌─────────────────┬─────────────────┬─────────────────┐
+│     FUTURE      │      BEFORE     │       AFTER     │
+│                 │                 │                 │
+│ → Option 1      │ Old state       │ New state       │
+│ → Option 2      │ Old behavior    │ New behavior    │
+│ → Option 3      │ Old problem     │ Fixed behavior  │
+│                 │                 │                 │
+│ Future benefit  │ What was wrong  │ What changed    │
+└─────────────────┴─────────────────┴─────────────────┘
+```
+
+User ko report dekhte hi visual comparison samajh aana chahiye.
+
+## 3. Future Box
+
+Left-side **FUTURE** section mein sirf genuinely relevant future improvements show karo.
+
+- Maximum 3 future options by default.
+- Priority order Module 55 ke mutabiq ho.
+- Recommended option ko **Priority 1** ke taur par #1 position par rakho.
+- Har option ke saath short practical benefit do.
+- Future item ko implemented feature ke taur par present mat karo.
+- Agar koi genuinely useful future suggestion nahi hai to empty/filler Future box mat banao; compactly indicate karo ke koi relevant future suggestion nahi hai.
+
+Example:
+
+**FUTURE**
+- **#1 Recommended:** Voice response caching
+- **#2:** Command history
+- **#3:** Offline fallback
+
+## 4. Before Box
+
+Center **BEFORE** section mein task start hone se pehle ki actual relevant state show karo.
+
+Include only relevant information, jaise:
+
+- Previous behavior
+- Existing problem
+- Previous UI/runtime state
+- Previous error
+- Existing limitation
+
+Before data actual evidence par based hona chahiye. Unknown information invent mat karo.
+
+## 5. After Box
+
+Right-side **AFTER** section mein completed change ke baad ki actual state show karo.
+
+Include:
+
+- New behavior
+- Fixed problem
+- Implemented feature
+- Relevant runtime/build result
+- Actual verification status
+
+After ko Before ke directly comparable context mein rakho jab comparison possible ho.
+
+## 6. Easy Comparison Rule
+
+Before aur After mein same concept ko same position/label ke saath compare karna prefer karo.
+
+Example:
+
+**BEFORE**
+- EXE: launch failed
+- Voice: no response
+- Tabs: multiple agent tabs
+
+**AFTER**
+- EXE: launches successfully
+- Voice: response verified
+- Tabs: one current agent tab
+
+Sirf actual verified results likho.
+
+## 7. Chatbot-Friendly Presentation
+
+Report normal chatbot conversation ka hissa lage, separate technical document jaisi nahi.
+
+- Short headings.
+- Short bullet points.
+- Clear visual separation.
+- Important changes immediately visible.
+- Long logs, stack traces, raw commands aur internal execution details hide karo.
+- Technical details sirf jab user ko actual understanding/debugging ke liye zaroori hon.
+- Rich cards/panels supported na hon to same **FUTURE | BEFORE | AFTER** order ko compact Markdown/text layout mein preserve karo.
+
+## 8. Changes / Verification Placement
+
+Future/Before/After primary visual comparison hai, lekin implemented changes aur verification information lose nahi honi chahiye.
+
+Preferred order:
+
+**FUTURE | BEFORE | AFTER**
+
+phir compact:
+
+**CHANGES**
+- ✓ [actual implemented change]
+- ✓ [actual implemented change]
+
+**VERIFICATION**
+- ✓ [actual verification]
+- [Not verified / skipped reason, if applicable]
+
+Agar rich chat layout mein space ho to Changes aur Verification ko After panel ke neeche compactly place kiya ja sakta hai.
+
+## 9. No Fake Visual Data
+
+Visual layout sirf presentation change hai.
+
+- Before/After values invent mat karo.
+- Uptime, latency, errors, build count ya performance numbers sirf measured evidence se show karo.
+- Agar metric measure nahi hua to **Not measured** likho.
+- Future suggestions ko current result ke numbers ke saath mix mat karo.
+- Verification ko visual polish ke liye falsely successful mat show karo.
+
+## 10. Responsive / Host Compatibility
+
+Agar host teen horizontal panels support karta hai:
+
+**FUTURE | BEFORE | AFTER**
+
+use karo.
+
+Agar screen/chat width chhoti ho to same semantic order preserve karte hue stacked layout use kar sakte ho:
+
+**FUTURE**  
+↓  
+**BEFORE**  
+↓  
+**AFTER**
+
+Layout responsive ho, lekin information hierarchy change na ho.
+
+## 11. Relationship With Module 55
+
+Module 55 final development report ka factual content, priority, recommendation, evidence aur verification define karta hai.
+
+Module 60 us content ki **visual chat presentation** define karta hai.
+
+Dono ko combine karke preferred result:
+
+**FUTURE | BEFORE | AFTER → CHANGES → VERIFICATION**
+
+Module 55 ke truthfulness, priority aur STOP rules preserve rahenge.
+
+## 12. Completion Standard
+
+Final report user ko ek nazar mein ye teen sawalon ka jawab de:
+
+**Future mein kya ho sakta hai?**  
+**Pehle kya tha?**  
+**Ab kya hai?**
+
+Preferred visual structure:
+
+**[ FUTURE ] | [ BEFORE ] | [ AFTER ]**
+
+Aur neeche sirf zaroori **Changes + Verification**.
