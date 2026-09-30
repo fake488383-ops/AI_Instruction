@@ -3452,9 +3452,9 @@ Normal startup validation mein primary inspection Software.md ki ho:
 
 **Load Software.md → Validate Rules → Detect Conflict/Duplicate/Obsolete Instruction → Establish Active Rules → Continue User Task**
 
-## 5. No Automatic OpenCode Launch
+## 5. No AI-Agent Auto-Launch
 
-Software.md agent ko VS Code ke normal launch behavior ko replace karne ka instruction nahi deta. VS Code open hone par OpenCode/Cline/CLI ko automatically launch/open force mat karo.
+Software.md agent ko VS Code ke normal launch behavior ko replace karne ka instruction nahi deta. VS Code open hone par kisi bhi AI agent, extension, CLI ya coding tool ko automatically launch/open/start force mat karo.
 
 ## 6. Normal VS Code Settings
 
