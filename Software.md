@@ -317,7 +317,7 @@ Sirf woh folders create karo jo actual contents aur requirements justify karein.
 - Same-purpose duplicate artifact already exist karta ho to naya duplicate create mat karo.
 - New file/folder creation ko minimum-necessary rule ke against check karo: Need → Existing Alternative → Technical Justification → Create only if necessary.
 
-## 4. Architecture Change
+## 6. Architecture Change
 
 - Small change → existing architecture preserve karo.
 - Medium refactor → affected boundaries analyze karo.
@@ -3392,7 +3392,7 @@ Preferred:
 
 **Workspace Edit → Background Build/Run → Backend Diagnostics → AI Analysis → Safe Fix → Background Verification → Workspace Result**
 
-# 49. LIVE WORKSPACE PREVIEW & MAXIMUM THREE OPEN FILES MODULE
+# 49. LIVE WORKSPACE PREVIEW & SINGLE ACTIVE EDITOR FILE MODULE
 
 ## 1. Purpose
 
@@ -3790,23 +3790,6 @@ Rules:
 - Accepted/rejected/deferred suggestions ko Module 36/56 ke suggestion-memory rules ke mutabiq handle karo.
 
 
-
-Completed implementation ke baad relevant future improvements ko separate section mein show karo.
-
-Format:
-
-**Future Suggestion**
-- → [Future Feature] — Is se [future practical benefit].
-- → [Future Feature] — Is se [future practical benefit].
-
-Rules:
-
-- Future suggestion ko implemented feature ke taur par present mat karo.
-- Future suggestion sirf relevant, evidence-based aur concise ho.
-- Unrelated feature lists mat generate karo.
-- Suggestion implementation ki automatic permission nahi hai; user approval required hai.
-- Agar koi future improvement current task se directly related nahi hai to usay omit karo.
-- Accepted/rejected/deferred suggestions ko Module 36/56 ke suggestion-memory rules ke mutabiq handle karo.
 
 ## 6. Fast Report Generation
 
