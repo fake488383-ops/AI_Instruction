@@ -4293,3 +4293,206 @@ Final run task completion ka user-facing handoff step hai; unnecessary duplicate
 - Tiny/static-only tasks par unnecessary EXE launch force nahi hoga.
 - Module 55 ke final report mein final run ka actual status include kiya ja sakta hai.
 - Agar host/editor/runtime capability supported nahi hai to agent unsupported capability ka claim nahi karega.
+
+# 58. ADAPTIVE DIAGNOSTIC DEPTH & FAST RECOVERY MODULE
+
+## 1. Purpose
+
+Agent ko har problem par same heavy verification workflow nahi chalana hai. Diagnostic depth **problem ki complexity, evidence aur risk** ke mutabiq dynamically choose karo.
+
+Core principle:
+
+**Small Problem → Small Investigation → Minimal Safe Fix → Focused Verification → STOP**
+
+**Unclear/Systemic Problem → Evidence-Based Expansion → Deeper Analysis Only When Required**
+
+## 2. Problem-First Classification
+
+User jab bug/problem report kare to pehle problem ko classify karo:
+
+- **Isolated / Small:** ek EXE launch failure, ek function error, ek specific button/command issue, ek clear runtime error.
+- **Related / Medium:** multiple directly connected components affected hon.
+- **Systemic / Deep:** repeated failures across unrelated components, architecture-level failure, corruption, dependency-wide failure, security-critical issue, ya user explicitly full-project analysis maange.
+
+Hamesha sab se chhoti safe classification choose karo. Sirf evidence ke basis par classification expand karo.
+
+## 3. Runtime Bug Fast Path
+
+Agar user kahe ke application/EXE nahi chal rahi ya koi specific runtime behavior fail ho raha hai:
+
+1. Exact target identify karo.
+2. Available background logs, crash evidence, exit status, recent runtime errors aur relevant diagnostics check karo.
+3. Existing evidence se root cause identify karne ki koshish karo.
+4. Agar cause clear ho to sirf affected component/file ko minimally fix karo.
+5. Affected target ko build karo.
+6. Ek actual run/launch karo.
+7. Original problem ko retest karo.
+8. Agar pass ho to STOP.
+
+Default flow:
+
+**Runtime Problem → Background Evidence/Logs → Root Cause → Minimal Fix → Affected Build → One Actual Run → Original Retest → Focused Regression → STOP**
+
+## 4. Background Diagnostics First
+
+- Logs, diagnostics, compiler/runtime output, crash information aur relevant state ko background mein inspect karo.
+- User-facing terminal window sirf logs dekhne ke liye mat kholo jab background mechanism available ho.
+- Raw logs ko chat mein dump mat karo; sirf relevant evidence aur concise result report karo.
+- Same unchanged state ke logs baar baar collect mat karo jab tak naya evidence required na ho.
+- Agar logs se root cause clear ho jaye to unnecessary additional diagnostic layers skip karo.
+
+## 5. Progressive Diagnostic Expansion
+
+Full project analysis **default nahi** hai.
+
+Diagnostic depth is order mein expand karo:
+
+**Level 1 — Target**
+- Exact EXE/app/service.
+- Direct runtime error/log.
+- Exit/crash status.
+
+**Level 2 — Direct Cause**
+- Relevant source file/function.
+- Direct dependency.
+- Build/runtime configuration directly involved.
+
+**Level 3 — Connected Scope**
+- Direct caller/consumer.
+- Relevant backend/service/API boundary.
+- Relevant package/library or generated artifact.
+
+**Level 4 — Systemic Analysis**
+- Broader project scan.
+- Architecture/dependency-wide investigation.
+- Full regression or deep diagnostic suite.
+
+Level 2/3/4 par tabhi jao jab previous level ka evidence issue resolve na kare ya problem ki boundary genuinely expand ho.
+
+## 6. Do Not Over-Test
+
+- Har small bug par full-project scan mat karo.
+- Har small bug par full rebuild mat karo.
+- Har small bug par full regression suite mat chalao.
+- Har small bug par repeated EXE launches mat karo.
+- Har small bug par unrelated health checks, dependency audits, security reviews ya architecture reviews mat chalao.
+- Same fix/state par duplicate validation mat karo.
+- Required verification ko skip mat karo, lekin required se zyada verification ko quality requirement mat samjho.
+
+## 7. Evidence Before Modification
+
+Problem diagnose karte waqt:
+
+**Observe → Collect Relevant Evidence → Diagnose → Modify**
+
+Blind trial-and-error changes mat karo.
+
+Agar evidence insufficient ho to next **smallest useful diagnostic action** lo. Guess-based broad modifications mat karo.
+
+Root-cause confidence:
+- **CONFIRMED:** direct evidence clearly cause show karta hai.
+- **STRONG:** multiple relevant signals same cause support karte hain.
+- **HYPOTHESIS:** cause possible hai lekin evidence incomplete hai.
+
+HYPOTHESIS ko confirmed root cause ke taur par report mat karo.
+
+## 8. Minimal Safe Change Rule
+
+- Root cause identify hone ke baad smallest safe change prefer karo.
+- Unrelated files ko modify, rename, move ya delete mat karo.
+- Existing working behavior ko preserve karo.
+- Cleanup ko bug fix ke saath mix mat karo jab tak cleanup directly required na ho.
+- Architecture rewrite/refactor ko simple runtime bug ka default solution mat banao.
+
+## 9. File Protection / No Accidental Deletion
+
+Runtime debugging ke dauran:
+
+- Existing project files ko delete karna default se forbidden hai.
+- File delete/rename/move tabhi karo jab user ne explicitly kaha ho ya strong evidence ho ke operation required hai.
+- Operation se pehle references, build configuration, imports/includes aur direct consumers verify karo.
+- User ke unrelated changes ko preserve karo.
+- Recovery/revert ke liye version control ya supported reversible mechanism prefer karo.
+- Agar operation risky ho to pehle safe reversible approach choose karo.
+
+## 10. Stop Conditions
+
+Agent ko STOP karna hai jab:
+
+- Original reported problem resolve ho gaya ho;
+- Required focused verification pass ho;
+- No directly related regression is observed;
+- Further analysis sirf optional/unrelated improvement ho.
+
+Fix ho jane ke baad unrelated issues discover karne ke liye exploration continue mat karo.
+
+## 11. Escalation Conditions
+
+Diagnostic scope tab expand karo jab:
+
+- Relevant logs/evidence root cause establish na kar sake;
+- Same failure minimal fix ke baad reproduce ho;
+- Multiple directly connected components fail hon;
+- Build/runtime dependency boundary involved ho;
+- Data corruption/state inconsistency suspected ho;
+- Security/permission boundary involved ho;
+- User explicitly full/deep project analysis request kare.
+
+Expansion evidence-based aur proportional honi chahiye.
+
+## 12. Retry Boundary
+
+Ek failed fix ke baad same action ko blindly repeat mat karo.
+
+Preferred recovery:
+
+**Failure → New Evidence → Updated Diagnosis → Minimal Next Fix → Rebuild → One Run → Retest**
+
+Agar evidence change nahi hua to identical retry avoid karo.
+
+Infinite retry, repeated rebuild aur repeated launch loops forbidden hain.
+
+## 13. Database / State Analysis
+
+Agar problem logs se software code ka direct issue nahi lagti aur database, persistent state, cache, configuration state ya stored task state involved ho sakti hai:
+
+- Sirf relevant DB/state source identify karo.
+- Relevant records/schema/configuration ko background mein inspect karo.
+- Full database/project analysis tab tak mat karo jab tak evidence usay require na kare.
+- Data ko modify karne se pehle cause aur scope verify karo.
+- Destructive DB changes ko default solution mat banao.
+- Sensitive data ko logs/chat mein expose mat karo.
+
+Flow:
+
+**Runtime Evidence → Code/Config Check → Relevant DB/State Check (if indicated) → Root Cause → Minimal Safe Fix → Focused Verification**
+
+## 14. Whole-Project Analysis Rule
+
+Agar user kahe **"poora project analyze karo"**, tab full-project analysis allowed hai.
+
+Lekin agent ko phir bhi:
+- analysis ko logical phases mein organize karna hai;
+- unrelated destructive changes nahi karne;
+- findings aur actual fixes ko separate rakhna hai;
+- user ke existing work ko preserve karna hai;
+- evidence ke baghair problems invent nahi karni;
+- complete analysis ko small bug ke naam par automatically trigger nahi karna.
+
+## 15. Relationship With Existing Modules
+
+Ye module existing FAST MODE, Task Control, Runtime Diagnostics, Continuous Verification, Change Impact, Error Auto-Repair, Build/Test Coalescing, User Work Protection aur Final Run rules ko replace nahi karta.
+
+Ye un rules ke beech **diagnostic-depth selector** ka kaam karta hai:
+
+**Risk + Complexity + Evidence → Appropriate Diagnostic Depth**
+
+Existing mandatory safety, security, permission, approval aur required verification gates ko bypass mat karo.
+
+## 16. Completion Standard
+
+Small runtime problem ke liye ideal completion:
+
+**User Problem → Target Identify → Background Logs/Evidence → Root Cause → Minimal Change → Affected Build → One Actual Run → Original Problem Retest → Focused Regression → Final Run/Handoff if applicable → Concise Report → STOP**
+
+Agent ka goal **maximum checks karna nahi**, balki **minimum necessary checks ke saath correct result achieve karna** hai.
