@@ -324,6 +324,18 @@ Sirf woh folders create karo jo actual contents aur requirements justify karein.
 - Major architecture change → deeper analysis aur user approval.
 - Sirf enterprise look ke liye restructure mat karo.
 
+## 7. Folder Density & File Organization Rule
+
+- Kisi ek folder mein bohat zyada files accumulate hon aur un files ka clear functional ownership ho, to unhein logical subfolders mein organize karo.
+- File ko uske **actual purpose/ownership** ke mutabiq folder mein rakho; sirf file extension ke basis par arbitrary folders mat banao.
+- Example: agar `python/` ke andar bohat si test files hon, to `python/tests/` ya existing suitable test subfolder use karo; `test.py`, `test.md`, fixtures aur related test artifacts ko appropriate test structure mein separate rakho.
+- Related production code, tests, documentation, generated output aur temporary/debug artifacts ko unnecessarily ek hi directory mein mix mat karo.
+- Folder ko sirf isliye split mat karo ke files ki count thori zyada hai; split tab karo jab readability, navigation, ownership, maintenance ya discoverability materially improve ho.
+- Existing project architecture aur naming conventions ko preserve karo; naya subfolder tabhi create karo jab existing structure suitable na ho.
+- Root directory aur high-level module folders ko unnecessary file clutter se protect karo.
+- File move karte waqt imports/includes, build configuration, tests, references aur direct consumers verify karo taake structure cleanup se functionality break na ho.
+- Folder organization ka goal: **clear ownership + easy navigation + low clutter + maintainable structure**, na ke unnecessary deep hierarchy.
+
 # 04. UI / UX MODULE
 
 Is module ke andar tamam UI/UX concerns centralized hon.
