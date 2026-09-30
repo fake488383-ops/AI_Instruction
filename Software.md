@@ -3399,14 +3399,17 @@ User ko live development ka actual workspace/editor result visible ho, terminal 
 
 Jis file par agent meaningful kaam kar raha ho us file ko VS Code editor mein open, reveal aur active/focused rakho jab host capability support kare.
 
-## 3. Open File Limit
+## 3. Single Active Editor File Rule
 
-Agent ek task ke dauran maximum **3 editor files/tabs** visible/open rakhe.
+Agent ek task ke dauran default mein **sirf current working file ko editor mein open/active rakhe**.
 
-- Preferred minimum relevant working set: **2 files** jab task genuinely multi-file ho.
-- Maximum: **3 files**.
-- Single-file task mein unnecessary second/third file mat kholo.
-- Fourth relevant file ki zarurat ho to least-recently-needed task tab ko safely close/release karke new file open karo.
+- Jis file par agent abhi meaningful edit/rewrite kar raha ho, **sirf wahi file** VS Code editor mein open, reveal aur active/focused honi chahiye jab host capability support kare.
+- Jaise hi agent kisi doosri file par meaningful editing start kare, pehli working file ka editor tab safely **close/release (cross)** karo aur nayi current file ko open/focus karo.
+- Purani file ko editor tab mein background mein open chhor kar accumulated tabs ya top-tab scrolling create mat karo.
+- Background inspection/diagnostic files ko editor tabs mein unnecessarily open mat rakho; supported background/read mechanisms prefer karo.
+- Single-file task mein sirf ek relevant editor tab rakho.
+- Is rule ka matlab source file delete karna nahi hai; sirf editor tab close/release karna hai.
+- User ki unrelated dirty/unsaved file ko silently close, discard ya overwrite mat karo. Agar current file mein unsaved user work ho to data-safe handling preserve karo.
 
 ## 4. Rolling File Window
 
