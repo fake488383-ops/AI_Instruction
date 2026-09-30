@@ -3626,7 +3626,7 @@ Report ka maqsad long technical report banana nahi, balki completed work ko ek c
 
 Default report order hamesha:
 
-**BEFORE → AFTER → CHANGES / FEATURES → MINI EXPLANATION → FUTURE SUGGESTION**
+**BEFORE → AFTER → CHANGES / FEATURES → MINI EXPLANATION → FUTURE OPTIONS (up to 3) → PRIORITY → RECOMMENDATION → VERIFICATION**
 
 Before ko After se pehle show karo. Future ko implementation result se separate rakho.
 
@@ -3690,7 +3690,106 @@ Har implemented feature ke neeche ya saath **one-line Mini Explanation** do:
 
 Long technical implementation details, internal commands, stack traces ya raw logs report mein default se mat dikhayo.
 
-## 5. Future Suggestion Section
+## 5. Future Options, Priority & Recommendation
+
+Completed implementation ke baad, jab genuinely useful future direction available ho, agent default mein **3 concise future options** de sakta hai. Har option ke saath uska practical benefit aur priority/recommendation status clearly show karo.
+
+Preferred format:
+
+**Future Options**
+1. **[Option A]** — [kya enable karega]. **Priority:** [1/2/3]
+2. **[Option B]** — [kya enable karega]. **Priority:** [1/2/3]
+3. **[Option C]** — [kya enable karega]. **Priority:** [1/2/3]
+
+**Recommended:** [Option name] — [short evidence-based reason].
+
+### 5.1 Three-Option Rule
+
+- Future section mein normally maximum **3 relevant options** do.
+- Options genuinely different approaches/features hon; same feature ke minor variations ko alag options mat banao.
+- Har option ko ek short practical explanation do: **"Is se kya milega / kya enable hoga."**
+- Unrelated future ideas ki long list mat do.
+- Agar 3 genuinely useful options available nahi hain to artificial options invent mat karo; sirf available relevant options do.
+
+### 5.2 Priority Rule
+
+Priority actual task context, current gap, dependency impact, user requirement aur expected practical value ke basis par assign karo.
+
+Priority ka matlab:
+- **Priority 1:** current need ya dependency ke liye pehle consider karne wali option.
+- **Priority 2:** useful next option, lekin Priority 1 se baad.
+- **Priority 3:** useful/future option, lekin immediate need kam.
+
+Priority ko arbitrary preference ya personal opinion ke taur par present mat karo.
+
+### 5.3 Evidence-Based Recommendation Rule
+
+Agent ko sirf options list nahi karne; jab enough evidence available ho to **ek Recommended option** bhi identify karni hai.
+
+Recommendation in factors ko relevant hone par compare karke banao:
+
+- User ki stated requirement
+- Feature/capability fit
+- Integration complexity
+- Expected latency/performance
+- Reliability/stability
+- Cost/usage limits
+- Privacy/data handling requirements
+- Existing project compatibility
+- Maintenance/dependency impact
+- Scalability/future expansion
+
+Recommendation ka format:
+
+**Recommended: [Option]**
+**Kyun:** [2–3 concise evidence-based reasons].
+
+Recommendation ko absolute "best for everyone" claim mat banao. Context-specific recommendation do, aur agar evidence incomplete ho to uncertainty clearly state karo.
+
+### 5.4 API / Provider Selection Example
+
+Jab user kahe ke project mein API/provider apply karni hai aur multiple valid choices hon, agent 3 practical options de sakta hai, for example:
+
+1. **Agent Router** — multiple model/provider routing aur centralized selection ke liye.
+2. **Gemini** — Google/Gemini ecosystem ke direct model integration ke liye.
+3. **OpenRouter** — multiple model providers ko ek API layer se access karne ke liye.
+
+Phir project ki actual requirements ke mutabiq comparison aur recommendation do, for example:
+
+**Recommended: [Option]**
+**Kyun:** [current Apex requirement + integration fit + relevant performance/cost/reliability evidence].
+
+Agar current project context kisi option ko clearly support nahi karta, agent ko bina evidence ke "ye best hai" nahi kehna; pehle relevant missing factor ko identify karo.
+
+### 5.5 User Decision Remains Final
+
+Recommendation decision support hai, automatic implementation approval nahi.
+
+- Agent recommended option identify kar sakta hai.
+- Agent recommendation ke reasons concise aur factual rakhe.
+- User ki approval ke baghair meaningful provider/API/dependency change implement mat karo.
+- Agar user numbered option select kare, selected option ko approved scope ke mutabiq implement karo.
+
+## 5.6 Future Suggestion Section
+
+Completed implementation ke baad relevant future improvements ko separate section mein show karo.
+
+Format:
+
+**Future Suggestion**
+- → [Future Feature] — Is se [future practical benefit].
+- → [Future Feature] — Is se [future practical benefit].
+
+Rules:
+
+- Future suggestion ko implemented feature ke taur par present mat karo.
+- Future suggestion sirf relevant, evidence-based aur concise ho.
+- Unrelated feature lists mat generate karo.
+- Suggestion implementation ki automatic permission nahi hai; user approval required hai.
+- Agar koi future improvement current task se directly related nahi hai to usay omit karo.
+- Accepted/rejected/deferred suggestions ko Module 36/56 ke suggestion-memory rules ke mutabiq handle karo.
+
+
 
 Completed implementation ke baad relevant future improvements ko separate section mein show karo.
 
@@ -3773,7 +3872,7 @@ Before/After, feature, improvement aur verification claims actual workspace/buil
 
 Before/After report Module 01, 25, 40, 43, 44 aur 53 ke fast execution rules ko slow nahi karegi.
 
-**Fast Work → Minimal Required Validation → Reuse Existing Evidence → Short Before/After Report → Relevant Future Suggestion → STOP**
+**Fast Work → Minimal Required Validation → Reuse Existing Evidence → Short Before/After Report → Up to 3 Relevant Future Options → Priority + Evidence-Based Recommendation → STOP**
 
 ## 11. Completion Standard
 
