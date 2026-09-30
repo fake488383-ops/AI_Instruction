@@ -3253,3 +3253,66 @@ Yeh module Module 14, 37A, 40, 42 aur 43 ke workspace visibility, background dia
 ## 7. Completion Standard
 
 Routine task mein user-facing surface par unnecessary CLI/command stream nahi hona chahiye; user ko actual completed work, relevant error/fix aur verification ka concise status milna chahiye.
+
+
+# 46. WORKSPACE FOLDER OWNERSHIP & TEST ARTIFACT STRUCTURE MODULE
+
+## 1. Purpose
+
+Agent ko VS Code Explorer mein project ko clean, structured aur understandable rakhna hai. Kisi bhi testing, temporary, generated ya support file ko project root mein random tareeqe se create nahi karna.
+
+## 2. Root Folder Protection
+
+- Test source files ko root mein create mat karo.
+- Temporary/debug files ko root mein create mat karo.
+- Generated reports/dumps/artifacts ko root mein create mat karo.
+- Build output ko root mein dump mat karo jab existing build/output directory available ho.
+- New file ke liye pehle existing ownership folder identify karo.
+
+## 3. Ownership-Based Placement
+
+Har new artifact ko uske purpose ke mutabiq correct folder mein place karo:
+- UI files → existing UI folder/module.
+- Backend files → existing backend/core/service folder.
+- Test files → existing tests/appropriate test subfolder.
+- Temporary test artifacts → dedicated temporary/test-output location.
+- Build binaries/output → existing build/output directory.
+- Documentation → existing docs/documentation location.
+- Scripts/tools → existing tools/scripts location.
+- Resources/assets → existing resources/assets location.
+
+Existing project architecture available ho to usi ko reuse karo; unnecessary parallel folder structure create mat karo.
+
+## 4. Test File Rule
+
+Agar agent testing ke liye kisi bhi test file, including `.cpp`, `.h`, `.py`, `.qml`, `.json`, `.tc` ya similar artifact ko create kare:
+1. Pehle existing test structure inspect karo.
+2. Suitable test folder/subfolder identify karo.
+3. Test file ko wahi create karo.
+4. Root folder mein test file mat chhoro.
+5. Temporary test artifact task ke baad required na ho to safely remove karo.
+6. Permanently useful test ko proper test ownership structure mein retain karo.
+
+## 5. Generated Artifact Rule
+
+Build, test, debug, export, coverage, cache, dump ya runtime artifacts ko source code ke saath mix mat karo. Existing dedicated output/cache/build/test-output locations use karo.
+
+## 6. Existing Structure First
+
+Naya folder banane se pehle: Existing Structure → Correct Owner → Existing Subfolder → New Folder Only If Technically Necessary.
+
+## 7. Explorer Cleanliness
+
+VS Code Explorer ko readable project map samjho: related files grouped hon, root clean rahe, temporary artifacts isolated hon, aur UI/backend/tests/tools/resources/docs clearly separated hon.
+
+## 8. File Creation Decision
+
+Har new file ke liye internally check karo: Purpose → Owner → Existing Folder → Correct Placement → Lifecycle → Create.
+
+## 9. Relationship With Existing Modules
+
+Yeh module Module 03, Module 29 aur Module 45 ke structure-hygiene aur clean-workspace rules ko strengthen karta hai.
+
+## 10. Completion Standard
+
+Task complete hone par koi naya file/artifact random project-root location mein nahi rehna chahiye agar uske liye suitable owned folder available hai.
