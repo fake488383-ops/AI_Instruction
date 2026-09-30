@@ -154,6 +154,9 @@ Is pipeline ke darmiyan full-project analysis insert mat karo jab tak task ya ev
 - Same task ke related edits ko unnecessarily one-by-one build/run/test mat karo; coherent implementation batch complete karke ek focused validation cycle prefer karo.
 - Verification ka goal correctness hai, repetition nahi. Ek current-code verification result ko same unchanged state ke liye duplicate checks se repeat mat karo.
 - Build/test ko sirf meaningful state changes, required dependency boundaries, failure recovery ya final current-code verification par run karo.
+- Tiny/small UI ya isolated change mein EXE run/build ko automatic default mat samjho; pehle determine karo ke requested change ke liye runtime verification technically required hai ya nahi.
+- Agar runtime verification required nahi hai to EXE launch/relaunch aur repeated runtime checks skip karo.
+- Agar runtime verification required hai to coherent change batch ke baad ek focused run/retest cycle prefer karo, na ke har micro-edit par separate cycle.
 
 ## 7. STOP CONDITION
 
@@ -3411,13 +3414,13 @@ Agent ek task ke dauran default mein **sirf current working file ko editor mein 
 - Is rule ka matlab source file delete karna nahi hai; sirf editor tab close/release karna hai.
 - User ki unrelated dirty/unsaved file ko silently close, discard ya overwrite mat karo. Agar current file mein unsaved user work ho to data-safe handling preserve karo.
 
-## 4. Rolling File Window
+## 4. Single-File Transition Rule
 
-Example:
+Single Active Editor File Rule ke mutabiq rolling multi-file tab window use mat karo.
 
-**File 1 → File 2 → File 3 → File 4 needed → File 1 safely close/release → File 4 open/focus**
-
-Is rule ka matlab source file delete karna nahi hai; sirf editor tab visibility manage karni hai.
+- Jab current working file change ho, previous working file ka editor tab safely close/release karo.
+- Nayi current working file ko open/reveal/active/focused karo jab host capability support kare.
+- Is rule ka matlab source file delete karna nahi hai; sirf editor tab visibility manage karni hai.
 
 ## 5. Explorer Active Selection
 
@@ -3564,6 +3567,28 @@ Independent diagnostics/checks ko safely parallel execute kiya ja sakta hai, lek
 ## 6. Slow Operation Detection
 
 Agar build, test, startup ya runtime operation repeatedly slow ho, relevant timing evidence collect karke bottleneck identify karo aur user ko concise improvement suggestion do.
+
+## 7. Tiny / Small Task Fast Path
+
+Tiny ya small task ko unnecessarily full development/debug cycle mein mat le jao.
+
+- Simple UI change (text, label, color, spacing, size, style, local animation/property change) ke liye default mein EXE launch/run mat karo agar code/static inspection ya targeted validation se correctness establish ho sakti ho.
+- Small isolated code/config change ke liye sirf affected file/symbol aur directly required dependency inspect karo.
+- Har chhoti edit ke baad EXE ko baar-baar build, launch, close, rerun ya retest mat karo.
+- Related tiny/small edits ko ek coherent batch mein complete karo, phir sirf zarurat ke mutabiq ek focused validation karo.
+- EXE/runtime verification tabhi karo jab requested behavior runtime-dependent ho, change actually runtime behavior ko affect karta ho, static/build validation insufficient ho, ya evidence se runtime issue exist karta ho.
+- Agar EXE run kiya gaya ho aur requested check pass ho jaye, same unchanged code state par duplicate EXE runs mat karo.
+- Unrelated startup checks, health checks, full regression suites, full rebuilds aur project-wide diagnostics small task ke liye default nahi hain.
+- Small task ka default path:
+
+**Small Request → Targeted Inspect → Coherent Edit → Minimal Validation → STOP**
+
+- Small runtime bug ka default path:
+
+**Runtime Error → Relevant Evidence/Log → Root Cause → Minimal Fix → Affected Target Build → One Actual Run → Original Error Retest → Focused Regression → STOP**
+
+- Agar root cause unclear ho to sirf evidence-based next diagnostic step lo; broad exploration ya repeated EXE runs mat karo.
+- FAST MODE mein speed ke liye required correctness verification skip mat karo, lekin required se zyada verification bhi mat karo.
 
 # 54. PROJECT CHANGE SAFETY & USER WORK PROTECTION MODULE
 
