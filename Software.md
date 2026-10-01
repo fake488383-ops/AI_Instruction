@@ -4636,7 +4636,7 @@ Jab existing editor/workspace rules ke saath overlap ho:
 
 ## 13. Completion Standard
 
-**One Current File Open + One Current File Focused + Same File Selected in Explorer + Previous Agent Tabs Closed/Released + Background Inspection + No Tab Accumulation**
+**One Current File Open + One Current File Focused + Same File Selected in Explorer + Current Parent Folder Revealed + Previous Agent Tabs Closed/Released + Background Inspection + No Tab Accumulation**
 
 Agent ka workspace behavior user ko continuously ye clear signal de:
 
