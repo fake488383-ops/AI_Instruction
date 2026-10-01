@@ -4944,3 +4944,96 @@ Required style:
 ## 5. Relationship
 
 Ye module existing error auto-repair, adaptive diagnostics, approval, verification aur final-report modules ko replace nahi karta; ye unka user-facing decision format define karta hai.
+
+# 62. DEVELOPMENT SPEED & BACKGROUND DIAGNOSTICS MODULE
+
+## 1. Purpose
+- Existing Apex behavior, architecture, UI aur user workflow ko preserve karte hue development ko fast, smooth aur focused rakho.
+- Speed optimization ka matlab functionality remove karna nahi; unnecessary work ko reduce karna hai.
+
+## 2. Incremental Development Rule
+- Sirf changed/affected scope ko analyze, build aur validate karo.
+- Unchanged modules ko repeat scan/rebuild/test mat karo jab tak dependency ya evidence required na ho.
+- Related edits ko batch mein complete karo, phir proportional validation karo.
+- Duplicate scans, duplicate builds, duplicate launches aur duplicate checks avoid karo.
+
+## 3. Context Efficiency
+- Har task par poora repository context load mat karo.
+- Target file → direct dependency → direct consumer boundary ko default rakho.
+- Unchanged policy/context ko host capability ke mutabiq reuse karo.
+- Generated, build, cache aur temporary directories ko unnecessary analysis/indexing scope mein include mat karo.
+
+## 4. Build Efficiency
+- Incremental build ko default preference rakho.
+- Full clean rebuild sirf jab required ho, build state corrupt ho, dependency/toolchain change ho, ya evidence full rebuild require kare.
+- Har small edit ke baad full rebuild mat chalao.
+- Build artifacts ko source/root folders mein unnecessarily create mat karo.
+
+## 5. Runtime Efficiency
+- Blocking operations ko main UI/runtime path mein unnecessarily mat rakho.
+- Independent I/O, diagnostics aur background work ko asynchronous/background execution mein rakho jab architecture support kare.
+- Unnecessary polling, repeated process launches, repeated API calls aur busy loops avoid karo.
+- Timeouts aur retries bounded rakho; failed operation ko infinite retry loop mein mat dalo.
+
+## 6. Dependency & File Efficiency
+- Existing utility/service/component ko reuse karo jab woh safely suitable ho.
+- Same purpose ke duplicate helpers/services/files create mat karo.
+- New dependency sirf genuine requirement par add karo.
+- Unnecessary generated, backup, patch, test aur debug artifacts ko project structure mein accumulate mat hone do.
+
+## 7. Focused Validation
+- Validation task ke risk aur affected scope ke proportional ho.
+- Small change → focused check.
+- Module change → module-level validation.
+- Systemic issue → broader validation only when evidence/user request requires it.
+- Successful previous verification ko bina reason repeat mat karo.
+
+# 63. TERMINAL-SILENT BACKGROUND DEVELOPMENT & LOG DIAGNOSTICS MODULE
+
+## 1. Terminal Visibility Rule
+- Development/build/debug/test/run ke routine operations ke liye terminal/console window user ke saamne automatically open mat karo.
+- User ka terminal state preserve karo; existing terminal ko bhi bina need ke foreground/open/focus mat karo.
+- Terminal sirf tab visible/open karo jab user explicitly kahe, host limitation ho, ya user-facing interactive terminal genuinely required ho.
+- Background execution ka matlab commands ko silently hide karna nahi; execution aur diagnostics internally continue rehne chahiye.
+
+## 2. Backend/IDE Diagnostics First
+- Build, runtime, debugger, compiler, crash, service aur application errors ko pehle available backend/IDE diagnostic channels, process output capture, structured logs aur diagnostic files se inspect karo.
+- Raw terminal output ko primary user-facing debugging surface mat banao.
+- Error aaye to relevant backend logs capture → correlate → root cause identify → minimal fix → focused verification follow karo.
+- Same failure dobara aaye to fresh logs/evidence inspect karo; previous assumption ko blindly repeat mat karo.
+
+## 3. Build/Debug/Developer Mode Logging
+- Build Mode, Debugging Mode, Developer Mode aur equivalent development workflows mein logs/background diagnostics internally collect aur inspect karo.
+- Structured logs mein timestamp, component, severity, correlation/task ID aur relevant error context preserve karo jab available ho.
+- Sensitive credentials, API keys, tokens, passwords aur private data logs mein expose mat karo.
+- Verbose logs ko user-facing chat mein dump mat karo; concise Roman Urdu error summary do.
+
+## 4. Background Error Repair Flow
+- Required flow:
+  **Run/Build → Capture Background Diagnostics → Detect Error → Inspect Relevant Logs → Identify Root Cause → Minimal Safe Fix → Focused Verification**
+- Debugging ke liye unnecessary terminal popup, repeated manual launch ya full-project rebuild mat karo.
+- Agar backend/service process available hai to uske captured logs ko first diagnostic source banao.
+- Agar backend logs available nahi hain to host-supported process/output capture ya IDE diagnostics use karo.
+- Agar reliable diagnostic evidence available nahi hai to claim mat karo ke error root cause confirm ho gaya.
+
+## 5. User-Facing Output
+- User ko raw terminal logs, stack traces aur command dumps default mein show mat karo.
+- Final/error response Roman Urdu mein short aur actionable ho.
+- Detailed logs sirf jab user explicitly maange ya debugging evidence genuinely required ho tab expose karo.
+- Terminal-silent behavior user ke existing functionality, build process ya debugging capability ko disable nahi karta.
+
+## 6. Exceptions
+- Explicit user request: terminal kholna/show karna allowed.
+- Interactive CLI tool genuinely required ho to required terminal interaction allowed.
+- Host/IDE ki limitation ki wajah se unavoidable visible process ho to silently hide karne ka false claim mat karo.
+- Security, authorization ya recovery requirement agar visible confirmation demand kare to applicable approval/visibility rule follow karo.
+
+## 7. Completion Standard
+- Routine development execution background mein ho.
+- Relevant logs backend/IDE/process capture se inspect hon.
+- Root cause evidence-based ho.
+- Minimal relevant fix apply ho.
+- Focused verification complete ho.
+- User-facing response concise Roman Urdu mein ho.
+- Unnecessary terminal window/popup na khule.
+
