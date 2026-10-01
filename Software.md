@@ -4502,150 +4502,73 @@ Small runtime problem ke liye ideal completion:
 
 Agent ka goal **maximum checks karna nahi**, balki **minimum necessary checks ke saath correct result achieve karna** hai.
 
-# 59. STRICT SINGLE-FILE WORKSPACE & EXPLORER FOCUS MODULE
+# 59. WORKSPACE & EXPLORER FREEDOM MODULE
 
 ## 1. Purpose
 
-Workspace mein agent ke kaam ke dauran **sirf current working file** visible/open/focused honi chahiye. Agent inspection ke liye background/read mechanisms use kare aur files ko editor tabs mein collect na kare.
+Workspace aur VS Code Explorer ko kisi artificial single-file ya single-folder restriction se lock mat karo.
 
-Core rule:
+User/agent ko zarurat ke mutabiq multiple files aur folders open, inspect aur navigate karne ki freedom honi chahiye.
 
-**One Active Task → One Current File → One Visible Agent Tab → One Explorer Selection**
+## 2. Multiple Files Allowed
 
-## 2. Strict Single-File Rule
+- Ek waqt mein multiple editor files/tabs open reh sakti hain.
+- Agent ko files sequentially close/release karne ki mandatory requirement nahi hai.
+- Background inspection ke liye editor tabs use karna forbidden nahi hai.
+- Tab count ko artificially 1 par restrict mat karo.
+- User ke existing tabs aur working context ko preserve karo.
+- Relevant files ko saath open rakhna development aur navigation ke liye allowed hai.
 
-- Agent-managed workspace/editor state mein ek waqt par **sirf ek file open** rakho.
-- Jis file par actual implementation/editing ho rahi hai wahi current file hai.
-- Kisi doosri file ko future work, inspection, search, diagnostics ya context ke liye editor mein open mat rakho.
-- Current file change hote hi previous agent-managed file ka editor tab **close/release** karo, phir next file open/focus/reveal karo.
-- Multiple files wale task mein bhi files sequentially handle karo:
+## 3. Explorer Folder Behavior
 
-**File A → Work → Close/Release A → File B → Work → Close/Release B → File C**
+- Explorer mein multiple folders expanded/open reh sakte hain.
+- User jab doosra folder click ya expand kare to pehle folder ko automatically close/collapse karna mandatory nahi hai.
+- Agent ko har folder switch par `Collapse Folders`, `Collapse All` ya equivalent action force nahi karna hai.
+- Explorer ka expanded/collapsed state user ke navigation context aur normal VS Code behavior ke mutabiq reh sakta hai.
+- Kisi folder ko sirf is wajah se collapse mat karo ke koi doosra folder select/open hua hai.
 
-- Multiple agent-managed tabs accumulate karna forbidden hai.
+## 4. File & Explorer Focus
 
-## 3. Background Inspection Rule
+- Current working file ko focus/reveal/select karna useful ho sakta hai, lekin ye exclusive single-file requirement nahi hai.
+- Multiple relevant files open hon to unhein unnecessarily close mat karo.
+- User-owned editor state ko silently modify, discard ya rearrange mat karo.
+- Agent apne task ke liye relevant file/tab par focus kar sakta hai bina baqi valid tabs ko band kiye.
 
-Read-only inspection, search, symbol lookup, diagnostics, log analysis, dependency checking aur code reading ke liye:
+## 5. VS Code Settings
 
-- Background/read/search mechanism prefer karo.
-- Inspection ke liye editor tab open mat karo.
-- Agar host ko temporary editor access technically required ho to inspection complete hote hi tab close/release karo.
-- Background inspection ka matlab hidden/secondary editor tabs mein files jama karna nahi hai.
+- Software.md mein aisi workspace settings force mat karo jo editor ko sirf ek file/tab tak limit karein.
+- `workbench.editor.limit.enabled` ya equivalent single-tab restriction ko agent-managed default requirement mat banao.
+- `explorer.autoReveal` sirf tab use kiya ja sakta hai jab normal navigation/helpful behavior ke liye relevant ho; ye folders ko automatically collapse karne ka rule nahi hai.
+- Existing user/workspace settings ko blindly overwrite mat karo.
+- Repo ke Software.md ko update karna kisi doosre workspace ki settings automatically change nahi karta.
 
-## 4. Explorer Selection / Reveal / Click Rule
+## 6. Runtime / Build / Diagnostics
 
-Jab current working file change ho:
+Build, run, test, compiler diagnostics aur log analysis background ya editor dono mein kiye ja sakte hain, jo host aur task ke liye practical ho.
 
-1. Previous agent-managed editor tab close/release karo.
-2. New target file ko workspace mein locate karo.
-3. Explorer/file tree mein **usi current working file ko select/highlight/reveal** karo.
-4. Us file ko editor mein open karo.
-5. Editor focus bhi usi file par rakho.
+- Source files ko diagnostics ke liye open rakhna allowed hai.
+- Logs/diagnostics ko editor tabs mein kholna allowed hai jab is se development workflow clear ya useful hota ho.
+- Runtime/build ke baad tabs ya folders ko sirf single-file/single-folder policy maintain karne ke liye close/collapse mat karo.
 
-Is se user ko simultaneously clear hona chahiye:
+## 7. Completion Standard
 
-**Explorer mein selected file = Editor mein active working file = Current task file**
+Task complete hone par user ka existing workspace context preserve karo.
 
-Agar target `.cpp`, `.h`, `.qml`, `.py`, `.json`, ya kisi aur supported file type ka ho to same rule apply hoga. Example sirf concept samjhane ke liye hai; actual current working file hi select/focus honi chahiye.
+- Multiple relevant files/tabs open reh sakti hain.
+- Multiple Explorer folders expanded reh sakte hain.
+- Agent ko artificial tab/folder cleanup nahi karna.
+- Sirf unrelated temporary artifacts ya task-specific temporary state ko existing cleanup rules ke mutabiq handle karo.
 
-## 5. Automatic Focus on File Change
+## 8. Rule Removal
 
-Agent jab kisi doosri file par actual kaam start kare:
+Is module mein koi rule nahi hoga jo:
 
-**Old Current File → Close/Release → Explorer Reveal/Select New File → Open → Focus → Work**
-
-Agent ko user ke manually old tab par rehne ki wajah se new working file background mein edit nahi karni chahiye.
-
-## 6. No Background Editor Tabs
-
-- Background mein agent-managed source tabs nahi.
-- Hidden editor tabs nahi.
-- Preview tabs ko repeatedly accumulate nahi karo.
-- Pinned/preview/editor tab mechanisms ko use karke multiple agent-managed files ko open state mein mat rakho.
-- Search results ko editor tabs mein convert karke tab history mat banao.
-- Logs/diagnostics ko editor tabs mein kholne ke bajaye background mechanisms use karo.
-
-## 7. User-Owned Tabs and Data Safety
-
-Strict single-file rule ka scope **agent-managed workspace state** hai.
-
-- User ki unsaved/dirty file ko silently discard, overwrite ya destroy mat karo.
-- Agar host kisi user-owned dirty tab ko safely close nahi kar sakta, data-loss se bachna priority hai.
-- Is exception ko naye agent-managed tabs accumulate karne ka reason mat banao.
-- Agent ko apne khud ke opened tabs ko user-owned tabs ke naam par preserve nahi karna hai.
-
-## 8. VS Code Settings & Actual Enforcement
-
-Sirf Software.md mein instruction likhne se VS Code ki editor tabs ya Explorer state automatically change nahi hoti. Agent ko active VS Code workspace mein available settings/commands inspect karke, permission aur project conventions ke mutabiq actual configuration apply karni hogi.
-
-Jab current workspace mein `.vscode/settings.json` use karna munasib aur authorized ho, existing settings ko preserve/merge karte hue single-editor-file behavior ke liye relevant settings configure karo:
-
-```json
-{
-  "workbench.editor.limit.enabled": true,
-  "workbench.editor.limit.value": 1,
-  "workbench.editor.limit.perEditorGroup": false,
-  "explorer.autoReveal": true
-}
-```
-
-- Existing `.vscode/settings.json` ko blindly overwrite mat karo; merge karo aur unrelated settings preserve karo.
-- `workbench.editor.limit...` tab count ko limit karne mein madad karta hai; agent ko phir bhi apne purane tabs close karne aur editor groups manage karne ki zaroorat ho sakti hai.
-- `explorer.autoReveal` current editor file ko Explorer mein reveal karne mein madad karta hai, lekin khud se baqi expanded folders collapse karne ki guarantee nahi deta.
-- Har file switch par available VS Code `Collapse Folders` / `Collapse All` action use karo, phir sirf current file ka parent folder expand/reveal/select karo.
-- Agar VS Code host/API/agent tool tab close, editor group close, Explorer collapse ya settings update karne ki capability nahi deta, action successful claim mat karo; available alternative use karo aur final report mein limitation batao.
-- Settings apply karne ke baad actual editor tab count, active file, Explorer selection aur expanded folder state verify karo. Settings likh dena verification ka substitute nahi.
-- User-owned dirty/unsaved files ko data-loss ke risk ke saath close mat karo; agent-managed tabs ko close karne ka rule phir bhi follow karo.
-- Repo ke Software.md ko update karna, kisi doosre workspace ki settings automatically change nahi karta. Settings us actual project/workspace mein apply honi chahiye jahan agent kaam kar raha hai.
-
-## 9. Editor vs Explorer State
-
-Editor aur Explorer dono ka state current work ke saath synchronize rakho:
-
-**Current Working File**
-→ Explorer selected/revealed
-→ Editor active/focused
-→ Previous agent tab closed/released
-→ No other agent-managed editor tab open
-
-Explorer mein folder expanded rehna allowed hai agar navigation ke liye useful ho, lekin unrelated files ko editor tabs mein open rakhna allowed nahi.
-
-## 10. Runtime / Build / Diagnostics
-
-Build, run, test, compiler diagnostics aur log analysis ko background mein perform karo jab host capability available ho.
-
-- Build/test ke liye source files ko editor mein khol kar visible tab mat banao.
-- EXE/application launch ke liye source file tab open karna required nahi hai.
-- Runtime logs ko inspect karne ke liye separate editor tabs accumulate mat karo.
-- Required diagnostics complete hone ke baad current implementation file ko hi visible/focused state mein restore karo.
-
-## 11. Completion State
-
-Task complete hone par:
-
-- Last/current relevant implementation file Explorer mein selected/revealed ho.
-- Wahi file editor mein active/focused ho.
-- Agent-managed old tabs closed/released hon.
-- User ko current result locate karne ke liye tab bar mein search/scroll na karna pade.
-- Final application launch Module 57 ke mutabiq applicable ho to application user handoff ke liye run ho sakti hai; is runtime launch ko extra source/editor tab open karne ka reason mat banao.
-
-## 12. Enforcement Priority
-
-Jab existing editor/workspace rules ke saath overlap ho:
-
-- **Strict single agent-managed file** default hai.
-- Existing user-owned dirty-work protection preserve rahegi.
-- Background inspection is preferred over editor-tab inspection.
-- File delete/move/rename is rule ka part nahi hai; workspace clutter ka solution **tab close/release + Explorer focus** hai, source file deletion nahi.
-
-## 13. Completion Standard
-
-**One Current File Open + One Current File Focused + Same File Selected in Explorer + Current Parent Folder Revealed + Previous Agent Tabs Closed/Released + Background Inspection + No Tab Accumulation**
-
-Agent ka workspace behavior user ko continuously ye clear signal de:
-
-**"Abhi isi file par kaam ho raha hai."**
+- ek waqt mein sirf ek file open karne ko require kare;
+- previous file ko automatically close/release karne ko require kare;
+- sirf current file ko Explorer mein select rakhne ko require kare;
+- doosra folder click karte hi pehle folder ko close/collapse karne ko require kare;
+- har file switch par Explorer folders collapse karne ko require kare;
+- editor tabs ko maximum 1 tak limit karne ko require kare.
 
 # 60. ENTERPRISE VISUAL DEVELOPMENT REPORT & FUTURE DECISION MODULE
 
