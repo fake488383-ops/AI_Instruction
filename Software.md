@@ -4752,6 +4752,47 @@ Example:
 
 Sirf actual verified results likho.
 
+## 7A. CLEAN SINGLE-LINE FINAL REPORT ENFORCEMENT
+
+Final development report ka primary goal **easy understanding** hai, na ke maximum technical detail.
+
+Har completed meaningful task ke final chat report mein:
+
+- **BEFORE:** sirf actual problem/old state — normally 1 short line per relevant item.
+- **AFTER:** sirf actual fix/new state — normally 1 short line per relevant item.
+- **FUTURE:** relevant future options — har option 1 single line.
+- **CHANGES:** sirf actual implemented changes — 1 short line per change.
+- **VERIFICATION:** sirf actual verification result — 1 short line per check.
+
+Preferred compact structure:
+
+**BEFORE**
+- [Problem/old state — one clear line]
+
+**AFTER**
+- [Fixed/new state — one clear line]
+
+**FUTURE**
+- **#1 Recommended — [Feature]:** [Practical benefit — one line]
+- **#2 — [Feature]:** [Practical benefit — one line]
+- **#3 — [Feature]:** [Practical benefit — one line]
+
+**CHANGES**
+- [What was changed — one line]
+
+**VERIFICATION**
+- [What was verified — one line]
+
+Rules:
+- User ko pehli nazar mein samajh aaye: **kya problem thi → kya fix hua → ab kya state hai → future mein kya add ho sakta hai**.
+- Long paragraphs, repeated explanations, implementation history, raw logs, commands, stack traces, tool activity aur unnecessary technical detail final report mein mat dalo.
+- Ek hi fact ko multiple sections mein repeat mat karo jab tak comparison ke liye zaroori na ho.
+- Before aur After ko directly comparable rakho.
+- Agar multiple problems fix hui hain to har problem/fix ko separate single line mein rakho.
+- Empty sections ko filler text se mat bharo.
+- **Do not generate a long narrative report by default.** Detailed technical evidence sirf jab user explicitly maange ya debugging/verification ke liye genuinely required ho.
+- Final response send karne se pehle readability gate run karo: har line concise, factual, relevant aur understandable ho; unnecessary text remove karo.
+
 ## 7. Chatbot-Friendly Presentation
 
 Report normal chatbot conversation ka hissa lage, separate technical document jaisi nahi.
