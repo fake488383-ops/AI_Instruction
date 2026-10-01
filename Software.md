@@ -4570,7 +4570,31 @@ Strict single-file rule ka scope **agent-managed workspace state** hai.
 - Is exception ko naye agent-managed tabs accumulate karne ka reason mat banao.
 - Agent ko apne khud ke opened tabs ko user-owned tabs ke naam par preserve nahi karna hai.
 
-## 8. Editor vs Explorer State
+## 8. VS Code Settings & Actual Enforcement
+
+Sirf Software.md mein instruction likhne se VS Code ki editor tabs ya Explorer state automatically change nahi hoti. Agent ko active VS Code workspace mein available settings/commands inspect karke, permission aur project conventions ke mutabiq actual configuration apply karni hogi.
+
+Jab current workspace mein `.vscode/settings.json` use karna munasib aur authorized ho, existing settings ko preserve/merge karte hue single-editor-file behavior ke liye relevant settings configure karo:
+
+```json
+{
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 1,
+  "workbench.editor.limit.perEditorGroup": false,
+  "explorer.autoReveal": true
+}
+```
+
+- Existing `.vscode/settings.json` ko blindly overwrite mat karo; merge karo aur unrelated settings preserve karo.
+- `workbench.editor.limit...` tab count ko limit karne mein madad karta hai; agent ko phir bhi apne purane tabs close karne aur editor groups manage karne ki zaroorat ho sakti hai.
+- `explorer.autoReveal` current editor file ko Explorer mein reveal karne mein madad karta hai, lekin khud se baqi expanded folders collapse karne ki guarantee nahi deta.
+- Har file switch par available VS Code `Collapse Folders` / `Collapse All` action use karo, phir sirf current file ka parent folder expand/reveal/select karo.
+- Agar VS Code host/API/agent tool tab close, editor group close, Explorer collapse ya settings update karne ki capability nahi deta, action successful claim mat karo; available alternative use karo aur final report mein limitation batao.
+- Settings apply karne ke baad actual editor tab count, active file, Explorer selection aur expanded folder state verify karo. Settings likh dena verification ka substitute nahi.
+- User-owned dirty/unsaved files ko data-loss ke risk ke saath close mat karo; agent-managed tabs ko close karne ka rule phir bhi follow karo.
+- Repo ke Software.md ko update karna, kisi doosre workspace ki settings automatically change nahi karta. Settings us actual project/workspace mein apply honi chahiye jahan agent kaam kar raha hai.
+
+## 9. Editor vs Explorer State
 
 Editor aur Explorer dono ka state current work ke saath synchronize rakho:
 
@@ -4582,7 +4606,7 @@ Editor aur Explorer dono ka state current work ke saath synchronize rakho:
 
 Explorer mein folder expanded rehna allowed hai agar navigation ke liye useful ho, lekin unrelated files ko editor tabs mein open rakhna allowed nahi.
 
-## 9. Runtime / Build / Diagnostics
+## 10. Runtime / Build / Diagnostics
 
 Build, run, test, compiler diagnostics aur log analysis ko background mein perform karo jab host capability available ho.
 
@@ -4591,7 +4615,7 @@ Build, run, test, compiler diagnostics aur log analysis ko background mein perfo
 - Runtime logs ko inspect karne ke liye separate editor tabs accumulate mat karo.
 - Required diagnostics complete hone ke baad current implementation file ko hi visible/focused state mein restore karo.
 
-## 10. Completion State
+## 11. Completion State
 
 Task complete hone par:
 
@@ -4601,7 +4625,7 @@ Task complete hone par:
 - User ko current result locate karne ke liye tab bar mein search/scroll na karna pade.
 - Final application launch Module 57 ke mutabiq applicable ho to application user handoff ke liye run ho sakti hai; is runtime launch ko extra source/editor tab open karne ka reason mat banao.
 
-## 11. Enforcement Priority
+## 12. Enforcement Priority
 
 Jab existing editor/workspace rules ke saath overlap ho:
 
@@ -4610,7 +4634,7 @@ Jab existing editor/workspace rules ke saath overlap ho:
 - Background inspection is preferred over editor-tab inspection.
 - File delete/move/rename is rule ka part nahi hai; workspace clutter ka solution **tab close/release + Explorer focus** hai, source file deletion nahi.
 
-## 12. Completion Standard
+## 13. Completion Standard
 
 **One Current File Open + One Current File Focused + Same File Selected in Explorer + Previous Agent Tabs Closed/Released + Background Inspection + No Tab Accumulation**
 
@@ -4664,7 +4688,9 @@ Left-side **FUTURE** section mein sirf genuinely relevant future improvements sh
 - Har future option ke saath **single-line explanation** zaroor do: is future feature ko add karne se user ko kya practical kaam/benefit milega.
 - Future explanation simple, direct aur user-friendly ho; technical implementation detail nahi.
 - Future item ko implemented feature ke taur par present mat karo.
-- Agar koi genuinely useful future suggestion nahi hai to empty/filler Future box mat banao; compactly indicate karo ke koi relevant future suggestion nahi hai.
+- **Meaningful development task complete hone par Future section ko silently omit mat karo.** Final answer se pehle 1–3 genuinely useful, project-specific future options identify karo aur numbered list visibly render karo.
+- Jahan 3 meaningful options available hon, teeno **#1, #2, #3** ko single-line practical explanation ke saath show karo; #1 ko **Recommended / Priority 1** mark karo. #2 = Priority 2, #3 = Priority 3.
+- Agar waqai 1 ya 2 hi relevant options hon, filler invent karne ke bajaye utne hi show karo aur short reason do.
 
 Required format:
 
@@ -4738,7 +4764,30 @@ Report normal chatbot conversation ka hissa lage, separate technical document ja
 - Technical details sirf jab user ko actual understanding/debugging ke liye zaroori hon.
 - Rich cards/panels supported na hon to same **FUTURE | BEFORE | AFTER** order ko compact Markdown/text layout mein preserve karo.
 
-## 8. Changes / Verification Placement
+## 8. Mandatory Future-Options Output Gate
+
+Module 55 aur is module ke Future rules final response ke liye **mandatory output requirements** hain, optional style guidance nahi.
+
+Har meaningful completed development task ke final user-facing answer se pehle:
+1. Current project/task context se relevant future improvements identify karo.
+2. Available options ko priority ke mutabiq order karo.
+3. #1 ko **Recommended / Priority 1** mark karo.
+4. Har listed option ke saath ek concise, understandable line likho jo bataye ke woh feature kya karega ya user ko kya practical benefit dega.
+5. Final response mein Future section visibly render karo; sirf internal reasoning mein options soch kar chhor mat do.
+6. Final answer send karne se pehle check karo: numbered labels visible hain, #1 recommended hai, order #1 → #2 → #3 hai, aur har item ke saath single-line explanation hai.
+
+Required output pattern:
+
+**FUTURE OPTIONS**
+1. **[Feature] — RECOMMENDED / PRIORITY 1:** [Is se kya kaam hoga ya kya practical benefit milega — one line.]
+2. **[Feature] — PRIORITY 2:** [Is se kya kaam hoga — one line.]
+3. **[Feature] — PRIORITY 3:** [Is se kya kaam hoga — one line.]
+
+Agar host rich cards/panels support na kare, plain Markdown mein yehi numbered format show karo. UI limitation ki wajah se numbered options omit mat karo. Agar genuinely fewer options hon, sirf valid options show karo aur briefly explain karo ke extra options kyun nahi diye; artificial filler mat banao.
+
+Ye future options **suggestions** hain, implemented changes nahi aur user approval ke baghair automatically implement nahi kiye ja sakte.
+
+## 9. Changes / Verification Placement
 
 Future/Before/After primary visual comparison hai, lekin implemented changes aur verification information lose nahi honi chahiye.
 
@@ -4758,7 +4807,7 @@ phir compact:
 
 Agar rich chat layout mein space ho to Changes aur Verification ko After panel ke neeche compactly place kiya ja sakta hai.
 
-## 9. No Fake Visual Data
+## 10. No Fake Visual Data
 
 Visual layout sirf presentation change hai.
 
@@ -4768,7 +4817,7 @@ Visual layout sirf presentation change hai.
 - Future suggestions ko current result ke numbers ke saath mix mat karo.
 - Verification ko visual polish ke liye falsely successful mat show karo.
 
-## 10. Responsive / Host Compatibility
+## 11. Responsive / Host Compatibility
 
 Agar host teen horizontal panels support karta hai:
 
@@ -4786,7 +4835,7 @@ Agar screen/chat width chhoti ho to same semantic order preserve karte hue stack
 
 Layout responsive ho, lekin information hierarchy change na ho.
 
-## 11. Relationship With Module 55
+## 12. Relationship With Module 55
 
 Module 55 final development report ka factual content, priority, recommendation, evidence aur verification define karta hai.
 
@@ -4798,7 +4847,7 @@ Dono ko combine karke preferred result:
 
 Module 55 ke truthfulness, priority aur STOP rules preserve rahenge.
 
-## 12. Completion Standard
+## 13. Completion Standard
 
 Final report user ko ek nazar mein ye teen sawalon ka jawab de:
 
