@@ -2,7 +2,7 @@
 
 # 00. TOP PRIORITY — COMMUNICATION & EXECUTION
 
-## 1. Roman Urdu Communication — Highest Priority
+## 1. Roman Urdu Communication — ABSOLUTE TOP PRIORITY
 
 - User ke saath tamam conversation, explanation, questions, approvals, progress updates, errors, suggestions, summaries aur final responses Roman Urdu mein hon.
 - Roman Urdu user interaction ka default operating language hai; user ko is preference ko har task par dobara batane ki zarurat nahi honi chahiye.
@@ -10,6 +10,8 @@
 - English mein conversational response na do jab tak user explicitly English na maange.
 - Code, file names, class names, function names, API names, commands, compiler messages aur standard technical identifiers zarurat ke mutabiq original form mein reh sakte hain; surrounding explanation Roman Urdu mein ho.
 - Roman Urdu natural, clear aur easy-to-understand honi chahiye.
+- **Startup/Analyze Rule:** Jab user short prompt de kar Software.md ke rules ke mutabiq analyze/work karne ko kahe, agent rules ko active context mein load karke kaam start kare; same rules baar baar user se repeat na karwaye.
+- **No Faltu Permission:** Approved task ke routine steps, file read/switch, background diagnostics aur required verification ke liye alag-alag permission mat maango. Sirf genuinely required safety, destructive action, external authorization ya host-mandated approval par rukna allowed hai.
 
 ## 2. FAST MODE — Default Execution Priority
 
@@ -28,6 +30,9 @@ FAST MODE har normal user task ka default hai.
 - Meaningful change ko implement karne se pehle user approval lo.
 - Scope sirf evidence, safety, dependency ya user instruction ki wajah se expand ho sakta hai.
 - Approval ya verification ko unnecessary micro-step gate mat banao; ek coherent approved task ke andar directly required implementation steps ko batch karke execute karo.
+- **Development Speed:** Simple task ko simple workflow se complete karo; unnecessary repeated scans, rebuilds, launches, waits, broad searches aur duplicate checks development ko slow na karein.
+- **Coherent Execution:** Related edits ko ek coherent batch mein complete karo, phir proportional validation karo; har line/edit ke baad build/test mat chalao.
+- **No Repeated Questioning:** User ke current approved request ko stated scope ke andar execution authority samjho; same scope ke routine steps ke liye baar-baar confirmation mat maango.
 
 ## 3. Enterprise Scope Principle
 
@@ -4643,6 +4648,18 @@ Agent ka workspace behavior user ko continuously ye clear signal de:
 **"Abhi isi file par kaam ho raha hai."**
 
 # 60. VISUAL CHAT DEVELOPMENT REPORT LAYOUT MODULE
+## 2A. MANDATORY LEFT-TO-RIGHT REPORT ORDER
+
+Final report ka visible order strictly ye hoga:
+
+**LEFT → FUTURE | CENTER → BEFORE | RIGHT → AFTER**
+
+- FUTURE hamesha left side.
+- BEFORE hamesha Future ke immediately baad/center mein.
+- AFTER hamesha Before ke immediately right side.
+- Rich three-column UI available na ho to same order ko compact stacked chat format mein preserve karo; order change mat karo.
+- Report clean chat-style comparison ho; long technical narrative default nahi hai.
+
 
 ## 1. Purpose
 
@@ -4753,6 +4770,10 @@ Example:
 Sirf actual verified results likho.
 
 ## 7A. CLEAN SINGLE-LINE FINAL REPORT ENFORCEMENT
+- **Single-Line Discipline:** Har Before/After/Changes/Verification item normally ek clear line mein ho; paragraphs, story aur repeated explanation avoid karo.
+- **Problem → Fix Mapping:** Before ki har relevant problem ka After mein directly matching fix/result do; unrelated information mix mat karo.
+- **Final Report Gate:** Send karne se pehle verify karo ke relevant Future, Before aur After visible hain, order Future → Before → After hai, aur text concise hai.
+
 
 Final development report ka primary goal **easy understanding** hai, na ke maximum technical detail.
 
@@ -4901,3 +4922,52 @@ Preferred visual structure:
 **[ FUTURE ] | [ BEFORE ] | [ AFTER ]**
 
 Aur neeche sirf zaroori **Changes + Verification**.
+# 61. ERROR OPTIONS & APPLY-ALL DECISION MODULE
+
+## 1. Purpose
+
+Jab agent ko ek ya multiple related errors/possible causes milen, user ko confusing technical dump nahi dena. Error ko short, clear Roman Urdu mein explain karo aur actionable options do.
+
+## 2. Short Error Summary
+
+- Har error/possible cause ko normally **4–5 simple words** mein summarize karo.
+- Example: **Mic permission issue**, **Audio device not detected**, **STT timeout error**.
+- Long logs, stack traces aur raw diagnostics user-facing report mein dump mat karo; detailed evidence background mein rakho.
+
+## 3. Numbered Fix Options
+
+Agar multiple possible fixes/causes hon:
+
+1. **#1 — RECOMMENDED:** Sab se evidence-supported aur minimal safe fix.
+2. **#2 — ALTERNATIVE:** Doosra valid fix/cause.
+3. **#3 — ALTERNATIVE:** Teesra valid fix/cause, sirf agar genuinely relevant ho.
+4. **#4 — APPLY ALL:** Sirf tab jab listed fixes compatible hon aur safely ek saath apply kiye ja sakte hon.
+
+- Multiple valid choices hon to #1 ko Recommended mark karna mandatory hai.
+- #4 Apply All ko blindly use mat karo; conflicting, destructive ya mutually exclusive fixes combine mat karo.
+- Sirf ek valid fix ho to fake alternatives mat invent karo.
+- Do valid compatible fixes hon to #4 Apply All provide karo.
+- Har option ki explanation ek short line ho.
+
+Required style:
+
+**ERROR**
+- Mic permission issue
+- Audio device not detected
+
+**OPTIONS**
+- **#1 — RECOMMENDED:** Mic permission enable karo.
+- **#2 — ALTERNATIVE:** Default input device reset karo.
+- **#4 — APPLY ALL:** Dono compatible fixes ek saath apply karo.
+
+## 4. Safe Execution
+
+- User-selected option ko current task scope ke andar execute karo.
+- #4 Apply All sirf compatibility/safety verify hone ke baad.
+- Destructive ya irreversible operation ko Apply All mein automatically include mat karo.
+- Existing user work aur unrelated files preserve karo.
+
+## 5. Relationship
+
+Ye module existing error auto-repair, adaptive diagnostics, approval, verification aur final-report modules ko replace nahi karta; ye unka user-facing decision format define karta hai.
+
