@@ -4507,7 +4507,7 @@ Development-speed, duplicate-check, incremental-build, context-efficiency aur ba
 - Supporting modules sirf apna unique scope define karein; same workflow ko copy/repeat na karein.
 - Conflict ho to Instruction Priority Hierarchy aur more-specific authoritative module apply karo.
 
-# 63. TERMINAL-SILENT BACKGROUND DEVELOPMENT & LOG DIAGNOSTICS MODULE
+# 63. TERMINAL-SILENT BACKGROUND DEVELOPMENT, LOG DIAGNOSTICS & FINAL-RUN CONTROL MODULE
 
 ## 1. Terminal Visibility Rule
 - Development/build/debug/test/run ke routine operations ke liye terminal/console window user ke saamne automatically open mat karo.
@@ -4517,42 +4517,74 @@ Development-speed, duplicate-check, incremental-build, context-efficiency aur ba
 
 ## 2. Backend/IDE Diagnostics First
 - Build, runtime, debugger, compiler, crash, service aur application errors ko pehle available backend/IDE diagnostic channels, process output capture, structured logs aur diagnostic files se inspect karo.
+- Debug/Developer Mode mein jo compiler, debugger, process, application ya console errors captured/available hon, unko background mein inspect karo.
+- Editor ke semantic/diagnostic errors bhi relevant hon to inspect karo, including unresolved symbols, invalid keywords, missing includes/imports, type errors aur red-underlined code indicators.
 - Raw terminal output ko primary user-facing debugging surface mat banao.
-- Error aaye to relevant backend logs capture → correlate → root cause identify → minimal fix → focused verification follow karo.
+- Error aaye to relevant diagnostics/logs capture → correlate → root cause identify → minimal safe fix → focused verification follow karo.
 - Same failure dobara aaye to fresh logs/evidence inspect karo; previous assumption ko blindly repeat mat karo.
 
-## 3. Build/Debug/Developer Mode Logging
-- Build Mode, Debugging Mode, Developer Mode aur equivalent development workflows mein logs/background diagnostics internally collect aur inspect karo.
-- Structured logs mein timestamp, component, severity, correlation/task ID aur relevant error context preserve karo jab available ho.
-- Sensitive credentials, API keys, tokens, passwords aur private data logs mein expose mat karo.
+## 3. Automatic Error Detection & Safe Self-Repair
+- User agar kahe ke file nahi chal rahi, build fail ho raha hai, EXE start nahi ho raha, feature kaam nahi kar raha ya development mein error aa raha hai, to pehle available background diagnostics/logs inspect karo.
+- Relevant errors ko automatically classify karo: compile error, linker error, runtime error, debugger error, process crash, configuration error, dependency error, semantic/editor error ya application error.
+- Root cause evidence sufficiently clear ho to minimal safe fix automatically apply karo within the approved task scope; routine small fixes ke liye user se unnecessary micro-approval mat lo.
+- Fix ke baad same relevant diagnostic ko dobara inspect karke verify karo.
+- Ek error fix karte waqt unrelated warnings/errors ko automatically modify mat karo jab tak evidence na ho ke woh same root cause ka part hain.
+- “Zero errors” ko sirf tab completion claim karo jab relevant final verification mein zero relevant errors actually observed hon. Unsupported zero-error claim forbidden hai.
+- Agar evidence insufficient ho ya fix risky/destructive ho to guess mat karo; relevant evidence collect karo aur user ko concise actionable status do.
+
+## 4. Debugging/Console Logs Without Opening Terminal
+- Debugging Mode, Developer Mode, build output, debugger output, application console aur process logs ko host/IDE-supported background capture se inspect karo whenever available.
+- Terminal/console ko visible window ki tarah launch karke logs read karna default method nahi hai.
+- Agar IDE/backend structured diagnostics available hain to unko terminal output par priority do.
+- Agar logs sirf terminal stream mein available hain, to host-supported hidden/background process-output capture use karo jab technically supported ho.
+- Credentials, tokens, passwords aur private data logs mein expose mat karo.
 - Verbose logs ko user-facing chat mein dump mat karo; concise Roman Urdu error summary do.
 
-## 4. Background Error Repair Flow
-- Required flow:
-  **Run/Build → Capture Background Diagnostics → Detect Error → Inspect Relevant Logs → Identify Root Cause → Minimal Safe Fix → Focused Verification**
-- Debugging ke liye unnecessary terminal popup, repeated manual launch ya full-project rebuild mat karo.
+## 5. No Repeated EXE Launch/Close Loop
+- Development verification ke liye EXE ko repeatedly launch → close → launch → close karke visual/manual checking mat karo.
+- Small/tiny tasks ke liye EXE launch default verification method nahi hai; Module 53 ke proportional validation rules follow karo.
+- Runtime behavior genuinely verify karna required ho to minimum necessary runtime verification karo.
+- Ek coherent task ke multiple edits ke baad unnecessary intermediate EXE launches avoid karo.
+- Agar runtime verification required hai, relevant build/output/log evidence ko pehle inspect karo; repeated launches sirf fresh evidence ya a genuinely changed runtime state require kare to allowed hain.
+- User ke explicit request ke baghair repeated click-through/manual UI exploration ko verification strategy mat banao.
+
+## 6. FINAL EXE LAUNCH — ONE-TIME FINAL VERIFICATION
+- Jab user ka requested development work complete ho, relevant diagnostics/errors resolve ho chuke hon aur final report generate karne se pehle runtime verification genuinely required ho, to **EXE ko final verification ke liye sirf ek dafa launch karo**.
+- Final EXE launch se pehle targeted build/diagnostic validation complete karo.
+- Final EXE launch ka purpose sirf final runtime confirmation ho; development ke har intermediate step par launch karna forbidden by default.
+- Final launch ke baad available process/runtime diagnostics inspect karo aur required final verification complete karo.
+- Final report ko actual evidence ke baad generate karo.
+- Final verification ke baad EXE ko repeatedly restart, close/reopen ya screenshot-based checking loop mein mat dalo.
+- Agar final launch fail ho jaye to blindly repeated launches mat karo; failure evidence/logs inspect karo, root cause fix karo, phir sirf necessary re-verification run karo.
+
+## 7. Background Error Repair Flow
+- Normal flow:
+  **User Problem → Targeted Diagnostics/Logs → Error Detection → Root Cause → Minimal Safe Fix → Focused Verification → Final Report → One Final EXE Launch (only when runtime verification is required)**
+- Is flow mein terminal popup/opening, repeated manual launch aur unnecessary full-project rebuild avoid karo.
 - Agar backend/service process available hai to uske captured logs ko first diagnostic source banao.
 - Agar backend logs available nahi hain to host-supported process/output capture ya IDE diagnostics use karo.
 - Agar reliable diagnostic evidence available nahi hai to claim mat karo ke error root cause confirm ho gaya.
 
-## 5. User-Facing Output
+## 8. User-Facing Output
 - User ko raw terminal logs, stack traces aur command dumps default mein show mat karo.
-- Final/error response Roman Urdu mein short aur actionable ho.
+- Error ho to concise Roman Urdu mein issue + detected cause + applied fix + verification state batao.
 - Detailed logs sirf jab user explicitly maange ya debugging evidence genuinely required ho tab expose karo.
 - Terminal-silent behavior user ke existing functionality, build process ya debugging capability ko disable nahi karta.
 
-## 6. Exceptions
+## 9. Exceptions
 - Explicit user request: terminal kholna/show karna allowed.
 - Interactive CLI tool genuinely required ho to required terminal interaction allowed.
 - Host/IDE ki limitation ki wajah se unavoidable visible process ho to silently hide karne ka false claim mat karo.
 - Security, authorization ya recovery requirement agar visible confirmation demand kare to applicable approval/visibility rule follow karo.
 
-## 7. Completion Standard
+## 10. Completion Standard
 - Routine development execution background mein ho.
-- Relevant logs backend/IDE/process capture se inspect hon.
+- Relevant compiler/debugger/runtime/editor diagnostics aur logs inspect hon.
 - Root cause evidence-based ho.
 - Minimal relevant fix apply ho.
-- Focused verification complete ho.
-- User-facing response concise Roman Urdu mein ho.
-- Unnecessary terminal window/popup na khule.
+- Relevant errors rechecked hon.
+- Runtime verification sirf jab required ho.
+- Final EXE verification, jab required ho, one-time final launch ho.
+- Final report actual evidence ke baad generate ho.
+- Unnecessary terminal window/popup aur repeated EXE launch/close loop na ho.
 
