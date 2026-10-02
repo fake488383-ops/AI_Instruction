@@ -201,7 +201,7 @@ Higher-priority rule lower-priority rule ko override karegi. Same-level rules me
 
 - External model/API/provider select ya change karte waqt capability, reliability, latency, cost, privacy/data retention, region, security, rate limits, SLA, compatibility, lock-in aur exit/fallback strategy ko relevant hone par evaluate karo.
 - Credentials/endpoints invent mat karo.
-- Provider choice ko user approval requirements aur Module 55 recommendation rules ke saath align karo.
+- Provider choice ko user approval requirements aur Module 60 recommendation rules ke saath align karo.
 
 ## 21. Cost Governance
 
@@ -3225,139 +3225,6 @@ Tabhi task ko verified complete mark karo.
 
 
 
-# 42. ACTIVE FILE VIEW & WORKSPACE TAB HYGIENE MODULE
-
-## 1. Purpose
-
-Jab agent live development ke dauran kisi specific file par actively kaam kar raha ho, workspace/editor ka visible surface usi active working file ko priority de. Unnecessary open editor tabs ko continuously visible rakhne se user ko baar-baar scroll/search na karna pade aur workspace clutter/hanging risk kam rahe.
-
-Goal:
-
-**Current Work File → Automatically Open/Focus → Keep Visible → Remove Unnecessary Old Tabs From View → Finish Work → Close/Release Task Tabs Safely → Leave Relevant Final File Visible**
-
-## 2. Active Working File Priority
-
-- Jis file mein agent is waqt meaningful implementation/editing kar raha ho, **sirf wohi current working file editor mein open, active aur focused honi chahiye** jab host/editor capability support kare.
-- User ko current working file directly visible honi chahiye; Explorer mein file exist karna sufficient nahi hai.
-- Agent ko read-only inspection/search ke liye files ko editor tabs mein sequentially open karke scroll/tab clutter create nahi karna chahiye; supported background/read mechanisms prefer karo.
-- Agar current working file change hoti hai, previous **agent-opened working tab** ko safely close/release karke nayi current working file ko open/reveal/focus karo.
-- Multiple files task mein bhi editor ka default state **ek waqt mein sirf current implementation file** ho; doosri files background inspection se handle karo aur sirf jab woh current working file banen tab editor mein lao.
-- User ki explicitly open/owned dirty/unsaved files ko data-loss ke risk ke baghair preserve karo; is exception ko agent ke apne accumulated tabs ke liye excuse mat banao.
-
-## 3. Tab Cleanup vs File Deletion
-
-**Editor tab close karna aur project file delete karna bilkul alag actions hain.**
-
-- Unnecessary editor tab close ki ja sakti hai.
-- Actual project file ko delete, move ya modify mat karo sirf isliye ke woh workspace mein visible na rahe.
-- Workspace cleanup ka matlab editor visibility cleanup hai, source-tree cleanup nahi.
-- Project files, folders aur source artifacts existing architecture aur file-hygiene rules ke mutabiq preserve rahen.
-
-## 4. Strict Agent Tab Cleanup
-
-Jab active task kisi file par kaam kar raha ho:
-
-- Current working file **ek hi editor tab** mein open/active/focused rahe.
-- Previous agent-opened working/inspection tabs ko immediately safely **close/release (cross)** karo jab woh current working file nahi rahin.
-- Agent sequentially file-by-file kaam kare to editor state bhi sequential ho: **Current File Open → Work → Previous Agent Tab Close → Next File Open/Focus**.
-- Read/search/diagnostic files ko editor tabs mein unnecessarily open mat karo.
-- Task se related multiple files ko sirf is wajah se tabs mein jama mat karo ke woh future mein required ho sakti hain.
-- Explorer/file tree ko unnecessary scrolling/navigation ka primary workspace workflow mat banao.
-- User ko current working file tak manually tab-scroll/search karne par majboor mat karo.
-
-Preferred state:
-
-**One Agent Task → One Current Working File → One Agent-Managed Editor Tab**
-
-Multi-file task mein bhi:
-
-**File A → close/release → File B → close/release → File C**
-
-na ke multiple accumulated editor tabs.
-
-## 5. Unsaved / Modified Tab Safety
-
-Strict single-file rule editor-tab cleanliness enforce karta hai, lekin **user ke unsaved/dirty work ko destroy nahi karta**.
-
-- Agent ke apne saved/verified task tabs ko safely close/release karo.
-- User ke independently modified/dirty/unsaved tabs ko silently close, discard ya overwrite mat karo.
-- Agar current working file mein user ka unsaved work bhi ho, data-safe mechanism/approval ke baghair usay close ya discard mat karo.
-- Agar host tab-close operation confirmation maangta hai, data loss create karne ke bajaye supported safe behavior use karo.
-- Exception ka matlab ye nahi ke agent new files/tabs ko accumulate kar sakta hai; safe user-owned dirty tabs aur agent-managed working tabs alag treat karo.
-
-## 6. Runtime / Live Editing Behavior
-
-Runtime/live development mein exact editor flow:
-
-1. Target working file identify karo.
-2. Agar target editor mein nahi hai to usay open/reveal karo.
-3. Target ko active/focused karo.
-4. Previous agent-managed editor tab ko safely close/release karo.
-5. Actual workspace edit perform karo.
-6. Sirf current working file visible rakho.
-7. Build/run/test/diagnostics background mein perform karo; inspection files ko editor mein open mat karo.
-8. Jab next file par meaningful work start ho, current tab close/release karo aur next file ko open/focus karo.
-9. Final verified primary changed file ko visible chhoro.
-
-Terminal/log surface ko active file workspace ke replacement ke taur par use mat karo.
-
-## 7. Task Completion Tab State
-
-Task complete hone par:
-
-- Latest/primary changed file visible rahe.
-- Unrelated task tabs unnecessarily open na rahen.
-- Relevant diff/state inspectable rahe.
-- Terminal/tool logs primary visible surface na banen.
-- User ke independently open dirty/unsaved tabs ko data-loss ke risk ke baghair preserve karo.
-- Agent ke apne old/accumulated tabs ko final workspace mein mat chhoro.
-- Final workspace state clean aur task-focused ho.
-
-## 8. Host Capability Boundary
-
-Agar VS Code/Cline/host editor tab management ya automatic close/focus control support nahi karta:
-
-- Actual file editing continue karo.
-- Supported focus/open behavior use karo.
-- Unsupported automatic tab closing ka fake claim mat karo.
-- Project source ko tab management force karne ke liye modify mat karo.
-- User ke data ya unsaved changes ko risk mein mat dalo.
-
-## 9. Performance & Workspace Stability
-
-Workspace tab cleanup ka objective:
-
-- Unnecessary tab clutter kam karna.
-- Excessive editor navigation/scrolling reduce karna.
-- Current working file ko immediately visible rakhna.
-- Large project mein unnecessary open-document overhead ko reduce karna jab host/editor behavior us se materially affect hota ho.
-- Workspace responsiveness preserve karna.
-
-Is rule ko har task par unnecessary close/open cycle mein convert mat karo. Tab state ko sirf meaningful task transitions par update karo.
-
-## 10. Relationship With Existing Live Workspace Rules
-
-Yeh module Module 14 aur Module 38 ke Active File Open/Focus aur Live Edit Visibility rules ko strengthen karta hai. Jahan purane rules generic tab preservation ki baat karte hain, is module ka **specific current-file rule agent-managed editor tabs ke liye precedence rakhta hai**.
-
-Existing rule:
-
-**Changed File → Open/Focus → Live Edit → Latest File Visible**
-
-Is module ke baad preferred behavior:
-
-**Changed File → Open/Focus → Live Edit → Unnecessary Tabs Safely Close/Release → Latest Verified File Visible**
-
-Editor tab cleanup ka matlab source-file deletion nahi hai.
-
-## 11. Completion Standard
-
-Task ke relevant editor state ko ideally:
-
-**Primary Working File Open + Focused + Latest Change Visible + Unnecessary Task Tabs Closed/Released + No Unsaved User Data Lost + Project Files Preserved**
-
-ke state mein leave karo.
-
-
 # 43. CONCISE QUESTION & EXPLANATION OUTPUT MODULE
 
 ## 1. Purpose
@@ -3720,55 +3587,6 @@ Preferred:
 
 **Workspace Edit → Background Build/Run → Backend Diagnostics → AI Analysis → Safe Fix → Background Verification → Workspace Result**
 
-# 49. LIVE WORKSPACE PREVIEW & SINGLE ACTIVE EDITOR FILE MODULE
-
-## 1. Purpose
-
-User ko live development ka actual workspace/editor result visible ho, terminal execution stream nahi.
-
-## 2. Active File Visibility
-
-Jis file par agent meaningful kaam kar raha ho us file ko VS Code editor mein open, reveal aur active/focused rakho jab host capability support kare.
-
-## 3. STRICT SINGLE CURRENT FILE RULE
-
-Agent ke development workflow mein **editor ke andar ek waqt mein sirf wahi file open/active/focused honi chahiye jis file par agent abhi actual read/write/edit/rewrite ka kaam kar raha hai**.
-
-- Current working file = **only active editor tab**.
-- Jaise hi agent doosri file par meaningful work start kare, previous **agent-managed** editor tab ko safely **close/release (cross)** karo aur nayi current file ko open/reveal/focus karo.
-- Read-only inspection, search, dependency lookup, diagnostics aur background analysis ke liye files ko editor mein sequentially open karke scroll/tab history mat banao; supported background/read mechanisms use karo.
-- New file create hone par agar agent usi file mein kaam kar raha hai to **sirf nayi file** editor mein open/focused ho; purani agent tabs close/release ho jayein.
-- Current file change ke saath editor view bhi change ho: **File A → close → File B → close → File C**.
-- Is rule ka matlab source file delete/move karna nahi; sirf editor tab visibility manage karna hai.
-- User ki independently open dirty/unsaved files data-loss ke risk ke baghair preserve karo; lekin agent ke apne accumulated tabs ko preserve karna is rule ko violate karta hai.
-- Agent ko editor tabs ki scrolling ko normal development workflow nahi banana chahiye.
-
-## 4. Single-File Transition Rule
-
-Single Active Editor File Rule ke mutabiq rolling multi-file tab window use mat karo.
-
-- Jab current working file change ho, previous working file ka editor tab safely close/release karo.
-- Nayi current working file ko open/reveal/active/focused karo jab host capability support kare.
-- Is rule ka matlab source file delete karna nahi hai; sirf editor tab visibility manage karni hai.
-
-## 5. Explorer Active Selection
-
-Jis file par current implementation ho rahi ho, VS Code Explorer/file tree mein us file ko reveal/select/focus karo jab host support kare, taake user ko immediately pata chale ke agent kis file par kaam kar raha hai.
-
-## 6. Background Files
-
-Jo files diagnosis, search, dependency inspection ya background processing ke liye required hon lekin actively edit nahi ho rahi hon, unko unnecessarily editor tabs mein open mat rakho; supported background/read mechanisms prefer karo.
-
-## 7. Workspace Stability
-
-Large project mein step-by-step dozens of files open karke workspace clutter ya editor performance degradation create mat karo. Open-file state ko meaningful task transitions par update karo.
-
-## 8. Unsaved User Work
-
-User ki unrelated dirty/unsaved files ko silently close, discard ya overwrite mat karo.
-**Strict Single Current File Rule agent-managed editor tabs par apply hota hai; user-owned dirty/unsaved tabs data-safety exception hain.**
-Agent ke apne accumulated tabs ko preserve karne ke liye is exception ka use mat karo.
-
 # 50. SOFTWARE.MD STARTUP VALIDATION & NORMAL VS CODE LAUNCH MODULE
 
 ## 1. Purpose
@@ -3943,283 +3761,6 @@ File move/rename ke waqt references, build configuration, tests aur direct consu
 
 Rollback/recovery ke liye duplicate backup files banane ke bajaye available version-control/recovery mechanism prefer karo.
 
-# 55. BEFORE / AFTER DEVELOPMENT RESULT REPORT MODULE
-
-## 1. Purpose
-
-Har meaningful completed task ke end par AI agent ek **short, chat-style development result report** generate kare jo user ko foran samjha de:
-
-**Pehle kya tha → Ab kya hai → Kya change/fix hua → Iska faida kya hai → Future mein kya add kiya ja sakta hai**
-
-Report ka maqsad long technical report banana nahi, balki completed work ko ek clear visual/structured summary mein dikhana hai.
-
-## 2. Mandatory Report Structure
-
-Default report order hamesha:
-
-**BEFORE → AFTER → CHANGES / FEATURES → MINI EXPLANATION → FUTURE OPTIONS (up to 3) → PRIORITY → RECOMMENDATION → VERIFICATION**
-
-Before ko After se pehle show karo. Future ko implementation result se separate rakho.
-
-Preferred chat-style structure:
-
-```text
-┌─────────────────────────────────────┐
-│ BEFORE                              │
-│ Pehle: latency = 500 ms             │
-│ Problem: response slow tha          │
-├─────────────────────────────────────┤
-│ AFTER                               │
-│ Ab: latency = 300 ms                │
-│ Result: response faster hua         │
-├─────────────────────────────────────┤
-│ CHANGES / FEATURES                  │
-│ ✓ Latency optimization              │
-│ ✓ Request handling update            │
-│ ✓ Unnecessary processing reduced    │
-│                                     │
-│ Mini: Ye feature response ko        │
-│ faster aur unnecessary delay ko     │
-│ kam karta hai.                      │
-├─────────────────────────────────────┤
-│ FUTURE SUGGESTION                   │
-│ → Voice pipeline caching add karein │
-│   Is se future response latency     │
-│   aur reduce ho sakti hai.          │
-└─────────────────────────────────────┘
-```
-
-Actual chat/UI host capability support kare to is information ko compact horizontal **Before | After** comparison aur uske neeche feature/change section ki form mein render kiya ja sakta hai. Agar rich UI support na ho to same structure plain text/Markdown mein preserve karo.
-
-## 3. Before / After Evidence
-
-- **Before** mein actual previous state/problem describe karo.
-- **After** mein actual new state/fix describe karo.
-- Measurable value available ho to exact comparison do, for example:
-  - Latency: **500 ms → 300 ms**
-  - Errors: **5 → 0**
-  - Build cycles: **4 → 1**
-  - Open editor tabs: **5 → 1**
-- Numbers sirf actual measurement/evidence se lo.
-- Measurement available na ho to value invent mat karo; **Not measured** likho.
-- Before/After ka comparison same metric, same relevant context aur comparable conditions par based ho jab measurement claim ki ja rahi ho.
-- Agar task sirf code/UI change tha aur runtime metric measure nahi hua, false performance improvement claim mat karo.
-
-## 4. Changes / Features Section
-
-Report mein clearly show karo ke **kya feature/fix/update actually implement hua**.
-
-Preferred format:
-
-- ✓ Feature / Fix Name — kya update hua.
-- ✓ Feature / Fix Name — kya behavior improve/change hua.
-- ✓ Feature / Fix Name — relevant result.
-
-Har implemented feature ke neeche ya saath **one-line Mini Explanation** do:
-
-**Mini:** Ye feature [simple practical kaam/benefit].
-
-Long technical implementation details, internal commands, stack traces ya raw logs report mein default se mat dikhayo.
-
-## 5. Future Options, Priority & Recommendation
-
-Completed implementation ke baad, jab genuinely useful future directions available hon, agent proactively **relevant future suggestions** identify kare. Suggestions current app/project ke actual context, missing capabilities, user workflow aur practical value se related hon.
-
-**IMPORTANT ORDERING RULE:** Future suggestions ki numbering aur recommendation hamesha ek hi priority order mein chalegi. **Priority 1 sab se pehle aur recommended option hogi; Priority 2 uske baad; Priority 3 uske baad.** Recommendation ko kabhi Priority 3/2 ko select karke Priority 1 ke neeche ya reverse order mein show nahi karna hai.
-
-Preferred format:
-
-**Future Suggestions**
-1. **[Option A] — RECOMMENDED / PRIORITY 1** — [kya enable karega aur practical benefit].
-2. **[Option B] — PRIORITY 2** — [kya enable karega aur practical benefit].
-3. **[Option C] — PRIORITY 3** — [kya enable karega aur practical benefit].
-
-**Recommended: #1 [Option A]**
-**Kyun:** [2–3 concise evidence-based reasons].
-
-### 5.1 Three-Option Ordering Rule
-
-- Future section mein normally maximum **3 relevant options** do.
-- Numbering strictly priority order mein ho: **#1 → #2 → #3**.
-- **#1 hamesha highest-priority / recommended future direction honi chahiye**, jab recommendation ke liye enough evidence available ho.
-- **#2 hamesha #1 ke baad** aur **#3 hamesha #2 ke baad** aaye.
-- Agar kisi option ko recommendation ke taur par select kiya gaya hai to us option ko #1 par move karo; recommendation ko #2 ya #3 par chhor kar list ko reverse mat karo.
-- "Recommended" label aur **Priority 1** ek hi option ko refer karne chahiye.
-- Recommendation ke liye separate ranking system use mat karo jo numbered priority order se conflict kare.
-- Agar evidence insufficient ho to recommendation force mat karo; phir bhi available options ko practical priority ke mutabiq #1/#2/#3 order mein show karo.
-- Artificial options invent mat karo. Agar sirf 1 ya 2 genuinely useful options hain to utne hi do.
-- Same feature ke minor variations ko alag options mat banao.
-- Har option ko short practical explanation do: **"Is se kya milega / kya enable hoga."**
-
-### 5.2 Proactive Future Suggestion Discovery
-
-Agent ko sirf user ke explicitly pooche gaye future feature ka wait nahi karna chahiye. Meaningful task complete hone ke baad, current app/project ke context ko dekh kar **useful, realistic aur relevant future improvements** proactively suggest karo.
-
-Example: agar user simple **calculator app** bana raha ho to relevant future suggestions mein context ke mutabiq:
-- calculation history
-- scientific calculator mode
-- keyboard shortcuts
-- memory buttons
-- unit/currency conversion
-- expression preview
-- theme/accessibility options
-- error handling/validation
-
-Lekin har example ko automatically suggest mat karo. Sirf woh 1–3 suggestions select karo jo current implementation aur user ke likely workflow se genuinely relevant hon.
-
-Suggestion areas mein zarurat ke mutabiq:
-- missing buttons/actions
-- usability improvements
-- automation
-- keyboard/voice shortcuts
-- search/filter/history
-- import/export
-- accessibility
-- performance
-- reliability/error handling
-- security/privacy
-- offline/online capability
-- integrations/API
-- notifications
-- analytics/observability
-- testing/quality
-- backup/recovery
-- scalability/extensibility
-- AI/automation features
-
-### 5.3 Priority Rule
-
-Priority actual task context, current gap, dependency impact, user requirement, implementation effort/risk aur expected practical value ke basis par assign karo.
-
-Priority ka matlab:
-- **Priority 1:** sab se relevant next improvement; **Recommended** option.
-- **Priority 2:** useful next improvement, jo Priority 1 ke baad consider ho.
-- **Priority 3:** useful but lower-immediacy/future improvement.
-
-Priority arbitrary preference ya personal opinion ke taur par present mat karo. Recommendation aur priority order ek doosre se consistent rehne chahiye.
-
-### 5.4 Evidence-Based Recommendation Rule
-
-Agent ko available future options ko relevant factors ke against compare karke **#1 recommended option** identify karni hai jab enough evidence available ho.
-
-Recommendation in factors ko relevant hone par compare karke banao:
-- User ki stated requirement
-- Current app/project ka actual gap
-- Feature/capability fit
-- Integration complexity
-- Expected latency/performance
-- Reliability/stability
-- Cost/usage limits
-- Privacy/data handling requirements
-- Existing project compatibility
-- Maintenance/dependency impact
-- Scalability/future expansion
-- User workflow/value
-
-Recommendation ka format hamesha numbered list ke saath aligned ho:
-
-**1. [Option A] — RECOMMENDED / PRIORITY 1**
-
-Aur neeche:
-
-**Recommended: #1 [Option A]**
-**Kyun:** [2–3 concise evidence-based reasons].
-
-**#2 aur #3 ko recommended mat label karo** jab #1 recommendation already establish ho chuki ho.
-
-### 5.5 User Decision Remains Final
-
-Recommendation decision support hai, automatic implementation approval nahi.
-
-- Agent recommended option identify kar sakta hai.
-- Agent recommendation ke reasons concise aur factual rakhe.
-- User ki approval ke baghair meaningful feature/provider/API/dependency change implement mat karo.
-- Agar user numbered option select kare, selected option ko approved scope ke mutabiq implement karo.
-
-### 5.6 Future Suggestion Section
-
-Future suggestions implemented features se clearly separate hon.
-
-Rules:
-- Future suggestion ko implemented feature ke taur par present mat karo.
-- Suggestions current project ke context se relevant aur practical hon.
-- Suggestion implementation ki automatic permission nahi hai; user approval required hai.
-- Unrelated feature lists ya generic filler suggestions mat generate karo.
-- Agar current task ke baad koi genuinely useful future improvement nazar na aaye to forced suggestion mat do.
-- Accepted/rejected/deferred suggestions ko Module 36/56 ke suggestion-memory rules ke mutabiq handle karo.
-
-## 6. Fast Report Generation
-
-Report khud task completion ka bottleneck nahi banegi.
-
-- Small/tiny task ke baad report compact rakho.
-- Report banane ke liye separate project scan, extra EXE run, extra build, extra test ya extra performance measurement automatically mat karo.
-- Jo evidence task ke normal focused workflow mein already available hai usi ko report mein reuse karo.
-- Report ke liye new artifact/file create mat karo jab tak user explicitly persistent report file na maange.
-- Final report generate karna verification cycle ko duplicate nahi karega.
-
-## 7. Performance / Latency Reporting
-
-Latency ya speed improvement relevant ho to report mein actual measured Before → After value show karo.
-
-Example:
-
-**Before:** 500 ms  
-**After:** 300 ms  
-**Improvement:** 200 ms reduction / 40% lower measured latency.
-
-Percentage sirf actual measured values se calculate karo. Measurement na ho to performance improvement ko qualitative wording mein rakho, jaise **"processing path simplify kiya gaya"**, na ke invented timing.
-
-## 8. One-Message Chat Report
-
-Default user-facing final result ek hi concise chat-style report mein consolidated ho:
-
-```text
-BEFORE
-→ [old state / problem]
-
-AFTER
-→ [new state / result]
-
-CHANGES
-✓ [implemented feature/fix]
-  Mini: [one-line explanation]
-
-✓ [implemented feature/fix]
-  Mini: [one-line explanation]
-
-FUTURE
-→ [relevant future suggestion]
-  Faida: [one-line future benefit]
-
-VERIFICATION
-→ [what was actually verified]
-```
-
-Scattered progress messages ko final report ka substitute mat banao.
-
-## 9. Evidence & Truthfulness
-
-Before/After, feature, improvement aur verification claims actual workspace/build/runtime/test evidence par based hon.
-
-- Assumption ko verified result mat likho.
-- Planned feature ko implemented feature mat likho.
-- Suggested future feature ko completed feature mat likho.
-- Unmeasured latency/FPS/startup improvement ka numeric claim mat karo.
-- Agar verification intentionally skipped hui ho because task was tiny/static-only, report mein relevant concise status do instead of pretending runtime verification happened.
-
-## 10. Relationship With FAST MODE
-
-Before/After report Module 01, 25, 40, 43, 44 aur 53 ke fast execution rules ko slow nahi karegi.
-
-**Fast Work → Minimal Required Validation → Reuse Existing Evidence → Short Before/After Report → Up to 3 Relevant Future Options → Priority + Evidence-Based Recommendation → STOP**
-
-## 11. Completion Standard
-
-Meaningful task ka final user-facing state:
-
-**Actual Workspace Change → Required Focused Verification → Before → After → Implemented Features + Mini Explanations → Relevant Future Suggestion → Concise Chat Report → STOP**
-
 # 56. PROACTIVE WORKFLOW IMPROVEMENT MEMORY MODULE
 
 ## 1. Purpose
@@ -4323,7 +3864,7 @@ Final run task completion ka user-facing handoff step hai; unnecessary duplicate
 - Module 25 ki required verification preserve rahegi.
 - Module 53 ke build/test coalescing rules preserve rahenge.
 - Tiny/static-only tasks par unnecessary EXE launch force nahi hoga.
-- Module 55 ke final report mein final run ka actual status include kiya ja sakta hai.
+- Module 60 ke final report mein final run ka actual status include kiya ja sakta hai.
 - Agar host/editor/runtime capability supported nahi hai to agent unsupported capability ka claim nahi karega.
 
 # 58. ADAPTIVE DIAGNOSTIC DEPTH & FAST RECOVERY MODULE
@@ -4883,7 +4424,7 @@ Final response se pehle verify karo:
 
 ## 18. Relationship With Existing Modules
 
-- Module 55 factual Before/After, evidence, recommendation aur verification requirements ka source rahega.
+- Module 60 factual Before/After, evidence, recommendation aur verification requirements ka source rahega.
 - Module 60 un requirements ko enterprise visual report + advanced Future decision architecture mein organize karta hai.
 - Module 61 error summaries, fix choices aur Apply All behavior define karta hai.
 - Existing FAST MODE, scope lock, approval, user-work protection, verification aur STOP rules preserve rahenge.
@@ -4945,48 +4486,26 @@ Required style:
 
 Ye module existing error auto-repair, adaptive diagnostics, approval, verification aur final-report modules ko replace nahi karta; ye unka user-facing decision format define karta hai.
 
-# 62. DEVELOPMENT SPEED & BACKGROUND DIAGNOSTICS MODULE
+# 62. CONSOLIDATED DEVELOPMENT EFFICIENCY OWNERSHIP MODULE
 
-## 1. Purpose
-- Existing Apex behavior, architecture, UI aur user workflow ko preserve karte hue development ko fast, smooth aur focused rakho.
-- Speed optimization ka matlab functionality remove karna nahi; unnecessary work ko reduce karna hai.
+## Purpose
 
-## 2. Incremental Development Rule
-- Sirf changed/affected scope ko analyze, build aur validate karo.
-- Unchanged modules ko repeat scan/rebuild/test mat karo jab tak dependency ya evidence required na ho.
-- Related edits ko batch mein complete karo, phir proportional validation karo.
-- Duplicate scans, duplicate builds, duplicate launches aur duplicate checks avoid karo.
+Development-speed, duplicate-check, incremental-build, context-efficiency aur background-diagnostics rules ke liye authoritative ownership clear rakho. Purani duplicate wording ko alag modules mein repeat karke same action dobara execute mat karo.
 
-## 3. Context Efficiency
-- Har task par poora repository context load mat karo.
-- Target file → direct dependency → direct consumer boundary ko default rakho.
-- Unchanged policy/context ko host capability ke mutabiq reuse karo.
-- Generated, build, cache aur temporary directories ko unnecessary analysis/indexing scope mein include mat karo.
+## Single Source of Truth
 
-## 4. Build Efficiency
-- Incremental build ko default preference rakho.
-- Full clean rebuild sirf jab required ho, build state corrupt ho, dependency/toolchain change ho, ya evidence full rebuild require kare.
-- Har small edit ke baad full rebuild mat chalao.
-- Build artifacts ko source/root folders mein unnecessarily create mat karo.
+- Development speed: FAST MODE + Module 53.
+- Progressive diagnostics: Module 58.
+- Workspace/editor freedom: Module 59.
+- Final report architecture: Module 60.
+- Terminal-silent background diagnostics: Module 63.
 
-## 5. Runtime Efficiency
-- Blocking operations ko main UI/runtime path mein unnecessarily mat rakho.
-- Independent I/O, diagnostics aur background work ko asynchronous/background execution mein rakho jab architecture support kare.
-- Unnecessary polling, repeated process launches, repeated API calls aur busy loops avoid karo.
-- Timeouts aur retries bounded rakho; failed operation ko infinite retry loop mein mat dalo.
+## Anti-Duplication Rule
 
-## 6. Dependency & File Efficiency
-- Existing utility/service/component ko reuse karo jab woh safely suitable ho.
-- Same purpose ke duplicate helpers/services/files create mat karo.
-- New dependency sirf genuine requirement par add karo.
-- Unnecessary generated, backup, patch, test aur debug artifacts ko project structure mein accumulate mat hone do.
-
-## 7. Focused Validation
-- Validation task ke risk aur affected scope ke proportional ho.
-- Small change → focused check.
-- Module change → module-level validation.
-- Systemic issue → broader validation only when evidence/user request requires it.
-- Successful previous verification ko bina reason repeat mat karo.
+- Same build, scan, launch, test, log collection ya validation ko multiple modules ki wajah se repeat mat karo.
+- Ek requirement ke liye ek authoritative owner identify karo.
+- Supporting modules sirf apna unique scope define karein; same workflow ko copy/repeat na karein.
+- Conflict ho to Instruction Priority Hierarchy aur more-specific authoritative module apply karo.
 
 # 63. TERMINAL-SILENT BACKGROUND DEVELOPMENT & LOG DIAGNOSTICS MODULE
 
