@@ -4470,3 +4470,66 @@ Jab tamam required dependent steps successfully complete aur verify ho jayein:
 
 **Detect Stale/Failed State → Preserve Evidence → Classify → Targeted Recovery → Refresh if Required → Re-Verify → Continue**
 
+# 37. REFRESH-SAFE ACTIVE TASK CONTINUITY
+
+## Purpose
+
+- VS Code workbench refresh/reload se active AI-agent task lose, reset, duplicate ya unnecessarily restart nahi hona chahiye.
+- Agar agent kisi task ke beech mein ho aur workbench refresh required ho, refresh se pehle current task state ko persistent recovery state mein checkpoint karo.
+- Refresh ke baad agent ko **Resume From Checkpoint** karna hai, na ke task ko automatically zero se restart karna.
+
+## Pre-Refresh Checkpoint
+
+- Kisi potentially disruptive workbench reload se pehle active task ka minimum recovery state persist karo:
+  - Task objective
+  - Current step
+  - Completed steps
+  - Current action
+  - Remaining actions
+  - Files being modified
+  - Relevant commands/actions
+  - Verification status/evidence
+  - Important decisions
+  - Safe resume point
+- Checkpoint existing Persistent Work Continuity / CURRENT.md / HISTORY.md / session-state rules ke saath coordinate kare.
+- Checkpoint tab tak valid na samjho jab tak state successfully persisted na ho.
+
+## Refresh Safety
+
+- Active build, debug, test, file mutation ya other agent operation ko blindly interrupt karne se pehle uski state aur recovery requirement determine karo.
+- Agar refresh safely postpone ho sakta ho, active critical operation complete hone tak refresh delay karo.
+- Agar immediate refresh required ho, safe checkpoint ke baad hi perform karo jab technically possible ho.
+- Unsaved user work ya in-progress mutation ko unnecessarily discard mat karo.
+
+## Post-Refresh Resume
+
+- VS Code refresh/reload ke baad startup par persistent task state load karo.
+- Determine karo:
+  **NO ACTIVE TASK → Normal Ready State**
+  **ACTIVE TASK → Resume From Last Safe Checkpoint**
+- Last completed step ko dobara unnecessarily execute mat karo.
+- Partially completed step ko checkpoint/evidence ke basis par determine karo ke resume, re-verify ya safely restart karna hai.
+- Stale/incomplete checkpoint ko blindly success proof mat samjho; relevant state ko focused verify karo.
+- Refresh ki wajah se task ko duplicate, rewind ya zero se restart mat karo.
+
+## Recovery Integrity
+
+- Refresh ke baad agent ko current task context, scope, decisions aur remaining work reconstruct karna chahiye.
+- Agar runtime/build/debug process refresh se terminate ho gaya ho, us process ko blindly assume complete mat karo; status verify karke required stage se continue karo.
+- Agar kisi operation ka result uncertain ho, us operation ko focused verification ke saath reconcile karo before continuing.
+- Recovery ka objective:
+  **Preserve State → Refresh → Restore Context → Verify Resume Point → Continue**
+- Recovery ko:
+  **Refresh → Forget Context → Restart Entire Task**
+  mein convert mat karo.
+
+## Coordination
+
+- Ye module existing Persistent Work Continuity, Step-by-Step Sequential Verification, Mutation Safety, Background Execution, Workspace/Editor behavior aur Autonomous Workbench Refresh rules ke saath coordinate kare.
+- Same checkpoint/state persistence ya verification ko multiple modules ki wajah se duplicate mat karo.
+- User ke manual Explorer close/open behavior ko preserve karo; task continuity ke liye Explorer ko force-open mat karo.
+
+## Operating Principle
+
+**Active Task → Checkpoint → Safe Refresh → Restore Context → Verify Resume Point → Continue From Last Safe State**
+
