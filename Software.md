@@ -3745,3 +3745,39 @@ Future options ko actual task context se dynamically generate karo aur basic/loc
 - Standalone documentation, monetization/ads, standalone technical-debt, standalone development-mode, duplicate quality-gate, duplicate release/version, duplicate observability, duplicate diagnostics, duplicate testing-loop aur repeated workflow modules ko separate rules ke taur par maintain mat karo.
 - Same requirement ko multiple modules mein repeat karne ke bajaye ek authoritative owner rakho aur supporting modules mein sirf unique constraints rakho.
 - Existing user/project files, build structure aur explicitly requested root files ko cleanup ke naam par delete mat karo.
+
+
+# 28. TESTING & BUILD EFFICIENCY EXTENSIONS
+
+## Intelligent Proportional Testing Selection
+
+Testing ko change impact ke mutabiq automatically select karo. Goal: correctness maintain ho aur development unnecessary slow na ho.
+
+- Tiny change: normally syntax/editor validation ya focused static check.
+- Small isolated logic/function/class change: affected unit test ya focused test run karo; unrelated test suites mat chalao.
+- Small UI behavior change: relevant QML/C++/Python validation aur focused component test use karo. Full E2E default nahi.
+- Medium/module-level change: relevant unit tests + affected integration/contract tests run karo.
+- API, database, service boundary ya multi-component behavior change: affected integration tests ko priority do; required unit coverage retain karo.
+- Large/systemic/architecture change: broader regression validation aur relevant end-to-end tests run karo.
+- User-facing critical flow, startup flow, voice/mic flow, authentication/authorization, persistence, deployment ya release-sensitive behavior: E2E/runtime verification jab risk aur change impact justify kare.
+- Security-sensitive change: relevant focused security checks mandatory hain; scope ke mutabiq integration/E2E/security validation add karo.
+- Bug fix: failing behavior ko reproduce/verify karne wala smallest useful test/check choose karo, phir fix ke baad same check rerun karo.
+- Multiple related small edits ko batch karke ek coherent focused validation run karo; har edit ke baad test/build/EXE launch mat karo.
+- Full test suite, full rebuild ya repeated E2E sirf evidence, release gate, systemic change ya explicit user request ki wajah se run karo.
+- Agar higher-level test already affected behavior ko reliably cover karta hai to duplicate lower-level test execution unnecessary ho sakti hai.
+- Completion claim ke liye wahi verification state report karo jo actually run hui ho.
+
+## Automatic Refresh / Reload / Rebuild Synchronization
+
+- Code/configuration/resource change ke baad relevant build system, IDE project model, QML/resource cache ya generated output ko automatically refresh/reload/rebuild karo jab required ho.
+- Incremental build ko default rakho; full rebuild sirf jab dependency/build-system evidence require kare.
+- Existing project ka already-configured build folder aur intended output directory use karo; duplicate build folders create mat karo.
+- Qt/CMake projects mein existing configured build tree ko preserve karo aur generated EXE ko configured target/output location mein synchronize karo.
+- Agar source change ke baad EXE stale ho sakti hai to affected target ka incremental rebuild trigger karo aur expected output path ko verify karo.
+- Build/output refresh ke baad relevant IDE/project state ko rescan/reload karo jab host support karta ho.
+- User se manual refresh/reload step tabhi maango jab automation technically unavailable ho ya explicit user interaction genuinely required ho.
+- Same change ke liye refresh → rebuild → refresh → rebuild ka loop mat chalao; minimum required sequence use karo.
+- Build success ko EXE freshness ka proof tabhi samjho jab expected target/output artifact actually update/verify hua ho.
+- Duplicate EXE ya duplicate build output detect ho to configured output ownership identify karo aur unnecessary duplicate ko safe cleanup rules ke mutabiq handle karo.
+- Running EXE ko blindly overwrite/restart mat karo; runtime state aur file-locks ko respect karo.
+- Final runtime verification required ho to refreshed/rebuilt intended EXE se verify karo, accidental duplicate output se nahi.
