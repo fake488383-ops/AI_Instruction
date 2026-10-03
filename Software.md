@@ -4227,97 +4227,97 @@ Example format:
 - Feature suggestion generation development workflow ko slow karne ke liye extra scans, builds ya test suites trigger nahi karegi.
 
 
-# 34. SEQUENTIAL / GATED VERIFICATION ENGINE
+# 34. STEP-BY-STEP SEQUENTIAL VERIFICATION
 
-> Sequential ya dependent workflow mein agent har meaningful stage ko ek verification gate samjhega. Gate N successfully pass hue baghair Gate N+1 start nahi hoga. Iska maqsad implementation ko end tak blindly continue karne ke bajaye har proven stage par correctness establish karna hai.
+> Sequential ya dependent workflow mein agent har meaningful stage ko ek **Step** samjhega. **Step N successfully complete aur verify hue baghair Step N+1 start nahi hoga.** Iska maqsad implementation ko end tak blindly continue karne ke bajaye har proven stage par correctness establish karna hai.
 
-## Gate-Based Workflow
+## Step-Based Workflow
 
 Har sequential workflow ko jab relevant ho is pattern mein execute karo:
 
-**Gate N → Action/Implementation → Immediate Focused Verification → PASS → Unlock Next Gate**
+**Step 1 → Action/Implementation → Immediate Focused Verification → Step 1 Complete → Step 2**
 
-Har gate ke liye:
+Har step ke liye:
 - Required precondition identify karo.
 - Relevant action/implementation complete karo.
-- Us stage ka sab se reliable available verification immediately perform karo.
+- Us step ka sab se reliable available verification immediately perform karo.
 - Verification evidence ko current state ke saath associate karo.
-- **PASS** hone par hi next dependent gate unlock karo.
-- Sirf code/implementation complete ho jana gate pass hone ka proof nahi hai.
+- **Step N Complete** hone par hi next dependent step unlock karo.
+- Sirf code/implementation complete ho jana step complete hone ka proof nahi hai.
 
 ## Strict Sequential Dependency
 
-- Agar Gate N fail ho, to Gate N+1 aur uske baad ke dependent gates execute mat karo.
-- Failure par current gate par progression lock karo.
+- Agar **Step N fail** ho, to **Step N+1** aur uske baad ke dependent steps execute mat karo.
+- Failure par current step par progression stop karo.
 - Relevant evidence collect karo, root cause identify karo aur smallest safe fix apply karo.
-- Current gate ko dobara verify karo.
-- Current gate PASS hone ke baad hi next gate resume karo.
+- Current step ko dobara verify karo.
+- Current step successfully complete hone ke baad hi next step resume karo.
 - Is rule ka maqsad failed foundation ke upar additional features stack hone se prevent karna hai.
 
 ## Immediate Verification
 
-- Sequential feature/workflow mein har meaningful state transition ya dependent stage ke baad focused verification karo; sab implementation complete hone tak verification defer mat karo jab earlier stage ka result next stage ke liye required ho.
-- Verification ko task ke risk aur stage ke mutabiq smallest reliable test/check rakho.
-- Har line ya trivial edit ko separate gate banana zaruri nahi; coherent implementation unit ko gate banao.
-- Existing FAST MODE preserve rahe: gate verification targeted ho, unnecessary full-project scan/build/test nahi.
+- Sequential feature/workflow mein har meaningful state transition ya dependent step ke baad focused verification karo; sab implementation complete hone tak verification defer mat karo jab earlier step ka result next step ke liye required ho.
+- Verification ko task ke risk aur step ke mutabiq smallest reliable test/check rakho.
+- Har line ya trivial edit ko separate step banana zaruri nahi; coherent implementation unit ko step banao.
+- Existing FAST MODE preserve rahe: step verification targeted ho, unnecessary full-project scan/build/test nahi.
 - Backend, headless, component, integration, automated ya runtime verification mein jo technically most reliable aur proportional path available ho use karo.
 
-## Failure Recovery at Current Gate
+## Step Failure & Recovery
 
 Failure sequence:
 
-**Gate Fail → Relevant Evidence → Root Cause → Minimal Safe Fix → Current Gate Retest → PASS → Continue**
+**Step N Fail → Relevant Evidence → Root Cause → Minimal Safe Fix → Step N Retest → Step N Complete → Step N+1**
 
-- Failed gate ke baad future dependent work ko speculative continuation ke taur par mat karo.
+- Failed step ke baad future dependent work ko speculative continuation ke taur par mat karo.
 - Same failed action ko bina new evidence repeatedly retry mat karo.
-- Previous passing gates ko unnecessarily undo mat karo.
-- Repair ke baad original gate condition aur relevant regression condition dobara verify karo.
+- Previous completed steps ko unnecessarily undo mat karo.
+- Repair ke baad original step condition aur relevant regression condition dobara verify karo.
 - Agar root cause clear na ho to destructive ya speculative changes mat karo.
 
-## No User Verification for Routine Gates
+## No User Verification for Routine Steps
 
 - Routine sequential verification agent khud perform kare; user ko baar-baar “aap check karo” keh kar verification outsource mat karo.
 - Available automated/backend/headless/component/integration evidence ko primary verification source banao.
 - User-facing manual inspection sirf tab required handoff ho jab behavior technically automated verification se fully prove nahi ho sakta ya final runtime inspection explicitly required ho.
 - Manual limitation ko success samajh kar assume mat karo; jo verify nahi hua usko verified claim mat karo.
 
-## Runtime-Only Gates
+## Runtime-Only Steps
 
-- Agar koi gate sirf real runtime, hardware, external service, timing ya human observation mein reliably verify ho sakta hai, to us gate ke liye minimum required runtime verification use karo.
-- Har gate ke liye repeatedly EXE launch/close mat karo jab backend/headless verification sufficient ho.
-- Runtime verification required ho to current gate ko verify karke hi next dependent runtime stage par move karo.
+- Agar koi step sirf real runtime, hardware, external service, timing ya human observation mein reliably verify ho sakta hai, to us step ke liye minimum required runtime verification use karo.
+- Har step ke liye repeatedly EXE launch/close mat karo jab backend/headless verification sufficient ho.
+- Runtime verification required ho to current step ko verify karke hi next dependent runtime step par move karo.
 - Runtime-only limitation ko clearly distinguish karo from a successful automated pass.
 
-## Independent vs Dependent Gates
+## Independent vs Dependent Steps
 
-- Genuinely independent gates ko parallel execute kiya ja sakta hai jab ordering dependency na ho.
-- Dependent gates strictly sequential rahenge.
-- Agar later gate ka correctness earlier gate ke output/state par depend karta hai to usko parallelize mat karo.
+- Genuinely independent steps ko parallel execute kiya ja sakta hai jab ordering dependency na ho.
+- Dependent steps strictly sequential rahenge.
+- Agar later step ka correctness earlier step ke output/state par depend karta hai to usko parallelize mat karo.
 - Parallel work se verification order ya evidence integrity compromise nahi honi chahiye.
 
-## Gate Evidence & Cache
+## Step Evidence & Cache
 
-- Har completed gate ke liye concise pass/fail evidence maintain karo jab workflow continuity ke liye useful ho.
+- Har completed step ke liye concise pass/complete evidence maintain karo jab workflow continuity ke liye useful ho.
 - Verification cache sirf tab reuse karo jab relevant implementation, dependencies, configuration aur environment materially unchanged hon.
-- Relevant state change hote hi affected gate evidence invalidate karo.
-- Stale PASS ko current changed state ka proof mat samjho.
+- Relevant state change hote hi affected step evidence invalidate karo.
+- Stale **Step Complete** state ko current changed state ka proof mat samjho.
 - Existing Verification Result Cache aur Persistent Work Continuity rules ke saath coordinate karo.
 
 ## Final Completion Flow
 
-Jab tamam required dependent gates PASS ho jayein:
+Jab tamam required dependent steps successfully complete aur verify ho jayein:
 
-**All Gates PASS → Final Diagnostic/Build → Final EXE Run when runtime handoff is required → Final Report**
+**Step 1 Complete → Step 2 Complete → Step 3 Complete → ... → All Required Steps Complete → Final Diagnostic/Build → Final EXE Run when runtime handoff is required → Final Report**
 
-- Final Build → Run rule ko gated verification bypass nahi karti.
-- Final EXE launch se pehle unresolved gate failure nahi rehna chahiye.
-- Final report mein actual gate verification evidence summarize karo; unsupported success claim mat karo.
+- Final Build → Run rule ko step-based verification bypass nahi karti.
+- Final EXE launch se pehle unresolved step failure nahi rehna chahiye.
+- Final report mein actual step verification evidence summarize karo; unsupported success claim mat karo.
 
 ## Coordination & Anti-Duplication
 
 - Ye module existing FAST MODE, Mutation Safety, Backend/Headless Verification, Testing, Verification Cache aur Final Build → Run rules ko replace nahi karta.
 - Same test, build, diagnostic ya verification ko sirf isliye repeat mat karo ke woh multiple modules mein referenced hai.
-- Gated verification ka purpose **earlier correctness + controlled progression** hai, full-project testing ko har stage par force karna nahi.
+- Step-by-step verification ka purpose **earlier correctness + controlled progression** hai, full-project testing ko har step par force karna nahi.
 - Final operating principle:
 
-**Implement → Verify Current Gate → Pass? Continue : Stop & Repair → Verify Again → Continue → Final Build → Final Run → Report**
+**Implement Step → Verify Step → Complete? Continue : Stop & Repair → Verify Again → Continue → Final Build → Final Run → Report**
