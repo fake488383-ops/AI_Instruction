@@ -4012,3 +4012,109 @@ Task completion se pehle confirm karo:
 Primary optimization target:
 
 **First-time-correct execution + fast verification + minimum repair loops.**
+
+
+# 32. INTELLIGENT EXECUTION ACCELERATION
+
+> Is module ka maqsad agent ki coding speed, decision speed aur verification efficiency improve karna hai bina existing safety, FAST MODE, enterprise governance, mutation-safety, proportional-testing ya final Build → Run workflow ko weaken kiye. Ye sirf relevant task scope mein activate hoga.
+
+## Smart File Indexing & Targeted Context
+
+- Project ke frequently used source/config/test/build paths ka lightweight searchable index use karo jab host/tool support karta ho.
+- Index ko task ke mutabiq targeted context retrieve karne ke liye use karo; har task par repository-wide raw scan mat karo.
+- File index stale ya invalid ho to sirf affected paths ko refresh/re-index karo.
+- Generated files, build artifacts aur unrelated directories ko default context retrieval se exclude rakho.
+- Index ko source of truth mat samjho; important mutation se pehle actual target file/state verify karo.
+- Small task mein indexed context se direct target tak shortest reliable path prefer karo.
+
+## Task Context Cache
+
+- Current task ke relevant files, symbols, dependencies, diagnostics aur verification results ko session ke andar reusable context ke taur par maintain karo jab host support karta ho.
+- Same unchanged file/content ko baar-baar reread ya same unchanged dependency evidence ko repeat collect mat karo.
+- File ya configuration change hone par uska cached context invalidate/refresh karo.
+- New task par unrelated old context automatically carry forward mat karo.
+- Context cache ko authoritative source nahi samjho; mutation se pehle current state verify karna zaruri hai.
+- Session restart par supported persistent work-state ko use karo; unsupported memory ko assume mat karo.
+
+## Parallel Safe Operations
+
+- Independent, read-only operations ko parallel execute karo jab tool/host support karta ho aur ordering dependency na ho.
+- Independent diagnostics, targeted file reads, metadata checks ya unrelated validation tasks ko unnecessary sequential waits mein mat badlo.
+- Mutating operations jahan ordering matter karti ho unko deterministic sequence mein rakho.
+- Same file, same build target ya dependent state par concurrent mutations mat karo.
+- Parallel execution se duplicate work, race condition ya inconsistent state create nahi honi chahiye.
+- Safety aur correctness ko raw parallelism par priority do.
+
+## Build Failure Fingerprinting
+
+- Build/test failures ko available error signature, compiler/linker category, affected target, source location aur recent change context ke basis par fingerprint karo.
+- Same failure fingerprint ko known current failure ke taur par recognize karke identical diagnosis work repeat mat karo jab tak new evidence na aaye.
+- Failure fingerprint change ho to new evidence ke mutabiq diagnosis update karo.
+- A previously verified fix ko unrelated failure ke liye blindly reuse mat karo.
+- Fingerprinting ka maqsad faster root-cause detection hai, error ko ignore karna nahi.
+
+## Verification Result Cache
+
+- Successful automated verification results ko relevant source/configuration/build state ke saath associate karke reuse karo jab host support karta ho.
+- Unchanged state par identical verification ko unnecessarily repeat mat karo.
+- Relevant input, dependency, implementation ya environment change hone par affected verification cache invalidate karo.
+- Cached pass ko current changed state ka proof mat samjho jab inputs materially change ho chuke hon.
+- Final acceptance ke liye current state ki required verification evidence available honi chahiye.
+- Runtime-visible final handoff ke liye existing final Build → Run rule always remains authoritative.
+
+## Hot-Path Development Mode
+
+- Frequently repeated development paths ko internally hot path ke taur par identify karke unke common reads, checks aur build steps optimize karo.
+- Hot path ka matlab reduced safety nahi; same mutation-safety aur verification gates apply rahenge.
+- Repeated unchanged setup work ko cache/reuse karo jab reliable ho.
+- Hot path mein unnecessary full-project scans, repeated tool discovery, repeated environment checks aur duplicate builds avoid karo.
+- Agar task scope change ho to hot-path assumptions ko automatically reconsider karo.
+
+## Automatic Tool Selection
+
+- Task ke type aur required evidence ke mutabiq sab se suitable available tool/path choose karo.
+- File content ke liye targeted file retrieval, code behavior ke liye relevant test/diagnostic path, build issue ke liye build evidence aur runtime issue ke liye runtime evidence prefer karo.
+- Ek hi information ke liye multiple tools ko unnecessarily duplicate mat karo.
+- Tool selection speed ke liye correctness ya evidence quality compromise mat karo.
+- Tool unavailable ho to equivalent supported path use karo; unsupported capability ka claim mat karo.
+
+## Stop-Early Intelligence
+
+- Jab requested change correctly implemented ho, required focused verification pass ho, relevant diagnostics clean hon aur acceptance condition satisfy ho, to further investigation automatically stop karo.
+- Passing evidence ke baad unrelated scans, extra builds, repeated tests, speculative cleanup ya architecture review mat chalao.
+- Failure mile to sirf relevant evidence collect karo aur root cause clear hone tak focused workflow continue karo.
+- STOP condition ko user task completion aur required verification ke basis par determine karo, arbitrary time limit ke basis par nahi.
+
+## Edit Confidence Check
+
+- Mutation se pehle proposed edit ke confidence ko available evidence ke basis par internally assess karo.
+- High-confidence local change ko FAST MODE ke mutabiq directly execute karo.
+- Low-confidence state mein sirf woh additional evidence collect karo jo safe mutation ke liye required ho.
+- Low confidence ko automatic full-project scan ka reason mat banao.
+- Exact target, expected behavior aur change boundary unclear hon to speculative edit mat karo.
+- Confidence ka maqsad unnecessary repair loops kam karna hai, approval prompts barhana nahi.
+
+## Resource-Aware Execution
+
+- CPU, memory, disk I/O, build time aur available execution capacity ko relevant heavy tasks mein consider karo.
+- Light tasks par heavyweight diagnostics/build/test infrastructure mat chalao.
+- Resource-heavy operations ko task impact ke mutabiq schedule/limit karo jab host support karta ho.
+- Parallel work se resource contention, build corruption ya unreliable tests ka risk ho to concurrency reduce karo.
+- Resource optimization correctness, security, reliability ya verification evidence ko weaken nahi kar sakti.
+
+## First-Time-Correct Execution
+
+- Har task ka primary optimization target **first-time-correct execution** ho: target samjho → evidence check karo → minimal correct mutation karo → boundary verify karo → focused verification karo.
+- Avoidable mistakes ko later repair se solve karna normal workflow mat banao.
+- Repair loop sirf genuine evidence-based failure ke liye use karo.
+- Successful first attempt ke baad unnecessary second implementation, speculative refactor ya duplicate verification mat karo.
+- Existing Mutation Safety & Error Prevention rules authoritative rahengi; ye section unka execution-efficiency layer hai.
+
+## Acceleration Coordination
+
+- Ye module existing modules ka duplicate replacement nahi hai; jahan authoritative rule already exist karta hai, usi rule ko follow karo.
+- Smart indexing, context cache, verification cache aur failure fingerprints ko stale evidence ki surat mein invalidate karo.
+- Parallel operations sirf genuinely independent work ke liye use karo.
+- Cache, hot-path ya stop-early logic ko final diagnostic, required verification, build/output freshness ya final EXE handoff ko bypass karne ke liye use mat karo.
+- Final efficient workflow:
+  **Targeted Context → Evidence/Confidence Check → Safe Coherent Mutation → Parallel Safe Verification Where Possible → Evidence-Based Repair Only If Needed → Stop Early When Acceptance Is Proven → Final Build → Final EXE Run When Runtime Handoff Is Required → Report.**
