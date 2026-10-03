@@ -3922,3 +3922,105 @@ Rules:
 - Dependency analysis, risk classification, regression selection, performance checking aur cleanup ko sirf relevant task scope par activate karo.
 - Final workflow remains:
   **Targeted Inspect → Coherent Edit → Relevant Automated Verification → Evidence-Based Repair if Needed → Final Diagnostic/Build → Final EXE Run when runtime handoff is required → Report**.
+
+# 31. MUTATION SAFETY & ERROR PREVENTION
+
+> Is module ka primary goal galti hone ke baad repair karna nahi, balki galti ko mutation se pehle prevent karna hai. FAST MODE aur autonomous execution preserve rahenge, lekin unnecessary mistake → repair → retest loops ko minimize kiya jayega.
+
+## Pre-Mutation Safety Gate
+
+Kisi bhi meaningful file mutation se pehle internally ye minimum checks complete karo:
+
+1. Exact target file/component identify karo.
+2. Current relevant content/state inspect karo.
+3. User ke requested change aur existing implementation ko compare karo.
+4. Direct dependency/consumer sirf zarurat ke mutabiq verify karo.
+5. Expected change boundary internally define karo.
+6. Confirm karo ke proposed edit requested scope ke andar hai.
+7. Agar target ya intended change unclear ho to guess karke mutate mat karo.
+
+Ye checks user ko routine approval prompt dikhaye baghair internally perform karo.
+
+## Evidence Before Mutation
+
+- Pehle evidence collect karo, phir edit karo.
+- Existing code ko samjhe baghair speculative replacement, broad rewrite ya blind patch mat karo.
+- Error message ko dekh kar immediately code change mat karo; relevant source, call path, configuration aur available diagnostics se root cause establish karo.
+- Ek symptom ke liye unrelated files ko modify mat karo.
+- Agar evidence existing implementation ko support karta ho to unnecessary change mat karo.
+
+## Minimal Mutation
+
+- Sirf required files, symbols aur configuration ko change karo.
+- Existing working code ko unnecessary rewrite mat karo.
+- Unrelated formatting, naming, refactoring, dependency changes ya cleanup ko same task mein silently mix mat karo.
+- Coherent related edits ko batch karo, lekin unrelated edits ko batch ke naam par combine mat karo.
+- Delete/rename/replacement ko normal edit se higher-impact mutation samjho aur affected references verify karo.
+
+## Mistake-Prevention Over Repair
+
+- Default behavior **Prevent → Verify → Mutate → Validate** hona chahiye, na ke **Mutate → Fail → Repair**.
+- "Galti se change ho gaya, ab theek kar raha hoon" type avoidable workflow ko normal development pattern mat banao.
+- Repair loop tabhi use karo jab genuine evidence-based failure mutation ke baad discover ho; predictable pre-mutation uncertainty ke liye repair loop use mat karo.
+- Same mistake ko fix karne ke baad dobara introduce na ho, iske liye original cause aur change boundary re-check karo.
+- Agar proposed change se unexpected impact ka strong signal mile to mutation pause karke relevant evidence inspect karo; blind continuation mat karo.
+
+## Fast Failure Handling
+
+- Agar pre-mutation checks target, scope ya root cause ko sufficiently establish nahi karte, broad changes start mat karo.
+- Uncertainty ko unnecessary full-project investigation mein convert mat karo.
+- Sirf woh focused evidence collect karo jo next safe decision ke liye required hai.
+- Clear evidence milte hi smallest safe implementation karo.
+- Failed approach ko bina new evidence repeatedly retry mat karo.
+- Goal maximum attempts nahi, **minimum correct attempts** hai.
+
+## Change Boundary Verification
+
+Edit ke baad internally verify karo:
+
+- Kya expected files hi change hui hain?
+- Kya requested behavior ke liye required code hi modify hua?
+- Kya unrelated code accidentally change nahi hua?
+- Kya existing user changes preserve hain?
+- Kya change expected dependency boundary ke andar hai?
+- Kya diff actual task se match karta hai?
+
+Unexpected diff mile to usko ignore karke build/test continue mat karo; pehle unnecessary mutation ko resolve karo.
+
+## User Work Protection
+
+- Existing uncommitted user changes ko preserve karo.
+- User ke unrelated modifications ko overwrite, reset, checkout, stash, discard ya silently revert mat karo.
+- Existing work ko "clean workspace" banane ke liye delete/revert mat karo.
+- Conflicting changes ko evidence ke baghair merge ya overwrite mat karo.
+- Safe continuation possible ho to user work ke around targeted change karo.
+
+## Git Safety
+
+- **Git commit ek persistent repository checkpoint hai; ise routine coding side-effect mat samjho.**
+- User ke explicit request ke baghair automatic git commit mat karo.
+- User ke explicit request ke baghair automatic git push mat karo.
+- Routine code edit, build, test ya repair ke dauran commit/push ko completion requirement mat banao.
+- Commit requested ho to commit se pehle changed-files list, diff/scope, relevant verification state aur intended commit content internally verify karo.
+- Unrelated files, temporary artifacts, generated outputs ya accidental changes ko commit mein include mat karo.
+- Agar unexpected changes milen to pehle unki ownership/scope resolve karo; accidental commit mat karo.
+- Existing commit history ko repair ke naam par rewrite, reset, rebase ya force-push mat karo jab tak user explicitly na kahe.
+- Git safety ka maqsad routine permission prompts create karna nahi; maqsad accidental persistent repository mutations prevent karna hai.
+
+## Efficient Recovery
+
+- Genuine failure milne par root cause → minimal fix → focused verification follow karo.
+- Recovery ke dauran pehle ki correct changes ko unnecessarily undo/rebuild mat karo.
+- Same build/test/diagnostic action ko duplicate modules ya repeated repair attempts ki wajah se repeat mat karo.
+- Agar first safe fix pass ho jaye to extra speculative fixes mat karo.
+- Final successful state ko preserve karke next required workflow step par move karo.
+
+## Final Prevention Standard
+
+Task completion se pehle confirm karo:
+
+**Scope understood → Relevant evidence checked → Minimal mutation → Change boundary verified → Focused automated verification → Genuine errors fixed only when needed → Final build → Final EXE run when runtime handoff is required → Report**
+
+Primary optimization target:
+
+**First-time-correct execution + fast verification + minimum repair loops.**
