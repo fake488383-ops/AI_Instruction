@@ -3745,6 +3745,25 @@ Testing ko change impact ke mutabiq automatically select karo. Goal: correctness
 - Agar higher-level test already affected behavior ko reliably cover karta hai to duplicate lower-level test execution unnecessary ho sakti hai.
 - Completion claim ke liye wahi verification state report karo jo actually run hui ho.
 
+## Backend-First Verification / No Intermediate EXE Launch
+
+- Routine development verification ka default **BACKEND-FIRST / HEADLESS-FIRST** hoga.
+- Har feature ko verify karne ke liye EXE ko repeatedly launch, close ya manually inspect mat karo.
+- Jahan technically possible ho, feature behavior ko EXE ke baghair backend/test environment mein verify karo.
+- C++ logic, Python services, APIs, signals/slots, state transitions, navigation commands, data flow, validation logic, persistence aur error handling ko direct unit/integration/component tests se verify karo.
+- QML/UI behavior ko jahan possible ho QML/component-level tests, signal/slot tests, object-level interaction tests, headless Qt test paths ya equivalent automated UI harness se verify karo.
+- Button click flow ke liye sirf code compile hona enough nahi: click handler/signal → intended action → navigation/state change → target page/state ko automated verification se confirm karo.
+- Voice/mic flow ke liye available backend/audio abstraction, signal flow, processing pipeline, callback/state transitions aur error handling ko automated checks se verify karo. Real microphone hardware ki physical input ko backend se fully prove karna possible na ho to us limitation ko report karo; fake success claim mat karo.
+- Cross-component features ke liye unit + integration + contract/component checks ko combine karo jab required ho.
+- Background logs, diagnostics aur test evidence ko verification ka primary source rakho; user-facing terminal/console automatically open mat karo.
+- **Intermediate EXE launch forbidden by default:** implementation ke beech sirf verification ke liye EXE launch mat karo jab equivalent backend/headless validation available ho.
+- Agar kisi behavior ko technically sirf real process/GUI runtime mein verify kiya ja sakta ho, to sirf us specific behavior ke liye minimal runtime verification karo; repeated manual-style launches avoid karo.
+- Backend/headless verification ka goal hai user se “aap check karo” na kehna. Agent ko khud available automated evidence collect karna hai.
+- Backend/headless verification pass hone ke baad hi task ko final runtime-launch stage tak le jao.
+- Verification ke baad intended configured EXE ko **sirf ek final launch** ke liye prepare karo, taake user khud final live software inspect kar sake.
+- Final EXE launch se pehle build/output freshness, intended target path aur relevant final diagnostics verify karo.
+- Final launch user ke liye manual inspection handoff hai; is launch ko repeated test loop mein convert mat karo.
+
 ## Automatic Refresh / Reload / Rebuild Synchronization
 
 - Code/configuration/resource change ke baad relevant build system, IDE project model, QML/resource cache ya generated output ko automatically refresh/reload/rebuild karo jab required ho.
@@ -3779,6 +3798,13 @@ Testing ko change impact ke mutabiq automatically select karo. Goal: correctness
 - Relevant UI behavior mein button/click handler, signal/slot, QML binding, backend response aur runtime diagnostics verify karo.
 - Voice/mic behavior mein available audio, signal flow, processing result aur relevant logs verify karo.
 - Fix ke baad original error dobara check karo; unrelated errors ko bina evidence modify mat karo.
+- Verification ko **Backend/Headless → Integration/Component → Final Runtime Launch** sequence mein organize karo.
+- User ko intermediate EXE testing ke liye mat bolo jab backend/headless automated verification available ho.
+- “Aap check karo button kaam kar raha hai” type handoff ko routine completion step mat banao; agent khud automated evidence collect kare.
+- UI interaction flow ke liye relevant click/event → handler → state/action → navigation/result chain ko automatically verify karo.
+- Voice/mic flow ke liye available automated audio/signal simulation, backend processing aur state/result assertions use karo; real hardware-only behavior ko clearly identify karo.
+- Agar backend/headless verification fail ho to final EXE launch se pehle issue diagnose/fix/retest karo.
+- Agar backend/headless verification pass ho aur task runtime-visible ho, to final configured EXE ko user handoff ke liye ek dafa automatically launch karo.
 
 ## Final Diagnostic Sweep
 
@@ -3786,6 +3812,10 @@ Testing ko change impact ke mutabiq automatically select karo. Goal: correctness
 - Relevant build state, IDE diagnostics, runtime logs aur test results inspect karo.
 - Relevant error mile to report se pehle safe fix attempt karo, refresh/rebuild karo aur affected verification dobara run karo.
 - Unresolved issue ko hide mat karo; final report mein factual limitation show karo.
+- Final diagnostic sweep mein pehle backend/headless evidence inspect karo; EXE ko sirf tab launch karo jab final live handoff ya backend se impossible verification required ho.
+- Final EXE launch se pehle relevant tests, build/output freshness aur configured executable path verify karo.
+- Final EXE launch ko task-completion ka **last runtime step** rakho, not an intermediate debugging loop.
+- User ko final EXE manually start karne ki zarurat nahi honi chahiye jab agent ke paas launch capability available ho.
 
 ## Final Report & Suggestions
 
