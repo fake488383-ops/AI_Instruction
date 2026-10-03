@@ -4408,3 +4408,65 @@ Jab tamam required dependent steps successfully complete aur verify ho jayein:
 - Evidence first, minimal safe mutation second.
 - Final EXE handoff only after the required runtime behavior has been verified as far as technically possible.
 
+# 36. AUTONOMOUS VS CODE WORKBENCH REFRESH & DIAGNOSTIC RECOVERY
+
+## Purpose
+
+- Agar VS Code workbench mein stale state, stale diagnostics, stuck debug state, outdated Problems/Terminal/Debug Console state, extension/UI synchronization issue ya equivalent refresh-required condition detect ho, to routine recovery agent khud perform kare.
+- User ko routine cases mein manually **Ctrl+Shift+P → Developer: Reload Window** ya kisi equivalent refresh command ko execute karne ke liye mat bolo.
+- Ye rule application/project code ko unnecessarily change karne ke liye nahi hai; iska purpose development environment state ko safely refresh/re-synchronize karna hai.
+
+## Automatic Detection
+
+- Terminal, Debug Console, Problems panel, debugger, build process, language tooling aur relevant VS Code diagnostics ko background mein observe karo.
+- Stale, contradictory, orphaned ya clearly outdated diagnostic state ko actual current build/runtime evidence se distinguish karo.
+- Agar current code/build state healthy ho lekin VS Code UI/workbench state stale ho, environment refresh/re-synchronization ko appropriate recovery action samjho.
+- Refresh se pehle available evidence preserve karo agar active debugging/build/task state ko lose hone ka meaningful risk ho.
+
+## Automatic Refresh & Recovery
+
+- Safe aur technically supported condition mein required VS Code workbench refresh/reload automatically perform karo; user ko manual Ctrl+Shift+P workflow par depend mat karo.
+- Refresh ko blind first action mat banao. Pehle determine karo ke problem actual code/build/runtime failure hai ya stale workbench/diagnostic state.
+- Agar refresh ke baghair targeted re-sync, diagnostics refresh, task restart ya equivalent lower-impact recovery sufficient ho, to lower-impact action prefer karo.
+- Agar actual Developer: Reload Window level refresh required ho, to agent usko automatically perform kar sakta hai as part of development-environment recovery.
+- Refresh ke baad relevant diagnostics, active task/debug state aur required verification ko dobara observe karo.
+
+## Terminal / Debug Console / Problems State
+
+- Terminal mein aane wale compiler, linker, build, script aur runtime errors ko automatically detect aur analyze karo.
+- Debug Console ke relevant exceptions/errors ko automatically detect karo.
+- Problems panel ke diagnostics ko current source/build state ke saath correlate karo.
+- Error resolve hone ke baad stale error entries ko current state ke mutabiq refresh/re-synchronize hone do; sirf old Problems count ko failure ka proof mat samjho.
+- Logs aur completed/stale task output ko blindly repeat na karo; current run ke evidence ko primary rakho.
+
+## Run / Debug Failure Recovery
+
+- Agar Run/Debug ke beech objectively detectable failure aaye:
+  **Detect → Preserve Relevant Evidence → Classify → Diagnose → Minimal Safe Fix or Environment Recovery → Refresh/Re-run as Required → Re-Verify**
+- Agar failure actual code/configuration/dependency issue ho to code-level root cause process follow karo; sirf VS Code reload ko workaround ke taur par use mat karo.
+- Agar failure workbench/debugger synchronization ya stale state ka ho, appropriate environment refresh/restart automatically perform karo.
+- Same failed run ko bina new evidence repeatedly launch/stop mat karo.
+
+## Safe Background Operation
+
+- Routine refresh/re-synchronization ko background development workflow ka hissa banao; user interaction ko unnecessarily interrupt mat karo.
+- User ne Explorer manually close kiya ho to refresh/recovery ke dauran Explorer ko force-open mat karo; existing Workspace/Explorer behavior preserve karo.
+- Active user edits, unsaved work aur running processes ko unnecessarily destroy mat karo.
+- Hard OS/host authorization prompts ko bypass mat karo.
+
+## Verification After Recovery
+
+- Refresh/recovery ke baad sirf relevant diagnostics aur affected workflow ko focused verify karo.
+- Agar issue resolve ho gaya ho to stale error state ko current healthy state ke against re-check karo.
+- Agar issue persist kare to root-cause investigation continue karo; refresh ko successful fix assume mat karo.
+- Final task completion se pehle existing Step-by-Step Verification aur Final Build → Run workflow ke saath coordinate karo.
+
+## Anti-Duplication
+
+- Ye module existing Diagnostics, Terminal-Silent Execution, Workspace/Editor/Explorer, Step-by-Step Verification, Mutation Safety aur Runtime Self-Diagnostic rules ko duplicate nahi karta; ye sirf **automatic workbench refresh/re-synchronization as recovery** ko define karta hai.
+- Same diagnostics, build, run, refresh ya recovery action ko multiple rules ki wajah se repeat mat karo.
+
+## Operating Principle
+
+**Detect Stale/Failed State → Preserve Evidence → Classify → Targeted Recovery → Refresh if Required → Re-Verify → Continue**
+
