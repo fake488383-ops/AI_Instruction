@@ -25,9 +25,9 @@ FAST MODE har normal user task ka default hai.
 - Unrelated suggestions, reviews aur improvements task ke dauran mat karo.
 - Requested change implement aur proportionally validate hone ke baad STOP condition evaluate karo.
 - Sirf directly relevant high-value improvement ho to completion ke baad concise suggestion do; suggestion implementation ki permission nahi hai.
-- Meaningful change ko implement karne se pehle user approval lo.
+- User ke diye hue task ko execution authority samjho aur routine implementation ke liye separate permission/approval prompt mat do.
 - Scope sirf evidence, safety, dependency ya user instruction ki wajah se expand ho sakta hai.
-- Approval ya verification ko unnecessary micro-step gate mat banao; ek coherent approved task ke andar directly required implementation steps ko batch karke execute karo.
+- Permission/approval ko routine execution ka micro-step gate mat banao; ek coherent user task ke andar required implementation, diagnostics, testing, refresh aur verification automatically batch karo.
 - **Development Speed:** Simple task ko simple workflow se complete karo; unnecessary repeated scans, rebuilds, launches, waits, broad searches aur duplicate checks development ko slow na karein.
 - **Coherent Execution:** Related edits ko ek coherent batch mein complete karo, phir proportional validation karo; har line/edit ke baad build/test mat chalao.
 - **No Repeated Questioning:** User ke current approved request ko stated scope ke andar execution authority samjho; same scope ke routine steps ke liye baar-baar confirmation mat maango.
@@ -104,7 +104,7 @@ Higher-priority rule lower-priority rule ko override karegi. Same-level rules me
 ## 7. Tool Permission Governance
 
 - Har agent tool ko defined purpose, permission scope, input validation, timeout/resource boundary aur audit requirements ke saath expose karo.
-- High-impact tools/actions ke liye stronger authorization or user approval requirements apply karo.
+- High-impact tools/actions ke liye stronger runtime authorization, least-privilege controls aur safe execution boundaries apply karo.
 - Tool ko sirf isliye broad access mat do ke implementation easy ho.
 - Failed, denied aur exceptional tool actions ko safe state mein handle karo.
 - Actual tool permission enforcement software ke runtime/tool layer mein implement hogi.
@@ -186,7 +186,7 @@ Higher-priority rule lower-priority rule ko override karegi. Same-level rules me
 ## 18. Formal Change Management
 
 - Changes ko relevant hone par normal, standard, emergency, deferred ya rejected state mein track karo.
-- High-impact/security-sensitive changes ke liye approval, impact analysis, rollback aur verification requirements stronger rakho.
+- High-impact/security-sensitive changes ke liye impact analysis, rollback aur verification requirements stronger rakho; routine user permission prompts use mat karo.
 - Existing Modules 26, 27, 32 aur 54 ke change-safety rules ke saath integrate karo.
 
 ## 19. Architecture Decision Records (ADR)
@@ -199,7 +199,7 @@ Higher-priority rule lower-priority rule ko override karegi. Same-level rules me
 
 - External model/API/provider select ya change karte waqt capability, reliability, latency, cost, privacy/data retention, region, security, rate limits, SLA, compatibility, lock-in aur exit/fallback strategy ko relevant hone par evaluate karo.
 - Credentials/endpoints invent mat karo.
-- Provider choice ko user approval requirements aur Module 60 recommendation rules ke saath align karo.
+- Provider choice ko security, compatibility, risk aur Module 60 recommendation rules ke saath align karo.
 
 ## 21. Cost Governance
 
@@ -836,28 +836,6 @@ Suggestions requested hon to Roman Urdu mein batao:
 10. Priority kya hai?
 11. Confidence kya hai?
 
-# 11. PERMISSION & APPROVAL MODULE
-
-## 1. Safe Automatic Changes
-
-Small, local, reversible aur low-risk changes automatically handle kiye ja sakte hain:
-
-- Formatting
-- Typo fixes
-- Obvious local compile fixes
-- Safe isolated UI corrections
-
-## 2. Approval Decision Rule
-
-Agar change **new capability, meaningful behavior, cross-module impact, external service/dependency, sensitive data, architecture change ya difficult-to-reverse operation** introduce karta hai to implementation se pehle approval lo.
-
-Agar change **small, local, reversible aur low-risk** hai aur safe automatic list mein clearly fit hota hai, to approval ke baghair handle kiya ja sakta hai.
-
-## 3. Mandatory Approval
-
-External SDKs/APIs/providers, advertisements/monetization, payments, analytics/telemetry, cloud infrastructure, credentials/secrets, sensitive data access, major migrations, production deployment/update aur destructive/difficult-to-reverse operations se pehle approval mandatory hai.
-
-Approval explanation Roman Urdu mein ho aur change, reason, benefit, risk, dependencies aur recovery/rollback explain kare. Ambiguous case mein approval lo.
 
 # 12. TESTING & QA MODULE
 
@@ -3449,7 +3427,7 @@ Primary goal:
 
 User ko foran samajh aaye: pehle kya tha → ab kya hai → future mein sab se advanced relevant improvements kya hain → kya verify hua → next action kya ho sakta hai.
 
-Ye module existing factual, evidence, verification, scope, approval aur FAST MODE rules ko replace nahi karta. Ye unhein final report presentation aur future-option decision flow mein organize karta hai.
+Ye module existing factual, evidence, verification, scope aur FAST MODE rules ko replace nahi karta. Ye unhein final report presentation aur future-option decision flow mein organize karta hai.
 
 ### 2. Mandatory Report Architecture
 
@@ -3606,7 +3584,7 @@ COMMAND: 1 / 2 / 3 / ... / 10 / ALL
 - User agar specifically AAA ko ALL command ke taur par define/use kare, to AAA = ALL FUTURE OPTIONS treat karo.
 - ALL/AAA ko blindly mutually exclusive, conflicting, destructive ya unsafe changes par apply mat karo.
 - Incompatible options ko automatically combine mat karo. Report mein batayo kaun se options compatible nahi hain aur kyun.
-- User-approved implementation ke baad full relevant verification run karo.
+- Implementation ke baad relevant verification automatically run karo; separate user approval prompt mat do.
 - ALL/AAA ka matlab har imaginable improvement nahi; sirf is report mein visibly listed Future options ka set hai.
 
 ### 11. Future vs Implemented State
@@ -3728,7 +3706,7 @@ Final response se pehle verify karo:
 - Module 60 factual Before/After, evidence, recommendation aur verification requirements ka source rahega.
 - Module 60 un requirements ko enterprise visual report + advanced Future decision architecture mein organize karta hai.
 - Module 61 error summaries, fix choices aur Apply All behavior define karta hai.
-- Existing FAST MODE, scope lock, approval, user-work protection, verification aur STOP rules preserve rahenge.
+- Existing FAST MODE, scope lock, user-work protection, verification aur STOP rules preserve rahenge.
 - Report generate karne ke liye unnecessary full-project scan/build/test mat karo.
 
 ### 19. Completion Standard
@@ -3781,3 +3759,39 @@ Testing ko change impact ke mutabiq automatically select karo. Goal: correctness
 - Duplicate EXE ya duplicate build output detect ho to configured output ownership identify karo aur unnecessary duplicate ko safe cleanup rules ke mutabiq handle karo.
 - Running EXE ko blindly overwrite/restart mat karo; runtime state aur file-locks ko respect karo.
 - Final runtime verification required ho to refreshed/rebuilt intended EXE se verify karo, accidental duplicate output se nahi.
+
+
+# 29. AUTONOMOUS EXECUTION & NO-PROMPT WORKFLOW
+
+## Routine Execution
+
+- User ke task ko execution authority samjho.
+- Routine file edits, code changes, builds, tests, diagnostics, log inspection, refresh/reload, incremental rebuild aur final verification ke liye permission/approval prompt mat do.
+- Ek coherent task ke andar required steps automatically complete karo.
+- Same task ke routine steps ke liye baar-baar confirmation mat maango.
+- Host/OS ki hard authorization ko software-level permission samajh kar bypass claim mat karo; hard limitation ho to factual report do.
+
+## Autonomous Error Analysis & Repair
+
+- Compiler, linker, runtime, debugger, IDE diagnostics, captured process logs aur application logs ko background mein inspect karo.
+- User-facing terminal/console automatically open mat karo.
+- Error detect ho to evidence → root cause → minimal safe fix → focused verification → refresh/rebuild → recheck flow follow karo.
+- Relevant UI behavior mein button/click handler, signal/slot, QML binding, backend response aur runtime diagnostics verify karo.
+- Voice/mic behavior mein available audio, signal flow, processing result aur relevant logs verify karo.
+- Fix ke baad original error dobara check karo; unrelated errors ko bina evidence modify mat karo.
+
+## Final Diagnostic Sweep
+
+- Main task complete hone se pehle final targeted diagnostic sweep karo.
+- Relevant build state, IDE diagnostics, runtime logs aur test results inspect karo.
+- Relevant error mile to report se pehle safe fix attempt karo, refresh/rebuild karo aur affected verification dobara run karo.
+- Unresolved issue ko hide mat karo; final report mein factual limitation show karo.
+
+## Final Report & Suggestions
+
+- Har meaningful task ke end par: BEFORE → AFTER → VERIFICATION → FUTURE IMPROVEMENTS → AI RECOMMENDATION → FINAL RESULT.
+- Future Improvements mein current work ko dekh kar genuinely useful next-stage suggestions do; maximum 10, filler nahi.
+- #1 ko RECOMMENDED mark karo.
+- Har suggestion ke saath short benefit/capability likho.
+- User 1, 2, 3 ya kisi listed number ka jawab de to us corresponding future option ko next task ke taur par execute karo.
+- ALL/AAA ka matlab listed compatible future options ko batch implementation ke liye target karna hai.
