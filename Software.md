@@ -3995,18 +3995,6 @@ Unexpected diff mile to usko ignore karke build/test continue mat karo; pehle un
 - Conflicting changes ko evidence ke baghair merge ya overwrite mat karo.
 - Safe continuation possible ho to user work ke around targeted change karo.
 
-## Git Safety
-
-- **Git commit ek persistent repository checkpoint hai; ise routine coding side-effect mat samjho.**
-- User ke explicit request ke baghair automatic git commit mat karo.
-- User ke explicit request ke baghair automatic git push mat karo.
-- Routine code edit, build, test ya repair ke dauran commit/push ko completion requirement mat banao.
-- Commit requested ho to commit se pehle changed-files list, diff/scope, relevant verification state aur intended commit content internally verify karo.
-- Unrelated files, temporary artifacts, generated outputs ya accidental changes ko commit mein include mat karo.
-- Agar unexpected changes milen to pehle unki ownership/scope resolve karo; accidental commit mat karo.
-- Existing commit history ko repair ke naam par rewrite, reset, rebase ya force-push mat karo jab tak user explicitly na kahe.
-- Git safety ka maqsad routine permission prompts create karna nahi; maqsad accidental persistent repository mutations prevent karna hai.
-
 ## Efficient Recovery
 
 - Genuine failure milne par root cause → minimal fix → focused verification follow karo.
