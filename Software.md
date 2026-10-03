@@ -4321,3 +4321,90 @@ Jab tamam required dependent steps successfully complete aur verify ho jayein:
 - Final operating principle:
 
 **Implement Step → Verify Step → Complete? Continue : Stop & Repair → Verify Again → Continue → Final Build → Final Run → Report**
+
+# 35. AUTONOMOUS RUNTIME OBSERVATION, EVIDENCE & SELF-DIAGNOSTIC
+
+## Purpose
+
+- Agent ko sirf user ki verbal description par depend nahi karna chahiye ke “ye feature kaam nahi kar raha”.
+- Jab software runtime verification required ho, agent available runtime evidence ko khud observe, collect aur analyze kare.
+- Goal hai **Observe → Capture Evidence → Diagnose → Fix → Rebuild → Run → Re-Verify**, na ke **User Reports Problem → Agent Asks User to Explain → Repair**.
+- Ye generic system hai; kisi ek button, mic, page, API ya feature ko mandatory example/path mat samjho.
+
+## Autonomous Runtime Observation
+
+- Final EXE build aur run hone ke baad, jab runtime behavior verify karna task ka hissa ho, agent available application/runtime signals, logs, diagnostics, UI state, process state, event flow, backend responses aur timing information ko observe kare.
+- Jahan technically supported ho, agent runtime actions aur resulting state changes ko correlate kare.
+- Agent ko user se routine failure description manually collect karne ki zarurat nahi honi chahiye jab same failure application evidence se objectively detect kiya ja sakta ho.
+- User ki manual interaction final handoff/inspection ho sakti hai, lekin agent ko available machine-readable evidence ko pehle analyze karna chahiye.
+
+## Evidence Capture
+
+- Runtime failure ya suspicious behavior detect hone par relevant evidence automatically capture karo.
+- Evidence mein, capability aur platform ke mutabiq, UI snapshot/screenshot, application state, event/signal trace, backend request/response state, logs, timestamps, latency measurements, process/device state aur relevant diagnostic output shamil ho sakte hain.
+- Short runtime recording/video ya targeted screen capture tab use karo jab visual sequence ya temporal behavior ko samajhne ke liye woh technically available, useful aur proportional ho.
+- Recording ko continuously chalana default nahi hai; targeted capture preferred hai taake performance, privacy aur storage overhead controlled rahe.
+- Evidence ko task/session context se associate karo taake agent identify kar sake ke failure kis action aur kis implementation state ke baad hua.
+- Evidence unavailable ho to agent evidence ko fabricate ya infer karke verified result claim na kare.
+
+## Visual + Telemetry Correlation
+
+- Sirf screenshot ya video par depend mat karo jab structured telemetry available ho.
+- Visual evidence ko application telemetry, logs, state transitions, backend/headless verification aur timing data ke saath correlate karo.
+- Example-type symptoms ko generic evidence pattern samjho: action hua lekin expected state change nahi hua; input detect hua lekin processing stage tak nahi gaya; response aaya lekin UI update nahi hui; ya unexpected latency/error occur hua.
+- Agent ko symptom, failing stage aur probable root cause ko alag-alag identify karna chahiye.
+
+## Autonomous Root-Cause Analysis
+
+- Runtime failure detect hone par:
+  **Observed Failure → Evidence Correlation → Failing Stage → Root Cause Analysis → Minimal Safe Fix**
+- Root cause identify karne se pehle speculative code changes mat karo.
+- Relevant source, configuration, dependency, runtime state aur diagnostics ko targeted scope mein inspect karo.
+- Multiple possible causes hon to available evidence se hypotheses narrow karo; unsupported assumption ko fact mat samjho.
+- User ko “problem kya hai?” dobara explain karne ke liye routine diagnostic work outsource mat karo.
+
+## Autonomous Repair & Re-Verification
+
+- Root cause sufficiently clear ho aur safe repair possible ho to agent khud minimal targeted fix apply kare.
+- Fix ke baad affected Step ko dobara verify karo aur relevant regression condition bhi check karo.
+- Agar repair se source/configuration materially change hui ho to stale verification evidence invalidate karo.
+- Failure loop:
+  **Detect → Capture → Diagnose → Minimal Fix → Rebuild if Required → Run if Required → Re-Verify**
+- Same failed approach ko bina new evidence repeatedly retry mat karo.
+- Agar root cause uncertain ho ya repair destructive/speculative ho sakti ho, agent controlled investigation par ruk kar unresolved condition report kare.
+
+## Runtime Interaction & Scenario Verification
+
+- Jab behavior real runtime interaction se verify karna zaruri ho, agent available automated interaction, component/runtime harness, test instrumentation, accessibility/UI object state, event traces ya equivalent mechanism ka use kare.
+- Agar supported environment mein automated interaction possible ho to sirf user ke manual observation ko primary test method mat banao.
+- Agar visual/hardware/human-only behavior fully automate nahi ho sakta, jo portion objectively verify ho sakta hai usko automatically verify karo aur remaining limitation ko clearly report karo.
+- Agent ko video/screenshot evidence ko successful behavior ka substitute nahi samajhna chahiye; evidence ka purpose failure detection aur diagnosis ko improve karna hai.
+
+## Final Build → Run Handoff
+
+- Required implementation, backend/headless verification, sequential step verification aur required runtime checks complete hone ke baad normal completion flow:
+  **Final Build → Final EXE Run → Final Runtime Observation → Final Report**
+- User ne agar final software handoff ke liye EXE run karne ko kaha hai, to successful build ke baad EXE automatically run karo; user ko manually launch karne ke liye routine task outsource mat karo.
+- Final EXE run ko unnecessary repeated launch/close loop mein convert mat karo.
+- Agar final run mein objectively detectable error milta hai, handoff complete mat declare karo:
+  **Detect → Diagnose → Fix → Rebuild → Run → Re-Verify**
+- Final run successful hone par user ko actual verification evidence ke basis par result do.
+
+## Self-Diagnostic Boundaries
+
+- Ye module existing Backend/Headless Verification, Step-by-Step Sequential Verification, Mutation Safety, Diagnostics, Terminal-Silent Execution, Verification Cache aur Final Build → Run rules ke saath coordinate kare.
+- Same build, test, launch, log collection, screenshot, recording ya diagnostic check ko multiple modules ke overlap ki wajah se repeat mat karo.
+- Automatic observation ka matlab unrestricted surveillance nahi hai; capture scope task ke runtime verification requirement tak limited aur proportional rahe.
+- Sensitive data, credentials, secrets ya unrelated user content ko evidence mein unnecessarily capture/store mat karo.
+- Agent ko jo cheez technically observe ya verify nahi hui usko “verified” nahi kehna chahiye.
+
+## Final Operating Principle
+
+**Build → Run → Observe → Detect → Capture Evidence → Diagnose → Fix → Rebuild → Run → Re-Verify → Complete**
+
+- No routine user diagnosis.
+- No blind repair.
+- No fake verification.
+- Evidence first, minimal safe mutation second.
+- Final EXE handoff only after the required runtime behavior has been verified as far as technically possible.
+
