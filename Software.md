@@ -4533,3 +4533,57 @@ Jab tamam required dependent steps successfully complete aur verify ho jayein:
 
 **Active Task → Checkpoint → Safe Refresh → Restore Context → Verify Resume Point → Continue From Last Safe State**
 
+# 38. REFRESH NECESSITY & USER-WORK PRESERVATION
+
+## Refresh Only When Necessary
+
+- VS Code workbench refresh/reload **default action nahi** hai.
+- Refresh/reload sirf tab perform karo jab actual evidence se lage ke current issue ko targeted refresh/re-synchronization ke baghair safely resolve nahi kiya ja sakta.
+- Healthy ya normally functioning environment ko bina reason refresh mat karo.
+- Sirf Problems, Terminal, Debug Console ya UI mein koi stale-looking entry dikhne par immediately full Reload Window mat karo; pehle current state aur evidence validate karo.
+- Lower-impact recovery available ho to full workbench reload ke bajaye lower-impact recovery prefer karo.
+- Same issue par repeated unnecessary refresh/reload mat karo.
+
+## Protect AI Task State & Generated Work
+
+- Workbench refresh ka scope VS Code environment ko recover/re-synchronize karna hai; active AI task state, checkpoints, generated reports, analysis results, user edits aur other valuable work ko lose karna allowed nahi.
+- AI agent ke task state aur generated artifacts ko persistent project/session state mein preserve karo jab unka future resume/reporting ke liye value ho.
+- Agar final report, analysis result, diagnostic evidence, generated output ya other task artifact already create ho chuka ho aur user ne abhi read nahi kiya, refresh se pehle uski persistence ensure karo.
+- Aisi report/output ko sirf VS Code panel/tab ke temporary state mein depend mat rakho agar refresh se woh disappear ho sakta ho.
+- Refresh ke baad preserved report/output ko automatically restore/recoverable state mein rakho; user ko manually recreate karne par depend mat karo.
+
+## VS Code Refresh vs Project Work
+
+- VS Code ke refreshable workbench state ko project/AI work state se logically separate rakho.
+- Full Reload Window ke baad terminals, Debug Console, Problems panel aur other volatile UI state reset/reload ho sakti hai; is possibility ko pehle consider karo.
+- Important task context, reports, checkpoints aur generated evidence ko volatile UI state mein sole copy ke taur par mat rakho.
+- User ka active code, unsaved edits aur in-progress work unnecessarily discard/overwrite mat karo.
+- Refresh ko project files, source code ya AI task state ko delete/replace karne ka mechanism mat samjho.
+
+## Debug / Terminal Recovery
+
+- Debug Console, Problems panel aur Terminal ki stale/invalid UI state ko refresh karna ho to minimum necessary scope use karo.
+- Agar sirf diagnostic panel re-synchronization sufficient ho, full VS Code Reload Window mat karo.
+- Full reload genuinely required ho to existing Refresh-Safe Active Task Continuity checkpoint rules pehle apply karo.
+- Refresh ke baad relevant diagnostics ko dobara collect/verify karo; purane volatile panel output ko automatically current truth mat samjho.
+
+## Final User-Work Safety Check
+
+Full refresh se pehle, jab technically applicable ho:
+
+**Need Confirmed → Active Work Protected → Task Checkpoint Saved → Important Reports/Artifacts Persisted → Refresh → Restore Context → Re-Verify**
+
+- Agar in protections ko safely establish nahi kiya ja sakta aur refresh immediately required nahi hai, refresh postpone karo.
+- Refresh ke baad agent ko wahi active task continue karna hai aur already-generated valuable work ko preserve karna hai.
+
+## Coordination
+
+- Ye module existing Refresh-Safe Active Task Continuity, Persistent Work Continuity, Workspace/Editor/Explorer, Diagnostics aur Background Execution rules ko complement karta hai.
+- Same checkpoint, persistence, diagnostics ya recovery action ko duplicate mat karo.
+
+## Operating Principle
+
+**No Need → No Refresh**
+  
+**Need Confirmed → Protect Work → Minimal Refresh → Restore → Verify → Continue**
+
