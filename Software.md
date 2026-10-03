@@ -3822,3 +3822,103 @@ Testing ko change impact ke mutabiq automatically select karo. Goal: correctness
 - Har suggestion ke saath short benefit/capability likho.
 - User 1, 2, 3 ya kisi listed number ka jawab de to us corresponding future option ko next task ke taur par execute karo.
 - ALL/AAA ka matlab listed compatible future options ko batch implementation ke liye target karna hai.
+
+
+# 30. ADVANCED DEVELOPMENT INTELLIGENCE & QUALITY ACCELERATION
+
+> Ye module existing FAST MODE, proportional testing, backend/headless verification, autonomous repair, build/output safety aur enterprise governance ko replace nahi karta. Ye un rules ke upar targeted intelligence add karta hai taake development fast rahe aur software quality high rahe. Intelligent Task Planning aur Architecture Drift Detection is module ka hissa nahi hain.
+
+## Dependency-Aware Editing
+
+- Kisi change se pehle sirf relevant direct dependencies, consumers aur interfaces ko identify karo jab change impact samajhne ke liye zaruri ho.
+- Direct dependency graph ko task scope ke mutabiq use karo; unrelated repository-wide dependency traversal mat karo.
+- Public API, interface, schema, signal/slot contract, shared type ya service boundary change ho to affected consumers ko identify karke focused verification karo.
+- Dependency impact clear ho to unnecessary files ko touch ya inspect mat karo.
+- Dependency evidence ke basis par scope expand karo; guesswork se broad refactor mat karo.
+- Existing scope-lock aur FAST MODE rules ko preserve karo.
+
+## Incremental Build Intelligence
+
+- Build strategy automatically change impact ke mutabiq choose karo: file/component/target incremental build ya full rebuild.
+- Default smallest reliable build scope use karo.
+- Full rebuild tabhi karo jab dependency graph, build-system change, generated artifacts, toolchain state, linker state ya failed incremental build uski zarurat prove kare.
+- CMake/Qt project mein existing configured build tree aur intended output path preserve karo; duplicate build folders ya duplicate EXE outputs create mat karo.
+- Build cache ko blindly trust mat karo; stale/generated-output evidence ho to affected target ko refresh/rebuild karo.
+- Same change ke liye repeated identical builds avoid karo.
+- Build result ke saath intended artifact freshness/path ko verify karo jab runtime handoff required ho.
+
+## Change Risk Classification
+
+Har meaningful change ko internally risk ke mutabiq classify karo:
+
+- LOW — isolated text, cosmetic ya low-impact local change.
+- MEDIUM — component logic, state flow, local service/configuration ya moderate dependency change.
+- HIGH — API contract, database, shared service, permissions, important persistence, cross-component behavior ya significant performance change.
+- CRITICAL — authentication/authorization, secrets, security boundary, production infrastructure/data, release/deployment ya other high-impact security-sensitive change.
+
+Rules:
+
+- LOW risk par FAST MODE + minimal reliable validation use karo.
+- MEDIUM risk par affected component/integration validation strengthen karo.
+- HIGH risk par affected dependency/contract/regression evidence aur stronger validation use karo.
+- CRITICAL risk par mandatory security, authorization, deployment ya other required enterprise gates bypass mat karo.
+- Risk level ko unnecessary ceremony ya routine permission prompt ka reason mat banao.
+- Risk ko evidence ke saath revise karo agar investigation se actual impact change ho.
+
+## Automatic Regression Impact Detection
+
+- Change ke baad identify karo ke kaunse existing behaviors, interfaces, tests ya consumers realistically regress ho sakte hain.
+- Sirf affected regression checks run karo; full suite ko default mat banao.
+- Shared contracts, public interfaces, persistence schemas aur cross-component changes mein downstream consumers ko priority do.
+- Agar existing higher-level test reliably affected behavior cover karta hai to duplicate lower-level execution avoid ki ja sakti hai.
+- Regression evidence fail ho to root cause diagnose karke minimal safe fix aur focused retest karo.
+- Original bug/change acceptance condition ko fix ke baad dobara verify karo.
+
+## Performance Regression Guard
+
+- Performance-sensitive ya meaningful changes mein available evidence ke mutabiq before/after impact compare karo.
+- Relevant dimensions: startup time, CPU usage, memory usage, latency, throughput, I/O, build time aur UI responsiveness.
+- Tiny/local changes par unnecessary benchmark suite mat chalao.
+- Measured evidence available na ho to numerical performance claim mat karo.
+- Clear regression mile to root cause investigate karo aur safe minimal optimization/fix apply karke affected verification repeat karo.
+- Optimization ke liye correctness, security, reliability ya maintainability silently compromise mat karo.
+- Performance guard existing FAST MODE ke proportional validation principle ke saath operate kare.
+
+## Self-Healing Build & Verification Loop
+
+- Existing autonomous error-repair workflow ko build/verification lifecycle mein apply karo:
+  **Build → Evidence → Root Cause → Minimal Safe Fix → Rebuild → Retest → Recheck**.
+- Compiler, linker, test, runtime aur relevant IDE diagnostics ko background evidence ke taur par use karo.
+- Same failed fix ya same failed command ko bina new evidence repeatedly retry mat karo.
+- Ek coherent repair attempt ke baad affected verification dobara run karo.
+- Root cause clear na ho to destructive ya speculative modification mat karo.
+- Recovery ke baad original failure condition aur relevant regression condition dono verify karo.
+- Final runtime-visible task ke liye existing rule ke mutabiq successful verification ke baad **Build/Refresh → final EXE Run** sequence follow karo.
+
+## Dead-Code & Unused-Asset Detection
+
+- Relevant maintenance/refactor scope mein unused code, stale modules, unreachable paths, unused QML/resources, obsolete configuration aur unused dependencies identify karo.
+- Detection ko evidence-based rakho; “unused” sirf naming ya superficial search se conclude mat karo.
+- Dynamic imports, reflection, plugin loading, runtime registration, generated code aur external consumers ko consider karo jahan relevant hon.
+- Automatically delete mat karo jab ownership/usage uncertain ho.
+- Safe cleanup clearly verified ho to current task scope mein minimal cleanup kar sakte ho; warna concise future candidate ke taur par report karo.
+- Cleanup se pehle aur baad relevant build/tests/verification maintain karo.
+- Dead-code detection ko tiny task par automatic full-project scan ka reason mat banao.
+
+## Do Not Overengineer Guard
+
+- Requirement ko satisfy karne ke liye smallest safe, maintainable aur architecture-compatible solution prefer karo.
+- Chhoti requirement ko unnecessary framework, abstraction layer, service, dependency, database, pattern ya infrastructure mein expand mat karo.
+- Enterprise-grade ka matlab unnecessary complexity nahi; complexity sirf real scalability, security, reliability, maintainability ya operational requirement justify kare to add karo.
+- Existing architecture ko respect karte hue solution ko task scope ke proportional rakho.
+- Future-ready design aur speculative engineering mein difference maintain karo.
+- Agar advanced solution ka real measurable benefit current requirement ke liye justified nahi hai to simpler solution prefer karo.
+- Final implementation ko unnecessary code, dependencies aur moving parts se burden mat karo.
+
+## Coordination & Anti-Duplication
+
+- Is module ke rules existing modules ke duplicate replacement nahi hain; existing authoritative rule ko reuse/reference karo.
+- Same build, test, diagnostic, repair ya verification action ko multiple modules ki wajah se repeat mat karo.
+- Dependency analysis, risk classification, regression selection, performance checking aur cleanup ko sirf relevant task scope par activate karo.
+- Final workflow remains:
+  **Targeted Inspect → Coherent Edit → Relevant Automated Verification → Evidence-Based Repair if Needed → Final Diagnostic/Build → Final EXE Run when runtime handoff is required → Report**.
