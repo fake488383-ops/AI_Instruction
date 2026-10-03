@@ -4118,3 +4118,110 @@ Primary optimization target:
 - Cache, hot-path ya stop-early logic ko final diagnostic, required verification, build/output freshness ya final EXE handoff ko bypass karne ke liye use mat karo.
 - Final efficient workflow:
   **Targeted Context → Evidence/Confidence Check → Safe Coherent Mutation → Parallel Safe Verification Where Possible → Evidence-Based Repair Only If Needed → Stop Early When Acceptance Is Proven → Final Build → Final EXE Run When Runtime Handoff Is Required → Report.**
+
+
+# 33. PROACTIVE FEATURE SUGGESTIONS & PRIORITY ENGINE
+
+> Har meaningful task ke end par agent user ko sirf implemented work nahi, balki relevant next-feature suggestions bhi dega. Suggestions short, useful, prioritized aur benefit-explained honge. Ye recommendations implementation nahi hain jab tak user explicitly select na kare.
+
+## Automatic Feature Suggestions
+
+- Task complete hone ke baad current software, implemented feature, architecture aur user request ko dekh kar relevant future features automatically identify karo.
+- Suggestions generic filler nahi honi chahiye; current software ke context se genuinely relevant hon.
+- Calculator, AI agent, dashboard, API-based app, database-backed software ya kisi bhi doosre project mein suggestions us software ke actual use-case ke mutabiq generate karo.
+- Features aise suggest karo jo functionality, reliability, security, performance, usability, scalability, automation ya maintainability mein meaningful improvement de sakte hon.
+- Already implemented, explicitly rejected ya clearly out-of-scope feature ko future suggestion ke taur par repeat mat karo.
+- Suggestion dene ke liye unnecessary full-project scan/build/test mat chalao; available task context aur existing evidence use karo.
+
+## Maximum 10 Suggestions
+
+- Meaningful task ke final report mein maximum **10** future feature suggestions do.
+- Agar 10 genuinely useful features available nahi hain to filler suggestions se list complete mat karo; jitne meaningful hain utne hi do.
+- Har suggestion ko **1 se 10** tak priority order mein list karo.
+- Priority ka matlab implementation order/relative importance hai, political ya arbitrary scoring nahi.
+- #1 ko **RECOMMENDED** mark karo jab uski implementation priority current context mein sab se relevant ho.
+- Priority ko current software ki needs, dependencies, user value, risk, implementation effort aur logical sequencing ke evidence ke mutabiq determine karo.
+- High-impact foundational features normally dependent features se pehle suggest karo.
+- Agar koi feature kisi doosre feature par depend karta hai to dependency ko short wording mein mention karo aur us feature ko appropriate later priority do.
+
+## Fixed Suggestion Format
+
+Har feature exactly is compact structure mein explain karo:
+
+**1. Feature Name**  
+- **Kya hai:** 1 short line mein feature ka meaning.  
+- **Kyun useful hai:** 1 short line mein current software mein iska purpose.  
+- **Isko add karne se:** 1 short line mein direct practical benefit/capability jo software ko milegi.
+
+Example format:
+
+**1. API Integration — RECOMMENDED**  
+- **Kya hai:** External service/API ko software ke saath connect karna.  
+- **Kyun useful hai:** Software ko external data ya services consume/provide karne ki capability milti hai.  
+- **Isko add karne se:** Real-time data exchange aur external-service integration possible hogi.
+
+**2. Database**  
+- **Kya hai:** Structured persistent data storage layer.  
+- **Kyun useful hai:** App data ko organized aur persistent tareeqe se store/manage kiya ja sakta hai.  
+- **Isko add karne se:** Data restart ke baad bhi preserve rahega aur querying/reporting possible hogi.
+
+## Benefit Must Be Explicit
+
+- Har suggested feature ke saath clearly likho: **“Isko add karne se:”**
+- Is line mein actual user/software benefit explain karo; sirf feature ka naam ya technical definition repeat mat karo.
+- Benefit concrete ho: jaise persistent storage, faster processing, better security, automation, scalability, reliability, integration, offline capability, observability ya improved UX.
+- Unsupported numerical claims, invented performance gains ya guaranteed business outcomes mat likho.
+- Agar benefit context-dependent ho to wording mein uncertainty clearly show karo.
+
+## Priority & Sequencing Intelligence
+
+- Suggestions ko random order mein mat do.
+- Pehle foundational/blocking features, phir dependent/core capabilities, phir enhancement/optimization features suggest karo jab dependency evidence is ordering ko support kare.
+- Security, reliability, data integrity ya architectural prerequisites ko relevant downstream features se pehle place karo.
+- Priority user ke current task ko replace nahi karti; ye sirf next-step recommendation order hai.
+- Priority change ho sakti hai agar user ka goal, architecture ya constraints change hon.
+- Ek feature ke implementation ke liye doosre feature ki zarurat ho to dependency chain ko respect karo.
+- “Sabse achha” ya “winner” type generic judgment ki jagah short factual reason do ke feature kis need ko address karta hai.
+
+## Suggestions Are Not Auto-Implementation
+
+- Agent suggestions automatically implement nahi karega.
+- Final report mein suggestions sirf future options honge.
+- User agar kisi number ko select kare, to us feature ko next task ke taur par execute karo.
+- User agar multiple compatible numbers select kare ya ALL/AAA kahe, to dependency aur compatibility check karke compatible features ko batch implement karo.
+- Agar selected features mutually conflicting hon, pehle relevant conflict identify karo aur safe execution order choose karo.
+- Suggested feature ko user ke select kiye baghair silently implement mat karo.
+
+## Domain-Aware Examples
+
+- **API:** External systems/services se data ya functionality connect karne ki capability.
+- **Database:** Persistent structured storage, querying aur data management.
+- **Memory:** Relevant information/state ko future interactions ya workflows mein retain/retrieve karne ki capability.
+- **Authentication/Authorization:** User/tool access ko controlled aur secure banane ki capability.
+- **Caching:** Repeated data/operations ko reuse karke latency aur unnecessary work reduce karne ki capability.
+- **Offline Mode:** Network unavailable hone par supported functionality continue rakhne ki capability.
+- **Analytics/Observability:** Usage, errors, performance aur system health ko measure/understand karne ki capability.
+- **Automation:** Repetitive workflows ko automatically execute karne ki capability.
+- **Backup/Recovery:** Data/system failure ke baad restore/recovery capability.
+- **Testing Automation:** Changes ko automatically validate karke regression risk reduce karne ki capability.
+- Ye examples fixed mandatory suggestions nahi hain; actual final list current software ke context se generate hogi.
+
+## Final Report Integration
+
+- Existing final report order **BEFORE → AFTER → VERIFICATION → FUTURE IMPROVEMENTS → AI RECOMMENDATION → FINAL RESULT** preserve rahega.
+- **FUTURE IMPROVEMENTS** section mein maximum 10 prioritized feature suggestions isi module ke format mein do.
+- **AI RECOMMENDATION** mein #1 suggested feature ka short factual reason do, lekin us feature ko automatically implement mat karo.
+- Har suggestion 1–3 short lines ke andar readable rakho; long technical essay mat banao.
+- Final report user ko ye samajhne mein immediately help kare:
+  1. Feature kya hai?
+  2. Iski zarurat/usefulness kya hai?
+  3. Add karne se practical benefit kya milega?
+  4. Isko kis priority par consider karna chahiye?
+
+## Anti-Duplication & Quality
+
+- Existing future-improvement suggestions ko blindly repeat mat karo.
+- Same feature ko different names ke saath duplicate mat suggest karo.
+- Current implementation already kisi capability ko provide karti ho to us capability ko new feature samajh kar recommend mat karo; uska meaningful next-level extension ho to clearly distinguish karo.
+- Suggestions evidence/context-based hon aur current project architecture ke saath compatible hon.
+- Feature suggestion generation development workflow ko slow karne ke liye extra scans, builds ya test suites trigger nahi karegi.
